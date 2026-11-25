@@ -11,7 +11,7 @@
         <h1 class="page-title">Laporan Tiket</h1>
       </div>
       <p class="page-subtitle">
-        Semua kemaskini yang didaftarkan dengan No. Tiket: Update Discharge Time, Update Death Date dan PD103.
+        Semua kemaskini yang didaftarkan dengan No. Tiket: Update Discharge Time, Update Death Date, PD103 dan Pembetulan HIS.
         Jana dashboard untuk ringkasan, atau jana laporan untuk senarai penuh tiket.
       </p>
     </div>
@@ -162,6 +162,10 @@
             <div class="ticket-bar-label"><span>PD103 Inpatient Report</span><span class="tnum muted">{{ d.pd103Count }} · {{ modulePercent(d.pd103Count) }}%</span></div>
             <div class="ticket-bar-track"><div class="ticket-bar-fill" [style.width.%]="modulePercent(d.pd103Count)"></div></div>
           </li>
+          <li *ngFor="let fix of d.fixModules">
+            <div class="ticket-bar-label"><span>{{ moduleLabel(fix.label) }}</span><span class="tnum muted">{{ fix.count }} · {{ modulePercent(fix.count) }}%</span></div>
+            <div class="ticket-bar-track"><div class="ticket-bar-fill" [style.width.%]="modulePercent(fix.count)"></div></div>
+          </li>
         </ul>
 
         <div class="card-header ticket-subheader">
@@ -230,7 +234,7 @@
                   <span class="badge"
                         [class.badge-info]="row.module === 'DISCHARGE'"
                         [class.badge-neutral]="row.module === 'DEATH'"
-                        [class.badge-success]="row.module === 'PD103'">{{ moduleLabels[row.module] }}</span>
+                        [class.badge-success]="row.module === 'PD103'">{{ moduleLabel(row.module) }}</span>
                 </td>
                 <td class="tnum nowrap">{{ fmt(row.editedAt) }}</td>
                 <td>
@@ -252,7 +256,7 @@
               <span class="badge"
                     [class.badge-info]="row.module === 'DISCHARGE'"
                     [class.badge-neutral]="row.module === 'DEATH'"
-                    [class.badge-success]="row.module === 'PD103'">{{ moduleLabels[row.module] }}</span>
+                    [class.badge-success]="row.module === 'PD103'">{{ moduleLabel(row.module) }}</span>
             </div>
             <dl class="ticket-card__grid">
               <div><dt class="label-caps">Tarikh</dt><dd class="tnum">{{ fmt(row.editedAt) }}</dd></div>

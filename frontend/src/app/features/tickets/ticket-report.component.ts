@@ -20,11 +20,12 @@ interface TicketDashboard {
   activeUsers: number;
   daily: LabelCount[];
   topUsers: LabelCount[];
+  fixModules: LabelCount[];
 }
 
 interface TicketReportRow {
   ticketNo: string;
-  module: 'DISCHARGE' | 'DEATH' | 'PD103';
+  module: string;
   editedAt: string;
   editedBy: string;
   editedName: string | null;
@@ -65,8 +66,22 @@ export class TicketReportComponent implements OnInit {
   readonly moduleLabels: Record<string, string> = {
     DISCHARGE: 'Discharge',
     DEATH: 'Death',
-    PD103: 'PD103'
+    PD103: 'PD103',
+    COMPLETE_TRANSFER: 'Complete Transfer (Out Waiting)',
+    UNLOCK_DOCUMENT: 'Unlock Document',
+    BIRTH_TIME: 'Update Birth Time',
+    DOCUMENT_STATUS: 'Document Status (Mark as Error)',
+    ENCOUNTER_ACTIVE: 'Encounter Active Flag',
+    BED_CLASS: 'Update Bed Class',
+    RENUMBER_SLOTS: 'Susun Semula Slot Temujanji',
+    SCHEDULE_VISIBILITY: 'Show/Hide Schedule',
+    MULTI_WARD: 'Patient in Many Wards'
   };
+
+  // unknown / future modules fall back to the raw module code
+  moduleLabel(module: string): string {
+    return this.moduleLabels[module] ?? module;
+  }
 
   fromDate = this.firstDayOfMonth();
   toDate = this.today();

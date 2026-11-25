@@ -25,7 +25,8 @@ import java.util.Set;
 
 /**
  * Laporan Tiket: every update registered with a Ticket No, read from both audit tables
- * (discharge_date_audit for Update Discharge Time / Update Death Date, report_edit_audit for PD103).
+ * (discharge_date_audit for Update Discharge Time / Update Death Date, report_edit_audit for PD103)
+ * plus his_fix_audit for the /fix/* HIS correction utilities (module = the fix module constant).
  * Rows saved before Ticket No became mandatory have no ticket and are left out.
  */
 @Service
@@ -59,6 +60,7 @@ public class TicketReportService {
         int discharge = 0;
         int death = 0;
         int pd103 = 0;
+        Map<String, Integer> perFixModule = new LinkedHashMap<String, Integer>();
         for (TicketReportRow row : rows) {
             tickets.add(row.getTicketNo().trim().toUpperCase());
             users.add(row.getEditedBy());
@@ -72,8 +74,12 @@ public class TicketReportService {
                 death++;
             } else if (MODULE_PD103.equals(row.getModule())) {
                 pd103++;
-            } else {
+            } else if (DischargeDateService.MODE_DISCHARGE.equals(row.getModule())) {
                 discharge++;
+            } else {
+                // HIS fix modules (and any future module): counted per module code, labelled by the frontend
+                String module = row.getModule();
+                perFixModule.put(module, perFixModule.containsKey(module) ? perFixModule.get(module) + 1 : 1);
             }
         }
 
@@ -88,6 +94,7 @@ public class TicketReportService {
         response.setActiveUsers(users.size());
         response.setDaily(toLabelCounts(perDay, false, Integer.MAX_VALUE));
         response.setTopUsers(toLabelCounts(perUser, true, TOP_USERS));
+        response.setFixModules(toLabelCounts(perFixModule, true, Integer.MAX_VALUE));
         return response;
     }
 
@@ -173,6 +180,31 @@ public class TicketReportService {
                     row.setEditedName(rs.getString("edited_name"));
                     row.setChangeCount(rs.getInt("change_count"));
                     row.setChangeSummary(rs.getInt("change_count") + " sel PD103 dikemaskini");
+                    return row;
+                }
+            }));
+        }
+
+        // HIS fix utilities (/fix/*): one audit row per fix
+        if (hasTicketColumn("his_fix_audit")) {
+            String sql = "SELECT a.ticket_no, a.module, a.encounter_id, a.patient_mrn, "
+                    + "DATE_FORMAT(a.edited_at, '%Y-%m-%d %H:%i:%s') AS edited_at, a.edited_by, a.edited_name, a.reason, "
+                    + "a.target_table, a.target_key "
+                    + "FROM his_fix_audit a WHERE " + dateRange;
+            rows.addAll(namedParameterJdbcTemplate.query(sql, params, new RowMapper<TicketReportRow>() {
+                @Override
+                public TicketReportRow mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    TicketReportRow row = new TicketReportRow();
+                    row.setTicketNo(rs.getString("ticket_no"));
+                    row.setModule(rs.getString("module"));
+                    row.setEncounterId(rs.getString("encounter_id"));
+                    row.setPatientMrn(rs.getString("patient_mrn"));
+                    row.setEditedAt(rs.getString("edited_at"));
+                    row.setEditedBy(rs.getString("edited_by"));
+                    row.setEditedName(rs.getString("edited_name"));
+                    row.setReason(rs.getString("reason"));
+                    row.setChangeCount(1);
+                    row.setChangeSummary(rs.getString("target_table") + " " + rs.getString("target_key"));
                     return row;
                 }
             }));
