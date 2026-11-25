@@ -112,12 +112,19 @@ public class RenumberSlotsService {
         return support.write(new TransactionCallback<SlotSearchResult>() {
             @Override
             public SlotSearchResult doInTransaction(TransactionStatus status) {
-                // Lock every reservation of the group (single table, indexed columns) and recompute the plan
-                // from the locked rows, so a concurrent booking or edit can never be renumbered over.
+                // Lock by primary key only. A FOR UPDATE filtered by the single-column indexes on
+                // resource_code / reserve_date / schedule_code can take next-key (range/gap) locks over
+                // every reservation of that date and block live bookings. So: read the ids without locking,
+                // then lock exactly those rows by reserve_id and recompute the plan from the locked values.
+                List<Long> ids = jdbc.queryForList("SELECT reserve_id FROM app_reservations "
+                                + "WHERE resource_code = :r AND reserve_date = :d AND schedule_code = :s",
+                        params(resource, day, schedule), Long.class);
+                if (ids.isEmpty()) {
+                    throw new IllegalArgumentException("Tiada perubahan.");
+                }
                 List<SlotRow> locked = jdbc.query("SELECT reserve_id, reserve_index, reserve_cancelled "
-                                + "FROM app_reservations WHERE resource_code = :r AND reserve_date = :d "
-                                + "AND schedule_code = :s FOR UPDATE",
-                        params(resource, day, schedule), new RowMapper<SlotRow>() {
+                                + "FROM app_reservations WHERE reserve_id IN (:ids) FOR UPDATE",
+                        new MapSqlParameterSource("ids", ids), new RowMapper<SlotRow>() {
                             @Override
                             public SlotRow mapRow(ResultSet rs, int rowNum) throws SQLException {
                                 SlotRow row = new SlotRow();
@@ -129,11 +136,11 @@ public class RenumberSlotsService {
                             }
                         });
                 List<SlotChange> plan = SlotRenumberPlanner.plan(locked);
-                if (!sameChanges(expected, plan)) {
-                    throw new IllegalArgumentException(CHANGED);
-                }
                 if (plan.isEmpty()) {
                     throw new IllegalArgumentException("Tiada perubahan.");
+                }
+                if (!sameChanges(expected, plan)) {
+                    throw new IllegalArgumentException(CHANGED);
                 }
 
                 List<Map<String, Object>> before = new ArrayList<Map<String, Object>>();
