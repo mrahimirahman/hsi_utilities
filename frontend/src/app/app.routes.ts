@@ -16,6 +16,7 @@ import { DocumentStatusComponent } from './features/his-fixes/document-status/do
 import { EncounterActiveComponent } from './features/his-fixes/encounter-active/encounter-active.component';
 import { BedClassComponent } from './features/his-fixes/bed-class/bed-class.component';
 import { ScheduleVisibilityComponent } from './features/his-fixes/schedule-visibility/schedule-visibility.component';
+import { MultiWardComponent } from './features/his-fixes/multi-ward/multi-ward.component';
 import { RenumberSlotsComponent } from './features/his-fixes/renumber-slots/renumber-slots.component';
 import { UnlockDocumentComponent } from './features/his-fixes/unlock-document/unlock-document.component';
 import { TicketReportComponent } from './features/tickets/ticket-report.component';
@@ -110,7 +111,8 @@ export const appRoutes: Routes = [
       { path: 'fix/encounter-active', component: EncounterActiveComponent },
       { path: 'fix/bed-class', component: BedClassComponent },
       { path: 'fix/renumber-slots', component: RenumberSlotsComponent },
-      { path: 'fix/schedule-visibility', component: ScheduleVisibilityComponent }
+      { path: 'fix/schedule-visibility', component: ScheduleVisibilityComponent },
+      { path: 'fix/multi-ward', component: MultiWardComponent }
     ]
   },
   { path: '**', redirectTo: '' }
