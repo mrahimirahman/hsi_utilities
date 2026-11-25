@@ -1,0 +1,141 @@
+<app-his-fix-shell
+  title="Show/Hide Schedule"
+  icon="visibility"
+  description="Jadual asal pesakit tersembunyi sehingga temujanji tidak dapat dibuka. Cari melalui MRN atau nama jadual, paparkan jadual itu, dan sembunyikan semula pada hujung hari (app_resources tidak diubah)."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="canApply()"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch>
+    <div class="search-row">
+      <label class="field">
+        <span class="field-label">Cari mengikut</span>
+        <select class="input" [ngModel]="mode" (ngModelChange)="setMode($event)" [disabled]="isSearching() || isSaving()">
+          <option value="MRN">MRN pesakit</option>
+          <option value="NAME">Nama jadual</option>
+        </select>
+      </label>
+      <label class="field" *ngIf="mode === 'MRN'">
+        <span class="field-label">MRN</span>
+        <input class="input mono" type="text" [(ngModel)]="mrn" (ngModelChange)="onInputChange()" (keyup.enter)="search()" placeholder="cth. HSI000123">
+      </label>
+      <label class="field" *ngIf="mode === 'NAME'">
+        <span class="field-label">Nama jadual</span>
+        <input class="input" type="text" [(ngModel)]="name" (ngModelChange)="onInputChange()" (keyup.enter)="search()" placeholder="cth. Klinik Pakar Mata">
+      </label>
+      <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+        <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+        {{ isSearching() ? 'Mencari...' : 'Cari Jadual' }}
+      </button>
+    </div>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Jadual</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} jadual</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada jadual dijumpai.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Kod</th>
+            <th>Nama Jadual</th>
+            <th>Status</th>
+            <th *ngIf="mode === 'MRN'">MRN</th>
+            <th *ngIf="mode === 'MRN'">Tarikh Temujanji</th>
+            <th>Tindakan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.row-selected]="isPending(row)">
+            <td class="mono">{{ row.scheduleCode }}</td>
+            <td>{{ row.scheduleName || '-' }}</td>
+            <td>
+              <span class="badge" [class.badge-neutral]="!row.hidden">{{ row.hidden ? 'Tersembunyi' : 'Dipaparkan' }}</span>
+            </td>
+            <td class="mono" *ngIf="mode === 'MRN'">{{ row.patientMrn || '-' }}</td>
+            <td class="mono" *ngIf="mode === 'MRN'">{{ row.reservationDates || '-' }}</td>
+            <td>
+              <button class="btn" type="button" (click)="choose(row)" [disabled]="isSaving()">
+                <span class="material-symbols-outlined">{{ row.hidden ? 'visibility' : 'visibility_off' }}</span>
+                {{ row.hidden ? 'Paparkan' : 'Sembunyikan' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section shellResults class="card">
+    <div class="card-header">
+      <h2 class="card-title"><span class="material-symbols-outlined icon-sm">event_available</span> Dibuka hari ini</h2>
+      <span class="badge badge-neutral">{{ opened().length }} jadual</span>
+    </div>
+
+    <div class="empty-state" *ngIf="opened().length === 0">
+      <span class="material-symbols-outlined">check_circle</span>
+      <span>Tiada jadual yang dibuka hari ini.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="opened().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Kod</th>
+            <th>Nama Jadual</th>
+            <th>Dibuka oleh</th>
+            <th>Masa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of opened()">
+            <td class="mono">{{ item.scheduleCode }}</td>
+            <td>{{ item.scheduleName || '-' }}</td>
+            <td>{{ item.openedBy }}</td>
+            <td class="mono nowrap">{{ item.openedAt }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-footer" *ngIf="opened().length > 0">
+      <span class="with-icon">
+        <span class="material-symbols-outlined icon-sm">info</span>
+        Isi No. Tiket pada bahagian Sahkan Pembetulan di bawah sebelum menekan butang ini.
+      </span>
+      <div class="footer-actions">
+        <button class="btn btn-primary" type="button" (click)="rehideAll()" [disabled]="isSaving()">
+          <span class="material-symbols-outlined">visibility_off</span>
+          Sembunyikan semula semua
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div shellForm>
+    <dl class="summary-strip">
+      <div>
+        <dt class="label-caps">Perubahan</dt>
+        <dd class="mono" *ngIf="pending() as p">
+          {{ p.row.scheduleCode }}: {{ p.row.hidden ? 'Tersembunyi' : 'Dipaparkan' }} &rarr; {{ p.newHidden ? 'Tersembunyi' : 'Dipaparkan' }}
+        </dd>
+        <dd *ngIf="!pending()">Tiada jadual dipilih. Gunakan butang pada senarai, atau "Sembunyikan semula semua".</dd>
+      </div>
+    </dl>
+  </div>
+</app-his-fix-shell>

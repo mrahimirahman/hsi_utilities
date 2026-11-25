@@ -42,6 +42,10 @@ export class HisFixApiService {
     return this.http.post<HisFixResult<T>>(`${this.base}${slug}/apply`, body);
   }
 
+  rehide<T>(slug: string, body: object): Observable<HisFixResult<T>> {
+    return this.http.post<HisFixResult<T>>(`${this.base}${slug}/rehide-all`, body);
+  }
+
   audit(slug: string, mrn: string): Observable<HisFixAuditEntry[]> {
     return this.http.get<HisFixAuditEntry[]>(`${this.base}${slug}/audit`, { params: new HttpParams().set('mrn', mrn) });
   }
