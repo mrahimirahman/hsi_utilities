@@ -11,6 +11,7 @@ import { ReportPlaceholderComponent } from './features/reports/report-placeholde
 import { DamaDiagnosisReportComponent } from './features/reports/dama-diagnosis-report.component';
 import { DischargeDateComponent } from './features/discharge-date/discharge-date.component';
 import { CompleteTransferComponent } from './features/his-fixes/complete-transfer/complete-transfer.component';
+import { UnlockDocumentComponent } from './features/his-fixes/unlock-document/unlock-document.component';
 import { TicketReportComponent } from './features/tickets/ticket-report.component';
 
 export const appRoutes: Routes = [
@@ -96,7 +97,8 @@ export const appRoutes: Routes = [
       { path: 'discharge-date', component: DischargeDateComponent },
       { path: 'death-date', component: DischargeDateComponent, data: { mode: 'DEATH' } },
       { path: 'ticket-report', component: TicketReportComponent },
-      { path: 'fix/complete-transfer', component: CompleteTransferComponent }
+      { path: 'fix/complete-transfer', component: CompleteTransferComponent },
+      { path: 'fix/unlock-document', component: UnlockDocumentComponent }
     ]
   },
   { path: '**', redirectTo: '' }

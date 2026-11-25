@@ -30,7 +30,8 @@ export class DashboardLayoutComponent {
     { label: 'Update Death Date', shortLabel: 'Kematian', route: '/death-date', icon: 'event_busy' },
     { label: 'Ticket Report', shortLabel: 'Tiket', route: '/ticket-report', icon: 'confirmation_number', requiresAdmin: true },
     { label: 'Audit Log', shortLabel: 'Audit', route: '/reports/audit', icon: 'verified_user', requiresAdmin: true },
-    { label: 'Complete Transfer (Out Waiting)', shortLabel: 'Transfer', route: '/fix/complete-transfer', icon: 'move_down', requiresAdmin: true, group: 'Pembetulan HIS' }
+    { label: 'Complete Transfer (Out Waiting)', shortLabel: 'Transfer', route: '/fix/complete-transfer', icon: 'move_down', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Unlock Document', shortLabel: 'Unlock', route: '/fix/unlock-document', icon: 'lock_open', requiresAdmin: true, group: 'Pembetulan HIS' }
   ];
 
   readonly currentDateLabel = this.formatCurrentDate();
