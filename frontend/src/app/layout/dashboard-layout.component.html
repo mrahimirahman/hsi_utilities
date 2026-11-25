@@ -18,15 +18,17 @@
       </div>
 
       <nav class="menu">
-        <a *ngFor="let item of visibleMenuItems()"
-           [routerLink]="item.route"
-           [class.active]="isActive(item)"
-           [attr.aria-current]="isActive(item) ? 'page' : null">
-          <span class="material-symbols-outlined">{{ item.icon }}</span>
-          <span class="menu-label">{{ item.label }}</span>
-          <span class="menu-tag" *ngIf="item.requiresAdmin">Admin</span>
-          <span class="material-symbols-outlined menu-chevron" *ngIf="!item.requiresAdmin">chevron_right</span>
-        </a>
+        <ng-container *ngFor="let item of visibleMenuItems(); let i = index">
+          <div class="menu-group" *ngIf="groupHeading(visibleMenuItems(), i) as heading">{{ heading }}</div>
+          <a [routerLink]="item.route"
+             [class.active]="isActive(item)"
+             [attr.aria-current]="isActive(item) ? 'page' : null">
+            <span class="material-symbols-outlined">{{ item.icon }}</span>
+            <span class="menu-label">{{ item.label }}</span>
+            <span class="menu-tag" *ngIf="item.requiresAdmin">Admin</span>
+            <span class="material-symbols-outlined menu-chevron" *ngIf="!item.requiresAdmin">chevron_right</span>
+          </a>
+        </ng-container>
       </nav>
     </div>
 

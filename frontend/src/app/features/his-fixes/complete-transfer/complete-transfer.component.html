@@ -1,0 +1,85 @@
+<app-his-fix-shell
+  title="Complete Transfer (Out Waiting)"
+  icon="move_down"
+  description="Pesakit sudah dipindahkan tetapi masih tersangkut dalam senarai Out Waiting kerana transfer_confirmed = 0. Cari MRN, pilih pemindahan, kemudian tetapkan transfer_confirmed = 1."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="!!selected()"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field search-field">
+      <span class="field-label">MRN Pesakit</span>
+      <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Pemindahan Belum Disahkan</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod dijumpai</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada pemindahan tergantung dijumpai untuk MRN ini.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>MRN</th>
+            <th>Nama</th>
+            <th>Encounter</th>
+            <th>Transfer ID</th>
+            <th>Dari Wad</th>
+            <th>Ke Wad</th>
+            <th>Masa Pindah</th>
+            <th>Confirmed</th>
+            <th>Admission Destinasi (active / confirmed)</th>
+            <th><span class="sr-only">Tindakan</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.is-selected]="selected()?.transferId === row.transferId">
+            <td class="mono">{{ row.patientMrn }}</td>
+            <td>{{ row.personName }}</td>
+            <td class="mono">{{ row.encounterId }}</td>
+            <td class="mono strong">{{ row.transferId }}</td>
+            <td>{{ row.wardSourceName || row.wardSource || '-' }} <small class="muted" *ngIf="row.wardSourceName">({{ row.wardSource }})</small></td>
+            <td>{{ row.wardDestinationName || row.wardDestination || '-' }} <small class="muted" *ngIf="row.wardDestinationName">({{ row.wardDestination }})</small></td>
+            <td class="nowrap">{{ row.transferTimestamp || '-' }}</td>
+            <td class="mono">{{ row.transferConfirmed }}</td>
+            <td class="mono">{{ row.destinationAdmissionActive ?? '-' }} / {{ row.destinationAdmissionConfirmed ?? '-' }}</td>
+            <td>
+              <button class="btn btn-sm"
+                      [class.btn-primary]="selected()?.transferId === row.transferId"
+                      [class.btn-secondary]="selected()?.transferId !== row.transferId"
+                      type="button" (click)="select(row)" [disabled]="isSaving()">
+                {{ selected()?.transferId === row.transferId ? 'Dipilih' : 'Pilih' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <dl shellForm class="summary-strip" *ngIf="selected() as row">
+    <div>
+      <dt class="label-caps">Perubahan</dt>
+      <dd class="mono">enc_transfers.transfer_id={{ row.transferId }}: transfer_confirmed {{ row.transferConfirmed }} &rarr; 1</dd>
+    </div>
+  </dl>
+</app-his-fix-shell>

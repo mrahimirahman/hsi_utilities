@@ -1,0 +1,116 @@
+<section class="page his-fix-page">
+  <header class="page-header">
+    <div class="page-header__text">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <span>Pembetulan HIS</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span class="current">{{ title }}</span>
+      </nav>
+      <div class="title-row">
+        <span class="icon-tile" aria-hidden="true">
+          <span class="material-symbols-outlined">{{ icon }}</span>
+        </span>
+        <h1 class="page-title">{{ title }}</h1>
+        <span class="dry-run-badge" *ngIf="dryRun">DRY RUN &mdash; tiada perubahan disimpan</span>
+      </div>
+      <p class="page-subtitle">{{ description }}</p>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">1</span> Cari Rekod Pesakit</h2>
+    </div>
+    <div class="card-body step-body">
+      <ng-content select="[shellSearch]"></ng-content>
+      <div class="alert alert-error" role="alert" *ngIf="errorMessage && !canApply">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ errorMessage }}</span>
+      </div>
+    </div>
+  </section>
+
+  <ng-content select="[shellResults]"></ng-content>
+
+  <section class="card" *ngIf="canApply">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">3</span> Sahkan Pembetulan</h2>
+    </div>
+    <div class="card-body step-body">
+      <ng-content select="[shellForm]"></ng-content>
+
+      <label class="field ticket-field">
+        <span class="field-label">No. Tiket <span class="required">*</span></span>
+        <input class="input mono" type="text" maxlength="50" required [ngModel]="ticketNo"
+               (ngModelChange)="ticketNoChange.emit($event)" placeholder="cth. no. Borang Aduan / tiket helpdesk">
+        <span class="field-hint">Wajib diisi bagi setiap pembetulan.</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Penerangan / Sebab <small>Maks. 500 aksara</small></span>
+        <textarea class="textarea" rows="3" maxlength="500" [ngModel]="reason"
+                  (ngModelChange)="reasonChange.emit($event)" placeholder="cth. Pesakit sudah dipindahkan, rekod pemindahan tergantung"></textarea>
+      </label>
+
+      <div class="alert alert-success" role="status" *ngIf="successMessage">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span>{{ successMessage }}</span>
+      </div>
+      <div class="alert alert-error" role="alert" *ngIf="errorMessage">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ errorMessage }}</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="with-icon">
+        <span class="material-symbols-outlined icon-sm">info</span>
+        Setiap perubahan direkod dalam audit trail.
+      </span>
+      <div class="footer-actions">
+        <button class="btn btn-primary" type="button" (click)="onApply()" [disabled]="busy">
+          <span class="material-symbols-outlined" [class.spin]="busy">{{ busy ? 'progress_activity' : 'save' }}</span>
+          {{ busy ? 'Menyimpan...' : 'Simpan Perubahan' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="alert alert-success" role="status" *ngIf="successMessage && !canApply">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <section class="card" *ngIf="auditEntries.length > 0">
+    <div class="card-header">
+      <div class="card-heading">
+        <h2 class="card-title"><span class="step-badge">4</span> Audit Trail</h2>
+        <span class="card-subtitle">Sejarah pembetulan untuk pesakit ini (sebelum &rarr; selepas).</span>
+      </div>
+      <span class="badge badge-neutral">{{ auditEntries.length }} rekod</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table audit-table">
+        <thead>
+          <tr>
+            <th>No. Tiket</th>
+            <th>Tarikh</th>
+            <th>Oleh</th>
+            <th>Rekod</th>
+            <th>Perubahan</th>
+            <th>Sebab</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of auditEntries">
+            <td class="mono nowrap">{{ entry.ticketNo }}</td>
+            <td class="nowrap">{{ fmt(entry.editedAt) }}</td>
+            <td class="name-cell">{{ entry.editedName || entry.editedBy }}</td>
+            <td class="mono nowrap">{{ entry.targetKey }}</td>
+            <td><span class="change"><span class="before">{{ summarize(entry.beforeJson) }}</span><span class="arrow">&rarr;</span><span class="after">{{ summarize(entry.afterJson) }}</span></span></td>
+            <td class="wrap">{{ entry.reason || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

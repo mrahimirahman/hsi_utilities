@@ -10,6 +10,7 @@ import { ReportsMenuComponent } from './features/reports/reports-menu.component'
 import { ReportPlaceholderComponent } from './features/reports/report-placeholder.component';
 import { DamaDiagnosisReportComponent } from './features/reports/dama-diagnosis-report.component';
 import { DischargeDateComponent } from './features/discharge-date/discharge-date.component';
+import { CompleteTransferComponent } from './features/his-fixes/complete-transfer/complete-transfer.component';
 import { TicketReportComponent } from './features/tickets/ticket-report.component';
 
 export const appRoutes: Routes = [
@@ -94,7 +95,8 @@ export const appRoutes: Routes = [
       { path: 'reports/audit', component: ReportAuditLogComponent },
       { path: 'discharge-date', component: DischargeDateComponent },
       { path: 'death-date', component: DischargeDateComponent, data: { mode: 'DEATH' } },
-      { path: 'ticket-report', component: TicketReportComponent }
+      { path: 'ticket-report', component: TicketReportComponent },
+      { path: 'fix/complete-transfer', component: CompleteTransferComponent }
     ]
   },
   { path: '**', redirectTo: '' }
