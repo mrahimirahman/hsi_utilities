@@ -34,6 +34,10 @@ export class HisFixApiService {
     return this.http.get<T>(`${this.base}${slug}/search`, { params: new HttpParams({ fromObject: params }) });
   }
 
+  lookup<T>(slug: string, path: string): Observable<T> {
+    return this.http.get<T>(`${this.base}${slug}/${path}`);
+  }
+
   apply<T>(slug: string, body: object): Observable<HisFixResult<T>> {
     return this.http.post<HisFixResult<T>>(`${this.base}${slug}/apply`, body);
   }
