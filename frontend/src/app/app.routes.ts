@@ -15,6 +15,7 @@ import { BirthTimeComponent } from './features/his-fixes/birth-time/birth-time.c
 import { DocumentStatusComponent } from './features/his-fixes/document-status/document-status.component';
 import { EncounterActiveComponent } from './features/his-fixes/encounter-active/encounter-active.component';
 import { BedClassComponent } from './features/his-fixes/bed-class/bed-class.component';
+import { RenumberSlotsComponent } from './features/his-fixes/renumber-slots/renumber-slots.component';
 import { UnlockDocumentComponent } from './features/his-fixes/unlock-document/unlock-document.component';
 import { TicketReportComponent } from './features/tickets/ticket-report.component';
 
@@ -106,7 +107,8 @@ export const appRoutes: Routes = [
       { path: 'fix/birth-time', component: BirthTimeComponent },
       { path: 'fix/document-status', component: DocumentStatusComponent },
       { path: 'fix/encounter-active', component: EncounterActiveComponent },
-      { path: 'fix/bed-class', component: BedClassComponent }
+      { path: 'fix/bed-class', component: BedClassComponent },
+      { path: 'fix/renumber-slots', component: RenumberSlotsComponent }
     ]
   },
   { path: '**', redirectTo: '' }

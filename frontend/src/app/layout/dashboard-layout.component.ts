@@ -35,7 +35,8 @@ export class DashboardLayoutComponent {
     { label: 'Update Birth Time', shortLabel: 'Masa Lahir', route: '/fix/birth-time', icon: 'child_care', requiresAdmin: true, group: 'Pembetulan HIS' },
     { label: 'Document Status (Mark as Error)', shortLabel: 'Status Dok', route: '/fix/document-status', icon: 'rule', requiresAdmin: true, group: 'Pembetulan HIS' },
     { label: 'Encounter Active Flag', shortLabel: 'Encounter', route: '/fix/encounter-active', icon: 'toggle_on', requiresAdmin: true, group: 'Pembetulan HIS' },
-    { label: 'Update Bed Class', shortLabel: 'Kelas', route: '/fix/bed-class', icon: 'bed', requiresAdmin: true, group: 'Pembetulan HIS' }
+    { label: 'Update Bed Class', shortLabel: 'Kelas', route: '/fix/bed-class', icon: 'bed', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Susun Semula Slot Temujanji', shortLabel: 'Slot', route: '/fix/renumber-slots', icon: 'format_list_numbered', requiresAdmin: true, group: 'Pembetulan HIS' }
   ];
 
   readonly currentDateLabel = this.formatCurrentDate();
