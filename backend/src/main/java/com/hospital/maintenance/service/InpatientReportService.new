@@ -1,0 +1,197 @@
+package com.hospital.maintenance.service;
+
+import com.hospital.maintenance.dto.DisciplineColumn;
+import com.hospital.maintenance.dto.DisciplineMetric;
+import com.hospital.maintenance.dto.InpatientReportResponse;
+import com.hospital.maintenance.dto.InpatientReportRow;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class InpatientReportService {
+    private static final int MAX_DISCIPLINES = 6;
+
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public InpatientReportService(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
+    public InpatientReportResponse generate(String wardCode, String reportDate) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("wardCode", wardCode)
+                .addValue("reportDate", reportDate);
+
+        List<Pd104DisciplineRecord> disciplineRecords = namedParameterJdbcTemplate.query(buildSql(), params, new Pd104DisciplineRowMapper());
+        List<Pd104DisciplineRecord> limitedRecords = limitDisciplines(disciplineRecords);
+
+        InpatientReportResponse response = new InpatientReportResponse();
+        response.setWardCode(wardCode);
+        response.setWardName(loadWardName(wardCode));
+        response.setReportDate(reportDate);
+        response.setDisciplines(buildDisciplines(limitedRecords));
+        response.setRows(buildRows(limitedRecords));
+        return response;
+    }
+
+    private List<Pd104DisciplineRecord> limitDisciplines(List<Pd104DisciplineRecord> rawRows) {
+        List<Pd104DisciplineRecord> limited = new ArrayList<Pd104DisciplineRecord>();
+        for (int i = 0; i < rawRows.size() && i < MAX_DISCIPLINES; i++) {
+            limited.add(rawRows.get(i));
+        }
+        return limited;
+    }
+    private String loadWardName(String wardCode) {
+        List<String> names = namedParameterJdbcTemplate.query(
+                "select location_name from ref_locations where location_code = :wardCode",
+                new MapSqlParameterSource().addValue("wardCode", wardCode),
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getString("location_name");
+                    }
+                }
+        );
+
+        return names.isEmpty() ? wardCode : names.get(0);
+    }
+
+    private List<DisciplineColumn> buildDisciplines(List<Pd104DisciplineRecord> records) {
+        List<DisciplineColumn> disciplines = new ArrayList<DisciplineColumn>();
+        for (Pd104DisciplineRecord record : records) {
+            disciplines.add(new DisciplineColumn(record.disciplineCode, record.disciplineName));
+        }
+        return disciplines;
+    }
+    private List<InpatientReportRow> buildRows(List<Pd104DisciplineRecord> records) {
+        List<InpatientReportRow> rows = new ArrayList<InpatientReportRow>();
+        rows.add(buildRow(records, "4", "Bilangan pesakit yang dibawa dari hari kelmarin", null, 1, false, false));
+        rows.add(buildRow(records, "5", "Jumlah Bilangan Kemasukan", "Dewasa (lebih 12 tahun)", 2, false, false));
+        rows.add(buildRow(records, "6", "", "Kanak-kanak ( 1 - 12 tahun )", 3, false, false));
+        rows.add(buildRow(records, "7", "", "Bayi ( di bawah 1 tahun )", 4, false, false));
+        rows.add(buildRow(records, "8", "Bilangan pesakit yang dipindah masuk dari wad-wad yang lain", null, 5, false, false));
+        rows.add(buildRow(records, "9", "** Bilangan pesakit yang dipindah masuk dari disiplin lain di dalam wad yang", null, 6, false, false));
+        rows.add(buildRow(records, "10", "Jumlah bilangan pesakit", "( 4 + 5 + 6 + 7 + 8 + 9 )", 0, true, false));
+        rows.add(buildRow(records, "11", "Jumlah Bilangan Discaj", "Balik ke rumah", 8, false, false));
+        rows.add(buildRow(records, "12", "", "Mati", 9, false, false));
+        rows.add(buildRow(records, "13", "", "Tanpa kebenaran", 10, false, false));
+        rows.add(buildRow(records, "14", "", "Dengan Risiko sendiri (DAMA)", 11, false, false));
+        rows.add(buildRow(records, "15", "", "Dipindah ke hospital lain", 12, false, false));
+        rows.add(buildRow(records, "16", "Bilangan pesakit dipindahkan keluar ke wad-wad lain", null, 13, false, false));
+        rows.add(buildRow(records, "17", "** Bilangan pesakit yang dipindah keluar ke disiplin lain di dalam wad yang", null, 14, false, false));
+        rows.add(buildRow(records, "18", "Jumlah bilangan pesakit yang tinggal pada tengah malam", "[ 10 - ( 11 + 12 + 13 + 14 + 15 + 16 + 17)]", 0, false, true));
+        rows.add(buildRow(records, "19", "Bilangan pesakit yang masuk dan keluar pada hari yang sama", null, 16, false, false));
+        rows.add(buildRow(records, "20", "Bilangan Pesakit yang Tinggal Pada Tengah Malam Mengikut Kelas", "Kelas 1", 17, false, false));
+        rows.add(buildRow(records, "21", "", "Kelas 2", 18, false, false));
+        rows.add(buildRow(records, "22", "", "Kelas 3", 19, false, false));
+        return rows;
+    }
+    private InpatientReportRow buildRow(List<Pd104DisciplineRecord> records, String no, String item, String detail, int pd104Index, boolean legacyTotalFormula, boolean legacyMidnightFormula) {
+        InpatientReportRow row = new InpatientReportRow();
+        row.setNo(no);
+        row.setItem(item);
+        row.setDetail(detail);
+
+        List<DisciplineMetric> metrics = new ArrayList<DisciplineMetric>();
+        int totalMale = 0;
+        int totalFemale = 0;
+
+        for (Pd104DisciplineRecord record : records) {
+            int male;
+            int female;
+
+            if (legacyTotalFormula) {
+                male = legacyTotalPatient(record.male);
+                female = legacyTotalPatient(record.female);
+            } else if (legacyMidnightFormula) {
+                male = legacyMidnight(record.male);
+                female = legacyMidnight(record.female);
+            } else {
+                male = metricValue(record.male, pd104Index);
+                female = metricValue(record.female, pd104Index);
+            }
+
+            totalMale += male;
+            totalFemale += female;
+            metrics.add(new DisciplineMetric(male, female));
+        }
+
+        row.setTotalMale(totalMale);
+        row.setTotalFemale(totalFemale);
+        row.setTotal(totalMale + totalFemale);
+        row.setDisciplineMetrics(metrics);
+        return row;
+    }
+    private int legacyTotalPatient(int[] values) {
+        return metricValue(values, 1)
+                + metricValue(values, 2)
+                + metricValue(values, 3)
+                + metricValue(values, 4)
+                + metricValue(values, 5)
+                + metricValue(values, 6);
+    }
+
+    private int legacyMidnight(int[] values) {
+        return legacyTotalPatient(values)
+                - metricValue(values, 8)
+                - metricValue(values, 9)
+                - metricValue(values, 10)
+                - metricValue(values, 11)
+                - metricValue(values, 12)
+                - metricValue(values, 13)
+                - metricValue(values, 14);
+    }
+
+    private int metricValue(int[] values, int index) {
+        if (values == null || index <= 0 || index >= values.length) {
+            return 0;
+        }
+        return values[index];
+    }
+    private String buildSql() {
+        return "SELECT a.ward_code, a.pd104_date, a.discipline_code, b.discipline_name, "
+                + "a.pd104_male1, a.pd104_male2, a.pd104_male3, a.pd104_male4, a.pd104_male5, a.pd104_male6, a.pd104_male7, a.pd104_male8, a.pd104_male9, a.pd104_male10, "
+                + "a.pd104_male11, a.pd104_male12, a.pd104_male13, a.pd104_male14, a.pd104_male15, a.pd104_male16, a.pd104_male17, a.pd104_male18, a.pd104_male19, a.pd104_male20, "
+                + "a.pd104_male21, a.pd104_male22, a.pd104_male23, a.pd104_male24, a.pd104_male25, a.pd104_male26, a.pd104_male27, "
+                + "a.pd104_female1, a.pd104_female2, a.pd104_female3, a.pd104_female4, a.pd104_female5, a.pd104_female6, a.pd104_female7, a.pd104_female8, a.pd104_female9, a.pd104_female10, "
+                + "a.pd104_female11, a.pd104_female12, a.pd104_female13, a.pd104_female14, a.pd104_female15, a.pd104_female16, a.pd104_female17, a.pd104_female18, a.pd104_female19, a.pd104_female20, "
+                + "a.pd104_female21, a.pd104_female22, a.pd104_female23, a.pd104_female24, a.pd104_female25, a.pd104_female26, a.pd104_female27 "
+                + "FROM pd104 a "
+                + "LEFT JOIN ref_generaldisciplines b ON b.discipline_code = a.discipline_code "
+                + "WHERE a.ward_code = :wardCode "
+                + "AND DATE(a.pd104_date) = STR_TO_DATE(:reportDate, '%Y-%m-%d') "
+                + "ORDER BY CAST(a.discipline_code AS UNSIGNED), a.discipline_code";
+    }
+    private static class Pd104DisciplineRowMapper implements RowMapper<Pd104DisciplineRecord> {
+        @Override
+        public Pd104DisciplineRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Pd104DisciplineRecord record = new Pd104DisciplineRecord();
+            record.disciplineCode = rs.getString("discipline_code");
+            record.disciplineName = rs.getString("discipline_name");
+            record.male = extractValues(rs, "pd104_male");
+            record.female = extractValues(rs, "pd104_female");
+            return record;
+        }
+
+        private int[] extractValues(ResultSet rs, String prefix) throws SQLException {
+            int[] values = new int[28];
+            for (int i = 1; i <= 27; i++) {
+                values[i] = rs.getInt(prefix + i);
+            }
+            return values;
+        }
+    }
+
+    private static class Pd104DisciplineRecord {
+        private String disciplineCode;
+        private String disciplineName;
+        private int[] male;
+        private int[] female;
+    }
+}

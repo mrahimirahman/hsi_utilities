@@ -1,0 +1,12 @@
+node_modules/
+.angular/
+backend/target/
+frontend/dist/
+~$*
+setupAPI.txt
+.playwright-mcp/
+.artifact-discharge/
+.superpowers/
+release/
+server-package/
+server-package.zip

@@ -1,0 +1,214 @@
+/* Screen-specific layout only; shared styling comes from styles.css. */
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.title-row .page-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.card-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.step-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-label .required {
+  margin-right: auto;
+}
+
+/* Step 1: MRN search */
+
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.search-field {
+  flex: 0 1 360px;
+}
+
+.mrn-input {
+  display: flex;
+  align-items: stretch;
+}
+
+.mrn-prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-right: 0;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  background: var(--surface-tint-strong);
+  color: var(--nav);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.mrn-input .input {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* Step 2: encounter table */
+
+.data-table .nowrap {
+  white-space: nowrap;
+}
+
+.data-table .strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.data-table .name-cell {
+  min-width: 160px;
+}
+
+.encounter-table tbody tr.is-selected td {
+  background: var(--primary-soft);
+}
+
+.encounter-table tbody tr.is-selected td:first-child {
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+/* Step 3: edit form */
+
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px var(--space-md);
+  margin: 0;
+  padding: 12px var(--space-md);
+  background: var(--surface-tint);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.summary-strip div {
+  min-width: 0;
+}
+
+.summary-strip dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.death-block {
+  padding: var(--space-md);
+  background: var(--surface-tint);
+  border: 1px solid #c7d7f5;
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-lg);
+}
+
+.death-block .field {
+  max-width: 420px;
+}
+
+.ticket-field {
+  max-width: 420px;
+}
+
+.current-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.current-chip {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  background: #f1f5f9;
+  color: var(--text-soft);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+
+/* Step 4: audit trail */
+
+.change {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.change .before {
+  color: var(--text-muted);
+}
+
+.change .arrow {
+  color: var(--text-muted);
+}
+
+.change .after {
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--success-bg);
+  color: var(--success-ink);
+  font-weight: 600;
+}
+
+.audit-table .wrap {
+  min-width: 220px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .search-field {
+    flex: 1 1 100%;
+  }
+
+  .search-row .btn {
+    width: 100%;
+  }
+
+  .death-block .field {
+    max-width: none;
+  }
+
+  .footer-actions {
+    width: 100%;
+    margin-left: 0;
+    flex-direction: column-reverse;
+  }
+
+  .footer-actions .btn {
+    width: 100%;
+  }
+}

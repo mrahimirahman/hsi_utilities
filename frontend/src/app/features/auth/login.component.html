@@ -1,0 +1,126 @@
+<div class="login-page">
+  <div class="gov-strip">
+    <span>Kementerian Kesihatan Malaysia &bull; Hospital Sultan Ismail</span>
+  </div>
+
+  <header class="login-header">
+    <div class="login-header__brand">
+      <span class="brand-mark"><span class="material-symbols-outlined">local_hospital</span></span>
+      <div>
+        <strong>HSI Utilities</strong>
+        <span>Hospital Sultan Ismail &bull; Unit Teknologi Maklumat</span>
+      </div>
+    </div>
+    <div class="login-header__logos">
+      <img src="assets/jata.png" alt="Jata Malaysia">
+      <img src="assets/logokkm.png" alt="Logo KKM">
+    </div>
+  </header>
+
+  <main class="login-main">
+    <div class="login-card">
+      <section class="login-intro">
+        <div class="intro-org">
+          <span class="intro-mark"><span class="material-symbols-outlined">local_hospital</span></span>
+          <div>
+            <span class="intro-kicker">Kementerian Kesihatan Malaysia</span>
+            <strong>Hospital Sultan Ismail</strong>
+            <span class="intro-unit">Unit Teknologi Maklumat</span>
+          </div>
+        </div>
+
+        <div class="intro-copy">
+          <span class="intro-kicker">HIS&#64;KKM Utilities Workspace</span>
+          <h1>Portal Utiliti &amp; Pelaporan HIS&#64;KKM</h1>
+          <p>Laporan HSI, kemas kini tarikh discaj dan kematian pesakit, serta jejak audit untuk setiap perubahan rekod.</p>
+        </div>
+
+        <ul class="intro-features">
+          <li>
+            <span class="material-symbols-outlined">query_stats</span>
+            <div>
+              <strong>HSI Reports</strong>
+              <span>PD103 Bancian Harian Wad dan Data Diagnosis DAMA Bulanan</span>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">edit_calendar</span>
+            <div>
+              <strong>Update Discharge Time &amp; Death Date</strong>
+              <span>Pembetulan rekod discaj terus pada pangkalan data HIS</span>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">verified_user</span>
+            <div>
+              <strong>Audit Log</strong>
+              <span>Setiap suntingan direkodkan dengan nilai asal dan baharu</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="intro-notice">
+          <span class="material-symbols-outlined">gpp_maybe</span>
+          <p>Sistem ini untuk kegunaan kakitangan yang diberi kuasa sahaja. Semua perubahan rekod direkodkan dalam audit log.</p>
+        </div>
+      </section>
+
+      <section class="login-form-panel">
+        <div class="form-head">
+          <img class="his-logo" src="assets/logo_color.svg" alt="HIS@KKM logo">
+          <h2>Log Masuk Pengguna</h2>
+          <p>Masukkan User ID dan kata laluan anda untuk meneruskan.</p>
+        </div>
+
+        <form class="login-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="field">
+            <label class="field-label" for="login-username">User ID</label>
+            <div class="input-group">
+              <span class="material-symbols-outlined">person</span>
+              <input id="login-username" class="input" type="text" formControlName="username"
+                     placeholder="Enter user id" autocomplete="username"
+                     [class.is-invalid]="form.controls.username.touched && form.controls.username.invalid">
+            </div>
+            <span class="field-error" *ngIf="form.controls.username.touched && form.controls.username.invalid">User ID diperlukan.</span>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="login-password">Password</label>
+            <div class="input-group">
+              <span class="material-symbols-outlined">key</span>
+              <input id="login-password" class="input password-input" [type]="showPassword() ? 'text' : 'password'"
+                     formControlName="password" placeholder="Enter password" autocomplete="current-password"
+                     [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid">
+              <button type="button" class="btn btn-ghost btn-icon btn-sm input-suffix" (click)="togglePassword()"
+                      [attr.aria-label]="showPassword() ? 'Sembunyi kata laluan' : 'Papar kata laluan'">
+                <span class="material-symbols-outlined">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+              </button>
+            </div>
+            <span class="field-error" *ngIf="form.controls.password.touched && form.controls.password.invalid">Kata laluan diperlukan.</span>
+          </div>
+
+          <div class="alert alert-error" *ngIf="errorMessage()" role="alert">
+            <span class="material-symbols-outlined">error</span>
+            <span>{{ errorMessage() }}</span>
+          </div>
+
+          <button class="btn btn-primary btn-block btn-submit" type="submit" [disabled]="isSubmitting()">
+            <span class="material-symbols-outlined" [class.spin]="isSubmitting()">{{ isSubmitting() ? 'progress_activity' : 'lock_open' }}</span>
+            {{ isSubmitting() ? 'Signing in...' : 'Log Masuk' }}
+          </button>
+
+          <div class="login-note">
+            <span class="material-symbols-outlined icon-sm">info</span>
+            <span>Default access: <strong>admin</strong> / <strong>admin123</strong></span>
+            <span class="badge badge-ready ai-pill">With AI Assistant</span>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="login-footer">
+    <span>Unit Teknologi Maklumat, Hospital Sultan Ismail</span>
+    <span>Hak Cipta Terpelihara &copy; Kementerian Kesihatan Malaysia</span>
+  </footer>
+</div>

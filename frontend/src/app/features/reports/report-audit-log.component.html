@@ -1,0 +1,222 @@
+<section class="page audit-page">
+  <header class="page-header">
+    <div class="page-header__text">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <span>HSI Reports</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span class="current">Audit Log</span>
+      </nav>
+      <h1 class="page-title">Report Audit Log</h1>
+      <p class="page-subtitle">Semak perubahan angka PD103 mengikut pengguna, wad, dan tarikh laporan.</p>
+    </div>
+    <div class="page-actions">
+      <span class="badge badge-brand">
+        <span class="material-symbols-outlined icon-sm">shield_person</span>
+        ADMIN only
+      </span>
+    </div>
+  </header>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <div class="label-caps">Rekod Pindaan</div>
+          <div class="stat-value">{{ isLoading() ? '—' : entries().length }}</div>
+        </div>
+        <span class="icon-tile"><span class="material-symbols-outlined">history</span></span>
+      </div>
+      <div class="stat-meta">Bagi penapis semasa</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <div class="label-caps">Pengguna</div>
+          <div class="stat-value">{{ isLoading() ? '—' : uniqueUserCount() }}</div>
+        </div>
+        <span class="icon-tile"><span class="material-symbols-outlined">group</span></span>
+      </div>
+      <div class="stat-meta">Pengguna yang membuat pindaan</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <div class="label-caps">Wad</div>
+          <div class="stat-value">{{ isLoading() ? '—' : uniqueWardCount() }}</div>
+        </div>
+        <span class="icon-tile"><span class="material-symbols-outlined">bed</span></span>
+      </div>
+      <div class="stat-meta">{{ isLoading() ? '' : uniqueReportDateCount() }} tarikh laporan terlibat</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">
+        <span class="material-symbols-outlined">filter_alt</span>
+        Penapis
+      </h2>
+    </div>
+    <div class="card-body">
+      <div class="audit-filters">
+        <label class="field">
+          <span class="field-label">Ward</span>
+          <div class="input-group">
+            <span class="material-symbols-outlined">bed</span>
+            <select class="select" [(ngModel)]="selectedWardCode">
+              <option value="">All Wards</option>
+              <option *ngFor="let ward of wards()" [value]="ward.code">{{ ward.name }}</option>
+            </select>
+          </div>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Report Date</span>
+          <input class="input" type="date" [(ngModel)]="selectedDate">
+        </label>
+
+        <div class="audit-filter-actions">
+          <button type="button" class="btn btn-ghost" (click)="resetFilters()" [disabled]="isLoading()">
+            <span class="material-symbols-outlined">restart_alt</span>
+            Reset
+          </button>
+          <button type="button" class="btn btn-primary" (click)="loadAuditLog()" [disabled]="isLoading()">
+            <span class="material-symbols-outlined" [class.spin]="isLoading()">refresh</span>
+            Refresh
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="errorMessage()" role="alert">
+    <span class="material-symbols-outlined">error</span>
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">
+        <span class="material-symbols-outlined">manage_history</span>
+        Jejak Pindaan PD103
+        <span class="badge badge-neutral" *ngIf="!isLoading()">{{ entries().length }} entri</span>
+      </h2>
+    </div>
+
+    <div class="empty-state" *ngIf="isLoading()">
+      <span class="material-symbols-outlined spin">progress_activity</span>
+      <span>Loading audit log...</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading() && entries().length === 0">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>No audit records found for the current filter.</span>
+    </div>
+
+    <ng-container *ngIf="!isLoading() && entries().length > 0">
+      <!-- Desktop / tablet: table -->
+      <div class="table-wrap audit-table">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Edited At</th>
+              <th>User</th>
+              <th>Ticket No</th>
+              <th>Ward</th>
+              <th>Report Date</th>
+              <th>Discipline</th>
+              <th>Field</th>
+              <th>Male</th>
+              <th>Female</th>
+              <th class="center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let entry of entries()">
+              <td class="tnum nowrap">{{ entry.editedAt }}</td>
+              <td>
+                <div class="user-name">{{ entry.editedName || entry.editedBy }}</div>
+                <div class="user-meta">{{ entry.editedBy }}<span *ngIf="entry.editedRole"> · {{ entry.editedRole }}</span></div>
+              </td>
+              <td class="mono nowrap">{{ entry.ticketNo || '-' }}</td>
+              <td>{{ entry.wardName || entry.wardCode }}</td>
+              <td class="tnum nowrap">{{ entry.reportDate }}</td>
+              <td>{{ entry.disciplineName || entry.disciplineCode }}</td>
+              <td>{{ entry.metricLabel }}</td>
+              <td class="nowrap">
+                <span class="diff">
+                  <span class="diff-old">{{ entry.previousMale }}</span>
+                  <span class="material-symbols-outlined icon-sm diff-arrow">arrow_forward</span>
+                  <span class="diff-new">{{ entry.newMale }}</span>
+                </span>
+              </td>
+              <td class="nowrap">
+                <span class="diff">
+                  <span class="diff-old">{{ entry.previousFemale }}</span>
+                  <span class="material-symbols-outlined icon-sm diff-arrow">arrow_forward</span>
+                  <span class="diff-new">{{ entry.newFemale }}</span>
+                </span>
+              </td>
+              <td class="center">
+                <button type="button" class="btn btn-tonal btn-sm" (click)="openReport(entry)">
+                  Open Report
+                  <span class="material-symbols-outlined icon-sm">open_in_new</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile: stacked cards -->
+      <ul class="audit-cards">
+        <li class="audit-card" *ngFor="let entry of entries()">
+          <div class="audit-card__top">
+            <span class="badge badge-info">{{ entry.reportCode || 'PD103' }}</span>
+            <span class="tnum muted audit-card__time">{{ entry.editedAt }}</span>
+          </div>
+
+          <div class="audit-card__user">
+            <span class="icon-tile"><span class="material-symbols-outlined">person</span></span>
+            <div>
+              <div class="user-name">{{ entry.editedName || entry.editedBy }}</div>
+              <div class="user-meta">{{ entry.editedBy }}<span *ngIf="entry.editedRole"> · {{ entry.editedRole }}</span></div>
+            </div>
+          </div>
+
+          <dl class="audit-card__details">
+            <div><dt>Ticket No</dt><dd class="mono">{{ entry.ticketNo || '-' }}</dd></div>
+            <div><dt>Ward</dt><dd>{{ entry.wardName || entry.wardCode }}</dd></div>
+            <div><dt>Report Date</dt><dd class="tnum">{{ entry.reportDate }}</dd></div>
+            <div><dt>Discipline</dt><dd>{{ entry.disciplineName || entry.disciplineCode }}</dd></div>
+            <div><dt>Field</dt><dd>{{ entry.metricLabel }}</dd></div>
+          </dl>
+
+          <div class="audit-card__diffs">
+            <div>
+              <span class="label-caps">Male</span>
+              <span class="diff">
+                <span class="diff-old">{{ entry.previousMale }}</span>
+                <span class="material-symbols-outlined icon-sm diff-arrow">arrow_forward</span>
+                <span class="diff-new">{{ entry.newMale }}</span>
+              </span>
+            </div>
+            <div>
+              <span class="label-caps">Female</span>
+              <span class="diff">
+                <span class="diff-old">{{ entry.previousFemale }}</span>
+                <span class="material-symbols-outlined icon-sm diff-arrow">arrow_forward</span>
+                <span class="diff-new">{{ entry.newFemale }}</span>
+              </span>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-tonal btn-block" (click)="openReport(entry)">
+            Open Report
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+</section>

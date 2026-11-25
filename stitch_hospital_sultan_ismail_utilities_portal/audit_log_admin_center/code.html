@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "surface-dim": "#cbdbf5",
+        "on-primary-fixed-variant": "#005137",
+        "surface-container": "#e5eeff",
+        "error-container": "#ffdad6",
+        "primary": "#006949",
+        "inverse-primary": "#71daab",
+        "inverse-surface": "#213145",
+        "inverse-on-surface": "#eaf1ff",
+        "background": "#f8f9ff",
+        "error": "#ba1a1a",
+        "on-primary-fixed": "#002114",
+        "outline-variant": "#bdcac0",
+        "on-secondary-fixed": "#111c2d",
+        "on-primary": "#ffffff",
+        "tertiary-container": "#358263",
+        "tertiary-fixed-dim": "#89d6b2",
+        "surface-container-high": "#dce9ff",
+        "primary-container": "#00855d",
+        "secondary": "#545f73",
+        "primary-fixed-dim": "#71daab",
+        "on-background": "#0b1c30",
+        "surface-container-highest": "#d3e4fe",
+        "tertiary": "#15684b",
+        "surface-container-low": "#eff4ff",
+        "on-tertiary-fixed": "#002114",
+        "surface-variant": "#d3e4fe",
+        "on-secondary-fixed-variant": "#3c475a",
+        "surface": "#f8f9ff",
+        "on-secondary-container": "#586377",
+        "on-surface": "#0b1c30",
+        "secondary-fixed-dim": "#bcc7de",
+        "surface-container-lowest": "#ffffff",
+        "on-tertiary": "#ffffff",
+        "secondary-fixed": "#d8e3fb",
+        "on-surface-variant": "#3e4942",
+        "surface-bright": "#f8f9ff",
+        "outline": "#6e7a72",
+        "on-tertiary-fixed-variant": "#005138",
+        "on-error": "#ffffff",
+        "secondary-container": "#d5e0f8",
+        "on-error-container": "#93000a",
+        "tertiary-fixed": "#a5f3cd",
+        "surface-tint": "#006c4b",
+        "primary-fixed": "#8ef7c6",
+        "on-secondary": "#ffffff",
+        "on-tertiary-container": "#f5fff7",
+        "on-primary-container": "#f5fff7"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.125rem",
+        "lg": "0.25rem",
+        "xl": "0.5rem",
+        "full": "0.75rem"
+      },
+      "spacing": {
+        "space-xl": "2rem",
+        "space-xs": "0.25rem",
+        "margin": "2rem",
+        "gutter-mobile": "0.75rem",
+        "space-md": "1rem",
+        "gutter": "1.5rem",
+        "margin-mobile": "1rem",
+        "space-lg": "1.5rem",
+        "space-sm": "0.5rem"
+      },
+      "fontFamily": {
+        "body-lg": ["Inter"],
+        "headline-xl-mobile": ["Inter"],
+        "body-sm": ["Inter"],
+        "label-md": ["Inter"],
+        "body-md": ["Inter"],
+        "headline-sm": ["Inter"],
+        "headline-md": ["Inter"],
+        "tabular-data": ["Inter"],
+        "label-lg": ["Inter"],
+        "label-sm": ["Inter"],
+        "headline-lg-mobile": ["Inter"],
+        "headline-xl": ["Inter"],
+        "headline-lg": ["Inter"]
+      },
+      "fontSize": {
+        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+        "headline-xl-mobile": ["26px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+        "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+        "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+        "headline-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+        "tabular-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+        "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700"}],
+        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600"}],
+        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+      }
+    }
+  }
+}</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-on-background z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="p-space-md flex flex-col gap-space-xs"><div class="flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[20px]">local_hospital</span></div><span class="font-headline-sm text-headline-sm font-bold text-on-primary tracking-tight">HSI Utilities</span></div><span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container">HIS@KKM</span></div><div class="font-body-sm text-body-sm text-outline-variant pl-10">Hospital Sultan Ismail</div></div><div class="px-space-md pt-space-xs pb-space-sm"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline-variant">Clinical Ops & Admin</span></div><nav class="flex flex-col gap-space-xs px-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-label-lg rounded-lg"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="hsi-reports" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-label-lg text-label-lg">HSI Reports</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="update-discharge-time" href="#"><span class="material-symbols-outlined text-[20px]">schedule</span><span class="font-label-lg text-label-lg">Update Discharge Time</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="update-death-date" href="#"><span class="material-symbols-outlined text-[20px]">event_busy</span><span class="font-label-lg text-label-lg">Update Death Date</span></a><a aria-current="page" class="flex items-center justify-between px-space-sm py-2 transition-colors bg-primary-container text-on-primary-container font-label-lg rounded-lg" data-path="audit-log" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">security</span><span class="font-label-lg text-label-lg">Audit Log</span></div><span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-semibold">ADMIN</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="duty-calendar" href="#"><span class="material-symbols-outlined text-[20px]">calendar_month</span><span class="font-label-lg text-label-lg">Duty Calendar</span></a></nav></div><div class="p-space-md bg-inverse-surface flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-md text-label-md text-inverse-on-surface truncate">Ahmad Faiz bin Razak</span><span class="font-body-sm text-body-sm text-outline-variant truncate">PP Tel. Maklumat F29</span></div><span class="material-symbols-outlined text-outline-variant text-[18px]">verified_user</span></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">home</span><span class="font-body-sm text-body-sm text-outline">/</span><span class="font-body-md text-body-md text-outline">System</span><span class="font-body-sm text-body-sm text-outline">/</span><span class="font-label-md text-label-md text-on-surface font-semibold">Audit Trail & Logs</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1.5 rounded-full shadow-[0_1px_2px_0_rgba(15,23,42,0.05)]"><span class="w-2 h-2 rounded-full bg-primary"></span><span class="font-body-sm text-body-sm text-on-surface-variant">HIS Gateway:</span><span class="font-tabular-data text-tabular-data text-on-surface font-medium">10.120.4.15</span><span class="font-label-sm text-label-sm text-primary uppercase ml-1">Connected</span></div><button class="relative p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">install_desktop</span></button><div class="h-6 w-px bg-surface-variant"></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="material-symbols-outlined text-on-surface-variant text-[18px]">expand_more</span></div></div></div></header><main class="w-full pt-16 bg-background px-space-margin"><div class="flex flex-col w-full pb-space-xl">
+<!-- Top Banner / Command Header -->
+<div class="flex flex-col gap-space-sm mb-space-lg">
+<!-- Meta Breadcrumb & Live Health Badges -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs text-secondary font-label-md text-label-md">
+<span class="flex items-center gap-1 text-primary font-semibold">
+<span class="material-symbols-outlined text-[16px]">domain</span>
+          HSI
+        </span>
+<span>/</span>
+<span class="text-on-surface-variant">HIS@KKM Utiliti</span>
+<span>/</span>
+<span class="text-on-surface-variant">Keselamatan & Audit</span>
+<span>/</span>
+<span class="text-on-surface font-bold">Audit Log Admin Center</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm border border-primary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          KESELAMATAN & PEMATUHAN KKM
+        </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+          LOG KEKAL (IMMUTABLE AUDIT TRAIL)
+        </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">admin_panel_settings</span>
+          Mod Pentadbir Sah (RBAC-F29)
+        </span>
+</div>
+</div>
+<!-- Main Title Block & Global Export Controls -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pt-space-xs">
+<div class="flex flex-col gap-1 max-w-4xl">
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight flex items-center gap-space-sm">
+          Pusat Kawalan & Log Audit Sistem
+          <span class="font-body-sm text-body-sm px-2 py-0.5 rounded bg-surface-container-high text-secondary font-medium">v4.8-audit.hsi</span>
+</h1>
+<p class="font-body-md text-body-md text-secondary">
+          Pemantauan masa nyata bagi setiap pindaan data klinikal, rekod discaj, tarikh kematian, dan capaian pengguna dalam persekitaran pangkalan data HIS@KKM Hospital Sultan Ismail.
+        </p>
+</div>
+<!-- Action Utility Buttons -->
+<div class="flex flex-wrap items-center gap-space-xs shrink-0">
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface text-label-md font-label-md shadow-sm transition-colors border border-outline-variant/30" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">menu_book</span>
+          Manual KKM
+        </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface text-label-md font-label-md shadow-sm transition-colors border border-outline-variant/30" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">file_download</span>
+          Eksport CSV
+        </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface text-label-md font-label-md shadow-sm transition-colors border border-outline-variant/30" type="button">
+<span class="material-symbols-outlined text-[18px] text-error">picture_as_pdf</span>
+          Eksport PDF Sah
+        </button>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-tertiary text-on-primary text-label-md font-label-md shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+          Sahkan Hash Rangkaian
+        </button>
+</div>
+</div>
+</div>
+<!-- Summary KPI Metric Cards (Grid of 4) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md mb-space-lg">
+<!-- Card 1: Total Transactions -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between border-t-2 border-primary relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider block">Bulan Semasa (Nov 2026)</span>
+<div class="font-headline-xl text-headline-xl text-on-surface font-bold mt-1 font-tabular-data">1,428</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">history_edu</span>
+</div>
+</div>
+<div class="mt-space-md flex items-center justify-between text-body-sm font-body-sm">
+<span class="flex items-center gap-1 text-primary font-semibold">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+          +12% vs Oktober
+        </span>
+<span class="text-secondary font-tabular-data">Purata 47 txn/hari</span>
+</div>
+</div>
+<!-- Card 2: Breakdown by Module (Mini Bar Graph) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Pecahan Modul</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">4 Modul Aktif</span>
+</div>
+<!-- Mini stacked visual line -->
+<div class="my-space-xs">
+<div class="flex h-2.5 w-full rounded-full overflow-hidden bg-surface-container">
+<div class="bg-primary w-[45%]" title="Discharge: 45%"></div>
+<div class="bg-error w-[9%]" title="Death Date: 9%"></div>
+<div class="bg-tertiary-container w-[36%]" title="PD103: 36%"></div>
+<div class="bg-secondary w-[10%]" title="Akses: 10%"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-x-2 gap-y-1 text-body-sm font-body-sm">
+<div class="flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
+<span class="text-on-surface truncate">Discaj: 642</span>
+</div>
+<div class="flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shrink-0"></span>
+<span class="text-on-surface truncate">PD103: 512</span>
+</div>
+<div class="flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-error shrink-0"></span>
+<span class="text-on-surface truncate">Kematian: 128</span>
+</div>
+<div class="flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-secondary shrink-0"></span>
+<span class="text-on-surface truncate">Akses: 146</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Cryptographic Integrity -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider block">Integriti Blok Kripto</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-xl text-headline-xl text-primary font-bold font-tabular-data">100%</span>
+<span class="font-label-md text-label-md text-primary font-semibold">SAH & TERKUNCI</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">enhanced_encryption</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs border-t border-surface-container-high flex items-center gap-1.5 text-body-sm font-body-sm text-secondary truncate">
+<span class="material-symbols-outlined text-[16px] text-primary shrink-0">check_circle</span>
+<span class="truncate">SHA-256 Merkle tree disahkan 14:00 tadi</span>
+</div>
+</div>
+<!-- Card 4: Anomalies & Incident Track -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider block">Anomali & Pertikaian</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-xl text-headline-xl text-on-surface font-bold font-tabular-data">0</span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Ralat Kritis</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">policy</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs border-t border-surface-container-high flex items-center gap-1.5 text-body-sm font-body-sm text-secondary">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="truncate">1 Aduan menunggu semakan fizikal</span>
+</div>
+</div>
+</div>
+<!-- Advanced Query & Filter Controls Panel -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-lg">
+<div class="flex items-center justify-between pb-space-sm mb-space-sm border-b border-surface-container-high">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">filter_alt</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Penapis Carian Berparameter</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-body-sm text-secondary">Padanan Semasa: <strong class="text-on-surface font-tabular-data">1,428 rekod</strong></span>
+</div>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-space-sm" id="auditFilterForm" onsubmit="event.preventDefault();">
+<!-- Date Range (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-secondary font-semibold uppercase">Julat Tarikh Transaksi</label>
+<div class="grid grid-cols-2 gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-secondary text-[18px] pointer-events-none">calendar_today</span>
+<input class="w-full pl-8 pr-2 py-1.5 text-body-sm font-tabular-data bg-surface-container-low rounded border border-outline-variant/40 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-colors" type="text" value="01-11-2026"/>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-secondary text-[18px] pointer-events-none">event</span>
+<input class="w-full pl-8 pr-2 py-1.5 text-body-sm font-tabular-data bg-surface-container-low rounded border border-outline-variant/40 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-colors" type="text" value="24-11-2026"/>
+</div>
+</div>
+</div>
+<!-- Module Select (2 cols) -->
+<div class="lg:col-span-2 flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-secondary font-semibold uppercase">Modul Sistem</label>
+<select class="w-full py-1.5 px-2 text-body-sm bg-surface-container-low rounded border border-outline-variant/40 focus:outline-none focus:border-primary">
+<option selected="">Semua Modul</option>
+<option>Update Discharge Time</option>
+<option>Update Death Date</option>
+<option>PD103 Inpatient Census</option>
+<option>Pengurusan Pengguna</option>
+<option>Sistem / Keselamatan</option>
+</select>
+</div>
+<!-- Action Type (2 cols) -->
+<div class="lg:col-span-2 flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-secondary font-semibold uppercase">Jenis Tindakan</label>
+<select class="w-full py-1.5 px-2 text-body-sm bg-surface-container-low rounded border border-outline-variant/40 focus:outline-none focus:border-primary">
+<option selected="">Semua Tindakan</option>
+<option>UPDATE (Pindaan)</option>
+<option>INSERT (Kemasukan)</option>
+<option>DELETE (Pembatalan)</option>
+<option>AUTH (Log Masuk)</option>
+<option>OVERRIDE (Kuasa Khas)</option>
+</select>
+</div>
+<!-- User / Officer Search (2 cols) -->
+<div class="lg:col-span-2 flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-secondary font-semibold uppercase">Pegawai / ID Pengguna</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-2 text-secondary text-[18px] pointer-events-none">person_search</span>
+<input class="w-full pl-7 pr-2 py-1.5 text-body-sm bg-surface-container-low rounded border border-outline-variant/40 focus:outline-none focus:border-primary" placeholder="cth: Ahmad Faiz / F29" type="text"/>
+</div>
+</div>
+<!-- MRN / Complaint Reference (2 cols) -->
+<div class="lg:col-span-2 flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-secondary font-semibold uppercase">No. Rujukan / MRN</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-2 text-secondary text-[18px] pointer-events-none">tag</span>
+<input class="w-full pl-7 pr-2 py-1.5 text-body-sm bg-surface-container-low rounded border border-outline-variant/40 focus:outline-none focus:border-primary" placeholder="HSI382910 / HD-..." type="text"/>
+</div>
+</div>
+</form>
+<!-- Filter Buttons Bar -->
+<div class="flex items-center justify-between mt-space-sm pt-space-xs">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-secondary">Pratetap Pantas:</span>
+<button class="px-2 py-0.5 rounded text-label-sm font-label-sm bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors" type="button">Hari Ini</button>
+<button class="px-2 py-0.5 rounded text-label-sm font-label-sm bg-primary/10 text-primary font-semibold" type="button">7 Hari Lepas</button>
+<button class="px-2 py-0.5 rounded text-label-sm font-label-sm bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors" type="button">Bulan Ini</button>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-3 py-1.5 rounded text-label-md font-label-md text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+          Set Semula
+        </button>
+<button class="px-4 py-1.5 rounded bg-primary hover:bg-tertiary text-on-primary font-label-md text-label-md shadow-sm flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">search</span>
+          Tapis Log Audit
+        </button>
+</div>
+</div>
+</div>
+<!-- Interactive Audit Log Data Table Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden mb-space-lg">
+<!-- Table Header Toolbar -->
+<div class="p-space-md bg-surface-container-lowest border-b border-surface-container-high flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Jejak Transaksi Tidak Boleh Dipinda (Immutable Trail)</span>
+<span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface font-tabular-data">1,428 Entri</span>
+</div>
+<div class="flex items-center gap-3">
+<label class="flex items-center gap-1.5 text-body-sm font-body-sm text-secondary cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+          Tunjuk Ringkasan Hash Kripto
+        </label>
+<span class="h-4 w-px bg-surface-container-high"></span>
+<button class="p-1 rounded text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Muat Semula Log" type="button">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+</button>
+</div>
+</div>
+<!-- Responsive Table -->
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-secondary font-label-sm text-label-sm uppercase tracking-wider border-b border-outline-variant/30">
+<th class="py-3 px-4 font-semibold">No. Siri & Masa</th>
+<th class="py-3 px-4 font-semibold">Pegawai Bertugas</th>
+<th class="py-3 px-4 font-semibold">Modul & Sasaran Rekod</th>
+<th class="py-3 px-4 font-semibold">Tindakan & Medan</th>
+<th class="py-3 px-4 font-semibold">Perubahan Nilai (Sebelum → Selepas)</th>
+<th class="py-3 px-4 font-semibold">No. Aduan & Sebab</th>
+<th class="py-3 px-4 font-semibold text-center">Status Integriti</th>
+<th class="py-3 px-4 font-semibold text-right">Tindakan</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high text-body-sm font-body-sm">
+<!-- Row 1: Update Discharge Time -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 align-top">
+<div class="font-tabular-data font-bold text-on-surface">#AUD-2026-99120</div>
+<div class="text-secondary font-tabular-data text-[11px] mt-0.5">24-11-2026 17:02:14</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="font-semibold text-on-surface truncate">Ahmad Faiz bin Razak</div>
+<div class="text-secondary text-[11px] truncate">PP Tel. Maklumat F29 (IT)</div>
+<div class="font-tabular-data text-[10px] text-outline mt-0.5">IP: 10.120.4.15 | UID: 9021</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="inline-flex items-center gap-1 font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-primary">schedule</span>
+                Update Discharge Time
+              </div>
+<div class="font-tabular-data text-secondary text-[11px] mt-0.5">
+                MRN: <span class="font-bold text-on-surface">HSI382910</span>
+</div>
+<div class="font-tabular-data text-outline text-[10px]">ENC: ENC-2026-88192</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<span class="inline-block px-2 py-0.5 rounded font-label-sm text-label-sm bg-primary/10 text-primary font-bold">
+                UPDATE
+              </span>
+<div class="font-tabular-data text-on-surface font-medium text-[11px] mt-1">discharge_datetime</div>
+<div class="font-tabular-data text-secondary text-[10px]">pre_discharge_status</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<div class="flex flex-col gap-1 font-tabular-data text-[12px]">
+<div class="text-error line-through bg-error-container/30 px-1.5 py-0.5 rounded w-fit">
+                  24-11-2026 14:15:00
+                </div>
+<div class="flex items-center gap-1 text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded w-fit">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  24-11-2026 16:45:00
+                </div>
+</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<span class="font-bold text-on-surface font-tabular-data text-[11px] block">HD-HSI-2026-1182</span>
+<p class="text-secondary text-[11px] leading-snug mt-0.5">
+                Pembetulan waktu keluar fizikal dari wad mengikut arahan Penyelia Wad Dahlia. Pesakit tertahan ujian makmal.
+              </p>
+</td>
+<td class="py-3.5 px-4 align-top text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+                Sah
+              </span>
+<div class="text-[10px] text-outline font-tabular-data truncate max-w-[80px] mx-auto mt-0.5" title="SHA-256: d85a21e4...8f12">
+                d85a...8f12
+              </div>
+</td>
+<td class="py-3.5 px-4 align-top text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Perincian Lengkap" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" title="Cetak Sijil Pengesahan Log" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Update Death Date -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 align-top">
+<div class="font-tabular-data font-bold text-on-surface">#AUD-2026-99119</div>
+<div class="text-secondary font-tabular-data text-[11px] mt-0.5">24-11-2026 15:44:02</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="font-semibold text-on-surface truncate">Ahmad Faiz bin Razak</div>
+<div class="text-secondary text-[11px] truncate">PP Tel. Maklumat F29 (IT)</div>
+<div class="font-tabular-data text-[10px] text-outline mt-0.5">IP: 10.120.4.15 | UID: 9021</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="inline-flex items-center gap-1 font-semibold text-error">
+<span class="material-symbols-outlined text-[15px]">event_busy</span>
+                Update Death Date
+              </div>
+<div class="font-tabular-data text-secondary text-[11px] mt-0.5">
+                MRN: <span class="font-bold text-on-surface">HSI394102</span>
+</div>
+<div class="font-tabular-data text-outline text-[10px]">IC: 480211-05-5519</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<span class="inline-block px-2 py-0.5 rounded font-label-sm text-label-sm bg-error/10 text-error font-bold">
+                UPDATE
+              </span>
+<div class="font-tabular-data text-on-surface font-medium text-[11px] mt-1">death_datetime</div>
+<div class="font-tabular-data text-secondary text-[10px]">borang_kematian_no</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<div class="flex flex-col gap-1 font-tabular-data text-[12px]">
+<div class="text-error line-through bg-error-container/30 px-1.5 py-0.5 rounded w-fit">
+                  23-11-2026 23:55:00
+                </div>
+<div class="flex items-center gap-1 text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded w-fit">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  24-11-2026 00:15:00
+                </div>
+</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<span class="font-bold text-on-surface font-tabular-data text-[11px] block">HD-HSI-2026-088</span>
+<p class="text-secondary text-[11px] leading-snug mt-0.5">
+                Penyelarasan mengikut Borang Perakuan Kematian (JPN.LM02) ditandatangani MO Forensik Dr. Rosli.
+              </p>
+</td>
+<td class="py-3.5 px-4 align-top text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+                Sah
+              </span>
+<div class="text-[10px] text-outline font-tabular-data truncate max-w-[80px] mx-auto mt-0.5" title="SHA-256: 4f1073cb...112e">
+                4f10...112e
+              </div>
+</td>
+<td class="py-3.5 px-4 align-top text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Perincian Lengkap" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" title="Cetak Sijil Pengesahan Log" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: PD103 Census Inline Edit -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 align-top">
+<div class="font-tabular-data font-bold text-on-surface">#AUD-2026-99118</div>
+<div class="text-secondary font-tabular-data text-[11px] mt-0.5">24-11-2026 14:10:55</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="font-semibold text-on-surface truncate">Siti Mariam binti Ali</div>
+<div class="text-secondary text-[11px] truncate">Jururawat U29 / Wad Kenanga</div>
+<div class="font-tabular-data text-[10px] text-outline mt-0.5">IP: 10.120.12.8 | UID: 4410</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="inline-flex items-center gap-1 font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-tertiary-container">bar_chart</span>
+                PD103 Inpatient Census
+              </div>
+<div class="font-tabular-data text-secondary text-[11px] mt-0.5">
+                Lokasi: <span class="font-bold text-on-surface">Wad Kenanga (2B)</span>
+</div>
+<div class="font-tabular-data text-outline text-[10px]">BORANG: PD103-NOV-24</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<span class="inline-block px-2 py-0.5 rounded font-label-sm text-label-sm bg-tertiary-container/10 text-tertiary font-bold">
+                UPDATE
+              </span>
+<div class="font-tabular-data text-on-surface font-medium text-[11px] mt-1">bor_midnight_occupancy</div>
+<div class="font-tabular-data text-secondary text-[10px]">available_beds_count</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<div class="flex flex-col gap-1 font-tabular-data text-[12px]">
+<div class="text-error line-through bg-error-container/30 px-1.5 py-0.5 rounded w-fit">
+                  Kekosongan: 4 Katil (BOR: 88.2%)
+                </div>
+<div class="flex items-center gap-1 text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded w-fit">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  Kekosongan: 2 Katil (BOR: 94.1%)
+                </div>
+</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<span class="font-bold text-on-surface font-tabular-data text-[11px] block">ROUTINE-BANCI-1200</span>
+<p class="text-secondary text-[11px] leading-snug mt-0.5">
+                Penyelarasan kemasukan pesakit kecemasan dari Zon Merah ED tanpa tempahan awal.
+              </p>
+</td>
+<td class="py-3.5 px-4 align-top text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+                Sah
+              </span>
+<div class="text-[10px] text-outline font-tabular-data truncate max-w-[80px] mx-auto mt-0.5" title="SHA-256: 7b29e011...99aa">
+                7b29...99aa
+              </div>
+</td>
+<td class="py-3.5 px-4 align-top text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Perincian Lengkap" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" title="Cetak Sijil Pengesahan Log" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: User Authentication / Login Success -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 align-top">
+<div class="font-tabular-data font-bold text-on-surface">#AUD-2026-99117</div>
+<div class="text-secondary font-tabular-data text-[11px] mt-0.5">24-11-2026 13:58:20</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="font-semibold text-on-surface truncate">Dr. Norhafizah Kassim</div>
+<div class="text-secondary text-[11px] truncate">Pakar Perubatan UD52</div>
+<div class="font-tabular-data text-[10px] text-outline mt-0.5">IP: 10.120.30.104 | UID: 1209</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="inline-flex items-center gap-1 font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-secondary">vpn_key</span>
+                Sesi Capaian / Keselamatan
+              </div>
+<div class="font-tabular-data text-secondary text-[11px] mt-0.5">
+                Mod: <span class="font-bold text-on-surface">Klinikal Konsultasi</span>
+</div>
+<div class="font-tabular-data text-outline text-[10px]">Stesen: Klinik Pakar 3</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<span class="inline-block px-2 py-0.5 rounded font-label-sm text-label-sm bg-secondary-container text-on-secondary-container font-bold">
+                AUTH_LOGIN
+              </span>
+<div class="font-tabular-data text-on-surface font-medium text-[11px] mt-1">session_token_grant</div>
+<div class="font-tabular-data text-secondary text-[10px]">2FA_myGOV_passed</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<div class="font-tabular-data text-[11px] text-secondary">
+<span class="text-on-surface font-semibold">Log Masuk Berjaya:</span> Stesen kerja sah, MyKAD digital token disahkan KKM CA.
+              </div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<span class="font-bold text-on-surface font-tabular-data text-[11px] block">SYS-AUTH-OK</span>
+<p class="text-secondary text-[11px] leading-snug mt-0.5">
+                Autentikasi dwifaktor berpusat melalui gerbang Putrajaya Intranet.
+              </p>
+</td>
+<td class="py-3.5 px-4 align-top text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+                Sah
+              </span>
+<div class="text-[10px] text-outline font-tabular-data truncate max-w-[80px] mx-auto mt-0.5" title="SHA-256: 33ec810f...001b">
+                33ec...001b
+              </div>
+</td>
+<td class="py-3.5 px-4 align-top text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Perincian Lengkap" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: DAMA Status Verification -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 align-top">
+<div class="font-tabular-data font-bold text-on-surface">#AUD-2026-99116</div>
+<div class="text-secondary font-tabular-data text-[11px] mt-0.5">24-11-2026 12:22:19</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="font-semibold text-on-surface truncate">Dr. Jason Lim</div>
+<div class="text-secondary text-[11px] truncate">Pegawai Perubatan UD48 (Wad Lelaki)</div>
+<div class="font-tabular-data text-[10px] text-outline mt-0.5">IP: 10.120.8.22 | UID: 3819</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="inline-flex items-center gap-1 font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-secondary">assignment_return</span>
+                Update Discharge Status
+              </div>
+<div class="font-tabular-data text-secondary text-[11px] mt-0.5">
+                MRN: <span class="font-bold text-on-surface">HSI371800</span>
+</div>
+<div class="font-tabular-data text-outline text-[10px]">DIS: DIS-2026-04192</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<span class="inline-block px-2 py-0.5 rounded font-label-sm text-label-sm bg-primary/10 text-primary font-bold">
+                UPDATE
+              </span>
+<div class="font-tabular-data text-on-surface font-medium text-[11px] mt-1">discharge_type_code</div>
+<div class="font-tabular-data text-secondary text-[10px]">dama_form_signed</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<div class="flex flex-col gap-1 font-tabular-data text-[12px]">
+<div class="text-error line-through bg-error-container/30 px-1.5 py-0.5 rounded w-fit">
+                  DISCHARGED_NORMAL (D/C Biasa)
+                </div>
+<div class="flex items-center gap-1 text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded w-fit">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  DISCHARGED_DAMA (Keluar Risiko Sendiri)
+                </div>
+</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<span class="font-bold text-on-surface font-tabular-data text-[11px] block">DAMA-2026-11</span>
+<p class="text-secondary text-[11px] leading-snug mt-0.5">
+                Waris menandatangani Borang Keengganan Rawatan & Pelepasan Liabiliti Wad 5.
+              </p>
+</td>
+<td class="py-3.5 px-4 align-top text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+                Sah
+              </span>
+<div class="text-[10px] text-outline font-tabular-data truncate max-w-[80px] mx-auto mt-0.5" title="SHA-256: e8711ca0...f721">
+                e871...f721
+              </div>
+</td>
+<td class="py-3.5 px-4 align-top text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Perincian Lengkap" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" title="Cetak Sijil Pengesahan Log" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Override Admission Time -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 align-top">
+<div class="font-tabular-data font-bold text-on-surface">#AUD-2026-99115</div>
+<div class="text-secondary font-tabular-data text-[11px] mt-0.5">24-11-2026 10:04:12</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="font-semibold text-on-surface truncate">Ahmad Faiz bin Razak</div>
+<div class="text-secondary text-[11px] truncate">PP Tel. Maklumat F29 (IT)</div>
+<div class="font-tabular-data text-[10px] text-outline mt-0.5">IP: 10.120.4.15 | UID: 9021</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<div class="inline-flex items-center gap-1 font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-primary">login</span>
+                Admission Override
+              </div>
+<div class="font-tabular-data text-secondary text-[11px] mt-0.5">
+                MRN: <span class="font-bold text-on-surface">HSI366192</span>
+</div>
+<div class="font-tabular-data text-outline text-[10px]">REG: REG-ADM-7718</div>
+</td>
+<td class="py-3.5 px-4 align-top">
+<span class="inline-block px-2 py-0.5 rounded font-label-sm text-label-sm bg-error-container text-on-error-container font-bold">
+                OVERRIDE
+              </span>
+<div class="font-tabular-data text-on-surface font-medium text-[11px] mt-1">admission_time</div>
+<div class="font-tabular-data text-secondary text-[10px]">ward_code_assignment</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<div class="flex flex-col gap-1 font-tabular-data text-[12px]">
+<div class="text-error line-through bg-error-container/30 px-1.5 py-0.5 rounded w-fit">
+                  24-11-2026 09:30:00 (Wad Anggerik)
+                </div>
+<div class="flex items-center gap-1 text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded w-fit">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  23-11-2026 23:45:00 (ICU HDU)
+                </div>
+</div>
+</td>
+<td class="py-3.5 px-4 align-top max-w-xs">
+<span class="font-bold text-on-surface font-tabular-data text-[11px] block">MEMO-HSI-IT-44</span>
+<p class="text-secondary text-[11px] leading-snug mt-0.5">
+                Kemasukan retroaktif bagi pesakit intubasi kecemasan waktu tengah malam, kelulusan Pengarah Hospital.
+              </p>
+</td>
+<td class="py-3.5 px-4 align-top text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+                Sah
+              </span>
+<div class="text-[10px] text-outline font-tabular-data truncate max-w-[80px] mx-auto mt-0.5" title="SHA-256: aa108392...c091">
+                aa10...c091
+              </div>
+</td>
+<td class="py-3.5 px-4 align-top text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Perincian Lengkap" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" title="Cetak Sijil Pengesahan Log" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination Footer -->
+<div class="p-space-md bg-surface-container-lowest border-t border-surface-container-high flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 text-body-sm font-body-sm text-secondary">
+<span>Paparan <strong class="text-on-surface font-tabular-data">1</strong> hingga <strong class="text-on-surface font-tabular-data">6</strong> daripada <strong class="text-on-surface font-tabular-data">1,428</strong> entri log audit</span>
+<span class="mx-1 text-outline">|</span>
+<label class="flex items-center gap-1">
+          Baris:
+          <select class="bg-surface-container-low text-on-surface text-body-sm rounded px-1.5 py-0.5 border border-outline-variant/30 focus:outline-none">
+<option selected="">6</option>
+<option>25</option>
+<option>50</option>
+<option>100</option>
+</select>
+</label>
+</div>
+<!-- Pagination Buttons -->
+<nav aria-label="Pagination" class="flex items-center gap-1">
+<button class="px-2.5 py-1 rounded text-body-sm text-outline bg-surface-container-low cursor-not-allowed flex items-center" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+          Terdahulu
+        </button>
+<button class="w-8 h-8 rounded text-label-md font-label-md bg-primary text-on-primary font-bold" type="button">1</button>
+<button class="w-8 h-8 rounded text-label-md font-label-md bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors" type="button">2</button>
+<button class="w-8 h-8 rounded text-label-md font-label-md bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors" type="button">3</button>
+<span class="px-1 text-secondary">...</span>
+<button class="w-8 h-8 rounded text-label-md font-label-md bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors font-tabular-data" type="button">238</button>
+<button class="px-2.5 py-1 rounded text-body-sm text-on-surface bg-surface-container-low hover:bg-surface-container flex items-center transition-colors" type="button">
+          Seterusnya
+          <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</nav>
+</div>
+</div>
+<!-- Security & Cryptographic Master Proof Box -->
+<div class="rounded-xl p-space-md bg-surface-container-low border border-surface-container-high relative overflow-hidden">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-sm max-w-3xl">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold flex items-center gap-2">
+            Pangkalan Data Kriptografi Terlindung (HIS-DB-01)
+            <span class="px-2 py-0.2 rounded bg-surface-container text-[11px] text-secondary font-medium">PostgreSQL 14.8 Hardened</span>
+</span>
+<p class="font-body-sm text-body-sm text-secondary mt-1">
+            Setiap tindakan log audit di Hospital Sultan Ismail dimeterai dengan cincin kriptografi bersiri SHA-256 yang disandarkan secara automatik setiap jam ke arkib pusat Kementerian Kesihatan Malaysia (Putrajaya).
+          </p>
+<div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 font-tabular-data text-[12px] text-on-surface-variant">
+<span>Rantaian Hash Induk: <strong class="text-primary font-mono select-all">9c8f2b4e7a1d...31ff80e4b9c1</strong></span>
+<span>• Pengesahan Terakhir: <strong>24 Nov 2026, 17:00:00 MYT</strong></span>
+<span>• Pengesah: <strong>Unit IT & Rekod Perubatan HSI</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 self-end lg:self-center">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-label-md text-label-md border border-outline-variant/30 flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+          Uji Sambungan Arkib
+        </button>
+<button class="px-3 py-1.5 rounded-lg bg-primary text-on-primary hover:bg-tertiary font-label-md text-label-md flex items-center gap-1.5 shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">fingerprint</span>
+          Jana Kunci Audit KKM
+        </button>
+</div>
+</div>
+</div>
+</div></main></div></body></html>

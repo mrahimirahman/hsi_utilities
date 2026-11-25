@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html lang="ms"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>Audit - HSI Utilities</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-dim": "#cbdbf5", "on-primary-fixed-variant": "#005137", "surface-container": "#e5eeff", "error-container": "#ffdad6", "primary": "#006949", "inverse-primary": "#71daab", "inverse-surface": "#213145", "inverse-on-surface": "#eaf1ff", "background": "#f8f9ff", "error": "#ba1a1a", "on-primary-fixed": "#002114", "outline-variant": "#bdcac0", "on-secondary-fixed": "#111c2d", "on-primary": "#ffffff", "tertiary-container": "#358263", "tertiary-fixed-dim": "#89d6b2", "surface-container-high": "#dce9ff", "primary-container": "#00855d", "secondary": "#545f73", "primary-fixed-dim": "#71daab", "on-background": "#0b1c30", "surface-container-highest": "#d3e4fe", "tertiary": "#15684b", "surface-container-low": "#eff4ff", "on-tertiary-fixed": "#002114", "surface-variant": "#d3e4fe", "on-secondary-fixed-variant": "#3c475a", "surface": "#f8f9ff", "on-secondary-container": "#586377", "on-surface": "#0b1c30", "secondary-fixed-dim": "#bcc7de", "surface-container-lowest": "#ffffff", "on-tertiary": "#ffffff", "secondary-fixed": "#d8e3fb", "on-surface-variant": "#3e4942", "surface-bright": "#f8f9ff", "outline": "#6e7a72", "on-tertiary-fixed-variant": "#005138", "on-error": "#ffffff", "secondary-container": "#d5e0f8", "on-error-container": "#93000a", "tertiary-fixed": "#a5f3cd", "surface-tint": "#006c4b", "primary-fixed": "#8ef7c6", "on-secondary": "#ffffff", "on-tertiary-container": "#f5fff7", "on-primary-container": "#f5fff7" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xl": "2rem", "space-xs": "0.25rem", "margin": "2rem", "gutter-mobile": "0.75rem", "space-md": "1rem", "gutter": "1.5rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-sm": "0.5rem" }, "fontFamily": { "body-lg": ["Inter"], "headline-xl-mobile": ["Inter"], "body-sm": ["Inter"], "label-md": ["Inter"], "body-md": ["Inter"], "headline-sm": ["Inter"], "headline-md": ["Inter"], "tabular-data": ["Inter"], "label-lg": ["Inter"], "label-sm": ["Inter"], "headline-lg-mobile": ["Inter"], "headline-xl": ["Inter"], "headline-lg": ["Inter"] }, "fontSize": { "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-xl-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "tabular-data": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "headline-lg-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } }</script><style>@layer base { html, body { width: 100vw; margin: 0; padding: 0; min-height: 100%; } body { overscroll-behavior-y: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style></head><body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="hidden bg-error-container text-on-error-container px-margin-mobile py-space-xs flex items-center justify-between" id="offline-banner"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-error">cloud_off</span><span class="font-label-sm text-label-sm uppercase tracking-wide">Mod Luar Talian (PWA Aktif)</span></div><span class="font-label-sm text-label-sm opacity-80">HIS@KKM Cache</span></div><div class="h-20 px-margin-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><button aria-label="Menu Navigasi" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container-high transition-colors focus:outline-none focus:ring-2 focus:ring-primary"><span class="material-symbols-outlined text-[24px]">menu</span></button><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary tracking-tight truncate leading-none">HSI Utilities</span><span class="relative flex h-2 w-2 flex-shrink-0" title="Intranet HIS Terhubung"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span></div><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Unit Teknologi Maklumat</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Pemberitahuan Sistem" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-20 pb-28 bg-surface px-margin-mobile"><div class="flex flex-col w-full space-y-space-md">
+<!-- Header & Context Banner -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">verified_user</span>
+        KESELAMATAN &amp; AUDIT HIS@KKM
+      </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-container/15 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+        Log Kekal (Immutable)
+      </span>
+</div>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">Audit Log Admin Center</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+        Pusat pemantauan jejak audit keselamatan &amp; integriti data klinikal Hospital Sultan Ismail.
+      </p>
+</div>
+<!-- Quick Action Buttons -->
+<div class="grid grid-cols-2 gap-space-sm pt-space-xs">
+<button class="min-h-[44px] px-space-sm rounded-lg bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center gap-1.5 shadow-sm active:bg-primary-container transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+<span>Eksport Log</span>
+</button>
+<button class="min-h-[44px] px-space-sm rounded-lg bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 active:bg-surface-container-high transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">fingerprint</span>
+<span>Sahkan SHA-256</span>
+</button>
+</div>
+</div>
+<!-- Quick KPI Metric Cards (2x2 Grid) -->
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Stat 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Jumlah Pindaan</span>
+<span class="material-symbols-outlined text-[20px] text-primary">edit_note</span>
+</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-tabular-data">1,428</div>
+<p class="font-body-sm text-body-sm text-secondary truncate">Bulan Semasa (Nov)</p>
+</div>
+<!-- Stat 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Integriti Data</span>
+<span class="material-symbols-outlined text-[20px] text-primary">check_circle</span>
+</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-tabular-data">100% Sah</div>
+<p class="font-body-sm text-body-sm text-secondary truncate">SHA-256 Rantai Log</p>
+</div>
+<!-- Stat 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Modul Terbanyak</span>
+<span class="material-symbols-outlined text-[20px] text-secondary">output</span>
+</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-tabular-data">Discaj (45%)</div>
+<p class="font-body-sm text-body-sm text-secondary truncate">642 pinda masa/wad</p>
+</div>
+<!-- Stat 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Keselamatan</span>
+<span class="material-symbols-outlined text-[20px] text-primary">shield</span>
+</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-tabular-data">Normal</div>
+<p class="font-body-sm text-body-sm text-secondary truncate">0 anomali dikesan</p>
+</div>
+</div>
+<!-- Search & Filter Controls -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<!-- Search Bar -->
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-secondary text-[20px] pointer-events-none">search</span>
+<input class="w-full h-11 pl-10 pr-10 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg focus:outline-none focus:bg-surface-container-lowest transition-colors" id="audit-search-input" placeholder="Cari MRN, No. Aduan, atau Nama..." type="search"/>
+<button aria-label="Kosongkan carian" class="absolute right-2.5 w-7 h-7 flex items-center justify-center text-secondary hover:text-on-surface hidden" id="audit-search-clear" type="button">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+</button>
+</div>
+<!-- Filter Chips Scrollable Row -->
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar py-0.5">
+<button class="filter-chip active flex-shrink-0 min-h-[36px] px-3 rounded-full bg-primary text-on-primary font-label-sm text-label-sm transition-colors" type="button">
+        Semua Log (1,428)
+      </button>
+<button class="filter-chip flex-shrink-0 min-h-[36px] px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm active:bg-surface-container-high transition-colors" type="button">
+        Update Discaj
+      </button>
+<button class="filter-chip flex-shrink-0 min-h-[36px] px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm active:bg-surface-container-high transition-colors" type="button">
+        Tarikh Kematian
+      </button>
+<button class="filter-chip flex-shrink-0 min-h-[36px] px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm active:bg-surface-container-high transition-colors" type="button">
+        Banci PD103
+      </button>
+<button class="filter-chip flex-shrink-0 min-h-[36px] px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm active:bg-surface-container-high transition-colors" type="button">
+        Tindakan UPDATE
+      </button>
+</div>
+<!-- Advanced Filter Trigger -->
+<button class="w-full min-h-[44px] px-space-md rounded-lg bg-surface-container-low text-on-surface-variant font-label-md text-label-md flex items-center justify-center gap-2 hover:text-on-surface active:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span>Tapisan Terperinci (Tarikh &amp; Modul)</span>
+</button>
+</div>
+<!-- Audit Record Cards List -->
+<div class="space-y-space-sm" id="audit-cards-container">
+<!-- Card 1: UPDATE DISCAJ -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">edit_calendar</span>
+          UPDATE DISCAJ
+        </span>
+<span class="font-tabular-data text-tabular-data text-secondary">24-11-2026, 17:02:14</span>
+</div>
+<!-- Pegawai Detail -->
+<div class="flex items-start gap-space-sm pt-space-xs">
+<div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+</div>
+<div class="min-w-0 flex-1">
+<p class="font-label-lg text-label-lg text-on-surface truncate">Ahmad Faiz bin Razak</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">PP Tel. Maklumat F29 • Unit IT HSI</p>
+</div>
+</div>
+<!-- Target Rekod -->
+<div class="bg-surface-container-low rounded-lg p-space-sm space-y-1">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Pesakit:</span>
+<span class="font-tabular-data text-on-surface font-semibold">MRN HSI382910</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Lokasi Wad:</span>
+<span class="text-on-surface">Wad Dahlia (W3)</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Medan Dipinda:</span>
+<code class="px-1.5 py-0.5 rounded bg-surface-container font-tabular-data text-primary">discharge_datetime</code>
+</div>
+</div>
+<!-- Visual Diff Block -->
+<div class="bg-surface-container-lowest rounded-lg p-space-sm space-y-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wide">Perbandingan Nilai (Visual Diff):</span>
+<div class="flex items-center gap-space-sm font-tabular-data text-body-md">
+<span class="line-through text-error opacity-75 bg-error-container/40 px-2 py-0.5 rounded">14:15:00</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">arrow_forward</span>
+<span class="bg-primary/10 text-primary font-bold px-2 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check</span>
+            16:45:00
+          </span>
+</div>
+</div>
+<!-- Rujukan & Cryptographic Integrity -->
+<div class="space-y-1 pt-1">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<span class="font-semibold text-on-surface">Rujukan Aduan:</span> Ref: HD-HSI-2026-1182 (Tunggu farmasi TTO)
+        </p>
+<div class="flex items-center justify-between text-tabular-data text-body-sm text-secondary">
+<span class="truncate font-tabular-data">SHA-256: <code class="text-on-surface font-medium">7f83b1c90a12...</code></span>
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">verified</span> Sah
+          </span>
+</div>
+</div>
+<button class="w-full min-h-[44px] px-space-md rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center gap-2 active:bg-surface-container transition-all" type="button">
+<span>Lihat Butiran Audit Lengkap</span>
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</article>
+<!-- Card 2: TARIKH KEMATIAN -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">clinical_notes</span>
+          TARIKH KEMATIAN
+        </span>
+<span class="font-tabular-data text-tabular-data text-secondary">24-11-2026, 16:30:10</span>
+</div>
+<div class="flex items-start gap-space-sm pt-space-xs">
+<div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+</div>
+<div class="min-w-0 flex-1">
+<p class="font-label-lg text-label-lg text-on-surface truncate">Ahmad Faiz bin Razak</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">PP Tel. Maklumat F29 • Unit IT HSI</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-space-sm space-y-1">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Pesakit:</span>
+<span class="font-tabular-data text-on-surface font-semibold">HSI394102</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Nama:</span>
+<span class="text-on-surface font-medium truncate ml-2">ALLAHYARHAM PESAKIT CONTOH</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Medan Dipinda:</span>
+<code class="px-1.5 py-0.5 rounded bg-surface-container font-tabular-data text-primary">death_datetime</code>
+</div>
+</div>
+<!-- Diff Block -->
+<div class="bg-surface-container-lowest rounded-lg p-space-sm space-y-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wide">Pindaan Waktu Kematian (JPN.LM02):</span>
+<div class="flex items-center gap-space-sm font-tabular-data text-body-md">
+<span class="line-through text-error opacity-75 bg-error-container/40 px-2 py-0.5 rounded">08:30:00</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">arrow_forward</span>
+<span class="bg-primary/10 text-primary font-bold px-2 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check</span>
+            09:45:00
+          </span>
+</div>
+</div>
+<div class="space-y-1 pt-1">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<span class="font-semibold text-on-surface">Rujukan:</span> Aduan HD-HSI-2026-088 (Semakan Permit Mengubur)
+        </p>
+<div class="flex items-center justify-between text-tabular-data text-body-sm text-secondary">
+<span class="truncate font-tabular-data">SHA-256: <code class="text-on-surface font-medium">4b29c18d3e91...</code></span>
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">verified</span> Sah
+          </span>
+</div>
+</div>
+<button class="w-full min-h-[44px] px-space-md rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center gap-2 active:bg-surface-container transition-all" type="button">
+<span>Lihat Butiran Audit Lengkap</span>
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</article>
+<!-- Card 3: BANCI PD103 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">analytics</span>
+          PD103 BANCI
+        </span>
+<span class="font-tabular-data text-tabular-data text-secondary">24-11-2026, 15:10:22</span>
+</div>
+<div class="flex items-start gap-space-sm pt-space-xs">
+<div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-secondary">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<div class="min-w-0 flex-1">
+<p class="font-label-lg text-label-lg text-on-surface truncate">SN Siti Mariam Ali (U29)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ketua Jururawat Giliran • Wad Kenanga</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-space-sm space-y-1">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Modul:</span>
+<span class="text-on-surface font-medium">Banci Harian Perubatan</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Medan Dipinda:</span>
+<span class="text-on-surface">Kemasukan Baharu Wad</span>
+</div>
+</div>
+<!-- Diff Simple -->
+<div class="bg-surface-container-lowest rounded-lg p-space-sm flex items-center gap-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pindaan:</span>
+<span class="line-through text-error opacity-75 bg-error-container/40 px-2 py-0.5 rounded font-tabular-data text-body-sm">8 kes</span>
+<span class="material-symbols-outlined text-secondary text-[14px]">arrow_forward</span>
+<span class="bg-primary/10 text-primary font-bold px-2 py-0.5 rounded font-tabular-data text-body-sm">9 kes</span>
+</div>
+<div class="space-y-1 pt-1">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<span class="font-semibold text-on-surface">Catatan:</span> Semakan Rutin Ketua Jururawat Giliran Petang
+        </p>
+<div class="flex items-center justify-between text-tabular-data text-body-sm text-secondary">
+<span class="truncate font-tabular-data">SHA-256: <code class="text-on-surface font-medium">1a98e35f80cc...</code></span>
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">verified</span> Sah
+          </span>
+</div>
+</div>
+</article>
+<!-- Card 4: LOG MASUK IT -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">login</span>
+          LOG MASUK IT
+        </span>
+<span class="font-tabular-data text-tabular-data text-secondary">24-11-2026, 14:00:05</span>
+</div>
+<div class="flex items-start gap-space-sm pt-space-xs">
+<div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[20px]">medical_services</span>
+</div>
+<div class="min-w-0 flex-1">
+<p class="font-label-lg text-label-lg text-on-surface truncate">Dr. Norhafizah Kassim</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Pakar Perubatan Kanan UD52</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-space-sm space-y-1">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Tindakan:</span>
+<span class="text-on-surface font-medium">Pengesahan Kredensial SSO</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">IP Intranet:</span>
+<code class="px-1.5 py-0.5 rounded bg-surface-container font-tabular-data text-on-surface">10.120.4.88</code>
+</div>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm pt-1">
+<span class="text-on-surface-variant">Status Sesi:</span>
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">lock_reset</span>
+          Token Sesi Diperbaharui
+        </span>
+</div>
+</article>
+</div>
+<!-- Pagination / Load More Block -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm text-center space-y-space-sm">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+      Memaparkan <span class="font-semibold text-on-surface">4</span> daripada <span class="font-semibold text-on-surface">1,428</span> rekod audit keselamatan.
+    </p>
+<button class="w-full min-h-[44px] px-space-md rounded-lg bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-2 active:bg-surface-container-high transition-colors" id="btn-load-more" type="button">
+<span class="material-symbols-outlined text-[18px]">expand_circle_down</span>
+<span>Muat Turun 20 Rekod Seterusnya</span>
+</button>
+</div>
+<!-- Footer Help / Server Architecture Info -->
+<div class="bg-surface-container-low rounded-xl p-space-md space-y-space-xs text-on-surface-variant">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[18px]">dns</span>
+<span class="font-label-md text-label-md text-on-surface">Spesifikasi Nod Audit Tempatan</span>
+</div>
+<div class="grid grid-cols-1 gap-1 text-body-sm font-body-sm pt-1">
+<div class="flex justify-between">
+<span>Pengendali:</span>
+<span class="text-on-surface font-medium">Unit Rekod Perubatan &amp; IT HSI</span>
+</div>
+<div class="flex justify-between">
+<span>Nod Pangkalan Data:</span>
+<span class="font-tabular-data text-on-surface">HIS-DB-01 (Sultan Ismail)</span>
+</div>
+<div class="flex justify-between">
+<span>Subnet Intranet:</span>
+<code class="font-tabular-data text-on-surface">10.120.4.15 (VLAN 40)</code>
+</div>
+<div class="flex justify-between">
+<span>Format Hash Log:</span>
+<span class="font-tabular-data text-on-surface">FIPS 180-4 (SHA-256)</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function initAuditCenter() {
+    // Set Active Bottom Navigation state for 'Audit'
+    try {
+      const bottomNavLinks = document.querySelectorAll('nav[data-active-classes] a');
+      bottomNavLinks.forEach(link => {
+        const path = link.getAttribute('data-path');
+        if (path === 'audit') {
+          link.classList.remove('text-on-surface-variant');
+          link.classList.add('text-primary', 'font-semibold');
+        } else {
+          link.classList.remove('text-primary', 'font-semibold');
+          link.classList.add('text-on-surface-variant');
+        }
+      });
+    } catch (e) {
+      console.warn('Navigation state update failed', e);
+    }
+
+    // Search input clear interaction
+    const searchInput = document.getElementById('audit-search-input');
+    const clearBtn = document.getElementById('audit-search-clear');
+
+    if (searchInput && clearBtn) {
+      searchInput.addEventListener('input', function() {
+        if (this.value.trim().length > 0) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+      });
+
+      clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        clearBtn.classList.add('hidden');
+        searchInput.focus();
+      });
+    }
+
+    // Interactive filter chips toggling
+    const filterChips = document.querySelectorAll('.filter-chip');
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', function() {
+        filterChips.forEach(c => {
+          c.classList.remove('bg-primary', 'text-on-primary');
+          c.classList.add('bg-surface-container', 'text-on-surface-variant');
+        });
+        this.classList.remove('bg-surface-container', 'text-on-surface-variant');
+        this.classList.add('bg-primary', 'text-on-primary');
+      });
+    });
+
+    // Load More feedback
+    const loadMoreBtn = document.getElementById('btn-load-more');
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', function() {
+        const originalHtml = this.innerHTML;
+        this.disabled = true;
+        this.innerHTML = `
+          <span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+          <span>Mengambil Log Dari HIS-DB-01...</span>
+        `;
+        setTimeout(() => {
+          this.innerHTML = `
+            <span class="material-symbols-outlined text-[18px] text-primary">done_all</span>
+            <span>Semua Log Semasa Berjaya Dipaparkan</span>
+          `;
+          this.classList.add('opacity-80');
+        }, 850);
+      });
+    }
+  })();
+</script></main><aside class="fixed bottom-24 right-margin-mobile z-50"><button aria-label="Admin AI Assistant" class="h-11 px-space-md rounded-full bg-primary-container text-on-primary-container shadow-md flex items-center gap-space-xs active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-primary"><span class="material-symbols-outlined text-[20px]">smart_toy</span><span class="font-label-md text-label-md">Admin AI</span></button></aside><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-1px_8px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-semibold"><div class="h-16 px-space-xs flex items-center justify-around"><a class="flex-1 flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="laporan" href="#"><span class="material-symbols-outlined text-[22px]">analytics</span><span class="font-label-sm text-label-sm mt-0.5">Laporan</span></a><a class="flex-1 flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="discaj" href="#"><span class="material-symbols-outlined text-[22px]">output</span><span class="font-label-sm text-label-sm mt-0.5">Discaj</span></a><a class="flex-1 flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="kematian" href="#"><span class="material-symbols-outlined text-[22px]">clinical_notes</span><span class="font-label-sm text-label-sm mt-0.5">Kematian</span></a><a aria-current="page" class="flex-1 flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 transition-colors text-primary font-semibold" data-path="audit" href="#"><span class="material-symbols-outlined text-[22px]">fact_check</span><span class="font-label-sm text-label-sm mt-0.5">Audit</span></a></div></nav></body></html>

@@ -1,0 +1,37 @@
+<section class="page">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/reports">HSI Reports</a>
+    <span class="material-symbols-outlined icon-sm">chevron_right</span>
+    <span class="current">{{ reportTitle }}</span>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-header__text">
+      <div class="page-eyebrow">
+        <span class="badge badge-placeholder badge-dot">Pending Build</span>
+      </div>
+      <h1 class="page-title">{{ reportTitle }}</h1>
+      <p class="page-subtitle">{{ reportDescription }}</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="card-body status-body">
+      <span class="icon-tile pending"><span class="material-symbols-outlined">construction</span></span>
+      <div class="status-text">
+        <h2 class="card-title">Status Semasa</h2>
+        <p>{{ reportStatus }}</p>
+      </div>
+    </div>
+    <div class="card-footer actions">
+      <a class="btn btn-secondary" routerLink="/reports">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Kembali ke senarai report
+      </a>
+      <a class="btn btn-primary" routerLink="/reports/pd103">
+        Buka modul PD103
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>

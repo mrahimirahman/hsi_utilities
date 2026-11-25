@@ -1,0 +1,248 @@
+/* Screen-specific layout only — shared look comes from global styles.css */
+
+.dama-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.dama-title-row .page-title {
+  min-width: 0;
+}
+
+/* Filters */
+.dama-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 240px)) 1fr;
+  gap: var(--space-md);
+  align-items: end;
+}
+
+.dama-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+/* Stats */
+.stat-unit {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.dama-period {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.dama-min0 {
+  min-width: 0;
+}
+
+.dama-ellipsis {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Insights (diagnosis + ward breakdown) */
+.dama-insights {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--space-md);
+}
+
+.dama-bars,
+.dama-wards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  list-style: none;
+}
+
+.dama-wards {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.dama-bar-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.dama-bar-label > span:last-child,
+.dama-bar-label > strong {
+  flex: none;
+  font-size: 12px;
+}
+
+.dama-bar-track {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--surface-tint-strong);
+  overflow: hidden;
+}
+
+.dama-bar-fill {
+  height: 100%;
+  min-width: 4px;
+  border-radius: inherit;
+  background: var(--primary);
+}
+
+/* Table */
+.dama-mrn {
+  display: inline-block;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dama-name {
+  min-width: 180px;
+  font-weight: 600;
+}
+
+.dama-diagnosis {
+  min-width: 220px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+/* Mobile cards (hidden on wider screens) */
+.dama-cards {
+  display: none;
+  margin: 0;
+  padding: var(--space-md);
+  list-style: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dama-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.dama-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dama-card__name {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.dama-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.dama-card__diag {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.dama-card__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+  margin: 0;
+}
+
+.dama-card__grid dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.dama-card__wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1023px) {
+  .dama-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dama-actions {
+    grid-column: 1 / -1;
+  }
+
+  .dama-insights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dama-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dama-actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .page-actions,
+  .page-actions .btn {
+    width: 100%;
+  }
+
+  .dama-title-row .icon-tile {
+    display: none;
+  }
+
+  .dama-table {
+    display: none;
+  }
+
+  .dama-cards {
+    display: flex;
+  }
+}
+
+@media print {
+  .dama-table {
+    display: block;
+  }
+
+  .dama-cards {
+    display: none;
+  }
+}

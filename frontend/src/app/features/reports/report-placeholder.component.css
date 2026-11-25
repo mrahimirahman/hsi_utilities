@@ -1,0 +1,30 @@
+.status-body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.icon-tile.pending {
+  background: var(--warning-bg);
+  color: var(--warning-ink);
+}
+
+.status-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-text p {
+  color: var(--text-soft);
+}
+
+.actions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 640px) {
+  .actions .btn {
+    width: 100%;
+  }
+}

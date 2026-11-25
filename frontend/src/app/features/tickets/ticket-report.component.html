@@ -1,0 +1,269 @@
+<section class="page">
+  <header class="page-header">
+    <div class="page-header__text">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <span>HSI</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span class="current">Ticket Report</span>
+      </nav>
+      <div class="ticket-title-row">
+        <span class="icon-tile"><span class="material-symbols-outlined">confirmation_number</span></span>
+        <h1 class="page-title">Laporan Tiket</h1>
+      </div>
+      <p class="page-subtitle">
+        Semua kemaskini yang didaftarkan dengan No. Tiket: Update Discharge Time, Update Death Date dan PD103.
+        Jana dashboard untuk ringkasan, atau jana laporan untuk senarai penuh tiket.
+      </p>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="card-header">
+      <h2 class="card-title">
+        <span class="material-symbols-outlined">tune</span>
+        Tempoh Laporan
+      </h2>
+    </div>
+    <div class="card-body ticket-filters">
+      <label class="field">
+        <span class="field-label">From Date</span>
+        <span class="input-group">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <input id="ticket-from" class="input" type="date" [(ngModel)]="fromDate">
+        </span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">To Date</span>
+        <span class="input-group">
+          <span class="material-symbols-outlined">event</span>
+          <input id="ticket-to" class="input" type="date" [(ngModel)]="toDate">
+        </span>
+      </label>
+
+      <div class="ticket-actions">
+        <button class="btn btn-ghost" type="button" (click)="reset()" [disabled]="busy()">
+          <span class="material-symbols-outlined">restart_alt</span>
+          Reset
+        </button>
+        <button class="btn btn-primary" type="button" (click)="generateDashboard()" [disabled]="busy()">
+          <span class="material-symbols-outlined" [class.spin]="isLoadingDashboard()">{{ isLoadingDashboard() ? 'progress_activity' : 'dashboard' }}</span>
+          {{ isLoadingDashboard() ? 'Menjana...' : 'Jana Dashboard' }}
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="generateReport()" [disabled]="busy()">
+          <span class="material-symbols-outlined" [class.spin]="isLoadingReport()">{{ isLoadingReport() ? 'progress_activity' : 'list_alt' }}</span>
+          {{ isLoadingReport() ? 'Menjana...' : 'Jana Laporan' }}
+        </button>
+        <button class="btn btn-tonal" type="button" (click)="downloadExcel()" [disabled]="busy()">
+          <span class="material-symbols-outlined" [class.spin]="isDownloading()">{{ isDownloading() ? 'progress_activity' : 'table_view' }}</span>
+          {{ isDownloading() ? 'Downloading...' : 'Export Excel' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="alert alert-error" role="alert" *ngIf="errorMessage()">
+    <span class="material-symbols-outlined">error</span>
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <div class="empty-state" *ngIf="isLoadingDashboard() && !dashboard()">
+    <span class="material-symbols-outlined spin">progress_activity</span>
+    <span>Menjana dashboard...</span>
+  </div>
+
+  <!-- Dashboard -->
+  <ng-container *ngIf="dashboard() as d">
+    <p class="ticket-period muted">
+      Dashboard bagi tempoh <strong class="tnum">{{ fmt(d.fromDate) }}</strong> hingga <strong class="tnum">{{ fmt(d.toDate) }}</strong>
+    </p>
+
+    <section class="stat-grid">
+      <article class="stat-card">
+        <div class="stat-card__top">
+          <div>
+            <span class="label-caps">Jumlah Tiket</span>
+            <div class="stat-value">{{ d.totalTickets }}</div>
+          </div>
+          <span class="icon-tile"><span class="material-symbols-outlined">confirmation_number</span></span>
+        </div>
+        <span class="stat-meta">No. Tiket unik yang didaftarkan</span>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-card__top">
+          <div>
+            <span class="label-caps">Jumlah Transaksi</span>
+            <div class="stat-value">{{ d.totalTransactions }}</div>
+          </div>
+          <span class="icon-tile"><span class="material-symbols-outlined">receipt_long</span></span>
+        </div>
+        <span class="stat-meta">Simpanan yang menggunakan No. Tiket</span>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-card__top">
+          <div>
+            <span class="label-caps">Pengguna Aktif</span>
+            <div class="stat-value">{{ d.activeUsers }}</div>
+          </div>
+          <span class="icon-tile"><span class="material-symbols-outlined">group</span></span>
+        </div>
+        <span class="stat-meta">Pengguna yang membuat kemaskini</span>
+      </article>
+    </section>
+
+    <section class="ticket-insights">
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">
+              <span class="material-symbols-outlined">bar_chart</span>
+              Transaksi Harian
+            </h2>
+            <p class="card-subtitle">Bilangan transaksi bertiket mengikut hari.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="ticket-empty" *ngIf="d.totalTransactions === 0">Tiada transaksi dalam tempoh ini.</div>
+          <div class="ticket-chart" *ngIf="d.totalTransactions > 0" role="img"
+               [attr.aria-label]="'Transaksi harian dari ' + fmt(d.fromDate) + ' hingga ' + fmt(d.toDate)">
+            <div class="ticket-chart__col" *ngFor="let day of d.daily; let i = index"
+                 [title]="fmt(day.label) + ': ' + day.count + ' transaksi'">
+              <span class="ticket-chart__value tnum" *ngIf="day.count > 0">{{ day.count }}</span>
+              <div class="ticket-chart__bar" [class.is-zero]="day.count === 0"
+                   [style.height.%]="day.count === 0 ? 0 : (day.count / dailyMax()) * 100"></div>
+              <span class="ticket-chart__label tnum">{{ showDayLabel(i, d.daily.length) ? dayOf(day.label) : '' }}</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">
+              <span class="material-symbols-outlined">category</span>
+              Mengikut Modul
+            </h2>
+            <p class="card-subtitle">Pecahan transaksi bertiket.</p>
+          </div>
+        </div>
+        <ul class="card-body ticket-bars">
+          <li>
+            <div class="ticket-bar-label"><span>Update Discharge Time</span><span class="tnum muted">{{ d.dischargeCount }} · {{ modulePercent(d.dischargeCount) }}%</span></div>
+            <div class="ticket-bar-track"><div class="ticket-bar-fill" [style.width.%]="modulePercent(d.dischargeCount)"></div></div>
+          </li>
+          <li>
+            <div class="ticket-bar-label"><span>Update Death Date</span><span class="tnum muted">{{ d.deathCount }} · {{ modulePercent(d.deathCount) }}%</span></div>
+            <div class="ticket-bar-track"><div class="ticket-bar-fill" [style.width.%]="modulePercent(d.deathCount)"></div></div>
+          </li>
+          <li>
+            <div class="ticket-bar-label"><span>PD103 Inpatient Report</span><span class="tnum muted">{{ d.pd103Count }} · {{ modulePercent(d.pd103Count) }}%</span></div>
+            <div class="ticket-bar-track"><div class="ticket-bar-fill" [style.width.%]="modulePercent(d.pd103Count)"></div></div>
+          </li>
+        </ul>
+
+        <div class="card-header ticket-subheader">
+          <h3 class="card-title">
+            <span class="material-symbols-outlined">person</span>
+            Pengguna Teratas
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="ticket-empty" *ngIf="d.topUsers.length === 0">Tiada pengguna.</div>
+          <ul class="ticket-bars" *ngIf="d.topUsers.length > 0">
+            <li *ngFor="let user of d.topUsers">
+              <div class="ticket-bar-label"><span class="ticket-ellipsis" [title]="user.label">{{ user.label }}</span><strong class="tnum">{{ user.count }}</strong></div>
+              <div class="ticket-bar-track"><div class="ticket-bar-fill" [style.width.%]="(user.count / userMax()) * 100"></div></div>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+  </ng-container>
+
+  <!-- Report -->
+  <section class="card" *ngIf="report() || isLoadingReport()">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">
+          <span class="material-symbols-outlined">list_alt</span>
+          Senarai Tiket
+          <span class="badge badge-brand tnum" *ngIf="report() as r">{{ r.totalRecords }} rekod</span>
+        </h2>
+        <p class="card-subtitle" *ngIf="report() as r">Tempoh {{ fmt(r.fromDate) }} hingga {{ fmt(r.toDate) }}. Kemaskini PD103 dikumpul satu baris bagi setiap simpanan.</p>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="isLoadingReport()">
+      <span class="material-symbols-outlined spin">progress_activity</span>
+      <span>Menjana laporan...</span>
+    </div>
+
+    <ng-container *ngIf="!isLoadingReport() && report() as r">
+      <div class="empty-state" *ngIf="r.rows.length === 0">
+        <span class="material-symbols-outlined">inbox</span>
+        <span>Tiada tiket dalam tempoh dipilih.</span>
+      </div>
+
+      <ng-container *ngIf="r.rows.length > 0">
+        <div class="table-wrap ticket-table">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="num">#</th>
+                <th>No. Tiket</th>
+                <th>Modul</th>
+                <th>Tarikh Kemaskini</th>
+                <th>Oleh</th>
+                <th>Rujukan</th>
+                <th>Perubahan</th>
+                <th>Sebab</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of r.rows; let i = index">
+                <td class="num muted">{{ i + 1 }}</td>
+                <td class="mono nowrap strong">{{ row.ticketNo }}</td>
+                <td>
+                  <span class="badge"
+                        [class.badge-info]="row.module === 'DISCHARGE'"
+                        [class.badge-neutral]="row.module === 'DEATH'"
+                        [class.badge-success]="row.module === 'PD103'">{{ moduleLabels[row.module] }}</span>
+                </td>
+                <td class="tnum nowrap">{{ fmt(row.editedAt) }}</td>
+                <td>
+                  <div>{{ row.editedName || row.editedBy }}</div>
+                  <div class="muted ticket-small">{{ row.editedBy }}</div>
+                </td>
+                <td class="nowrap"><span [class.mono]="row.module !== 'PD103'">{{ reference(row) }}</span></td>
+                <td class="ticket-change">{{ row.changeSummary || '-' }}</td>
+                <td class="ticket-wrap">{{ row.reason || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ul class="ticket-cards">
+          <li class="ticket-card" *ngFor="let row of r.rows">
+            <div class="ticket-card__head">
+              <span class="mono strong">{{ row.ticketNo }}</span>
+              <span class="badge"
+                    [class.badge-info]="row.module === 'DISCHARGE'"
+                    [class.badge-neutral]="row.module === 'DEATH'"
+                    [class.badge-success]="row.module === 'PD103'">{{ moduleLabels[row.module] }}</span>
+            </div>
+            <dl class="ticket-card__grid">
+              <div><dt class="label-caps">Tarikh</dt><dd class="tnum">{{ fmt(row.editedAt) }}</dd></div>
+              <div><dt class="label-caps">Oleh</dt><dd>{{ row.editedName || row.editedBy }}</dd></div>
+              <div class="ticket-card__wide"><dt class="label-caps">Rujukan</dt><dd>{{ reference(row) }}</dd></div>
+              <div class="ticket-card__wide"><dt class="label-caps">Perubahan</dt><dd>{{ row.changeSummary || '-' }}</dd></div>
+              <div class="ticket-card__wide" *ngIf="row.reason"><dt class="label-caps">Sebab</dt><dd>{{ row.reason }}</dd></div>
+            </dl>
+          </li>
+        </ul>
+      </ng-container>
+    </ng-container>
+  </section>
+</section>

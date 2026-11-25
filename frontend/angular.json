@@ -1,0 +1,44 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "projects": {
+    "hospital-maintenance-frontend": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/hospital-maintenance-frontend",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "node_modules/@fontsource-variable/inter/index.css",
+              "node_modules/material-symbols/outlined.css",
+              "src/styles.css"
+            ]
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "hospital-maintenance-frontend:build"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": "1706bc9c-e45d-4c61-b93b-bdb2dfb4e9b7"
+  }
+}

@@ -1,0 +1,46 @@
+<button class="assistant-fab no-print" type="button" (click)="toggle()" [attr.aria-expanded]="isOpen()">
+  <span class="material-symbols-outlined">{{ isOpen() ? 'close' : 'support_agent' }}</span>
+  <span class="fab-label">{{ isOpen() ? 'Close AI' : 'AI Assistant' }}</span>
+  <span class="fab-tag" *ngIf="!isOpen()">Admin AI</span>
+</button>
+
+<section class="assistant-panel card no-print" *ngIf="isOpen()">
+  <div class="assistant-header">
+    <span class="icon-tile"><span class="material-symbols-outlined">support_agent</span></span>
+    <div class="assistant-title">
+      <h3>AI Assistant</h3>
+      <p>Bantuan read-only untuk report, menu, dan panduan sistem.</p>
+    </div>
+    <span class="badge badge-neutral assistant-model" *ngIf="modelLabel">{{ modelLabel }}</span>
+  </div>
+
+  <div class="assistant-messages" #messagesPanel>
+    <article class="message" *ngFor="let item of messages()" [class.user]="item.role === 'user'">
+      <span class="message-role">{{ item.role === 'user' ? 'Anda' : 'AI' }}</span>
+      <p>{{ item.content }}</p>
+      <button
+        *ngIf="item.downloadUrl"
+        type="button"
+        class="btn btn-primary btn-sm message-action"
+        (click)="triggerDownload(item.downloadUrl)">
+        <span class="material-symbols-outlined">download</span>
+        {{ item.actionLabel || 'Download' }}
+      </button>
+    </article>
+
+    <div class="message-status" *ngIf="isSending()">AI sedang menjawab...</div>
+  </div>
+
+  <div class="assistant-compose">
+    <textarea
+      class="textarea"
+      [(ngModel)]="draft"
+      rows="3"
+      placeholder="Tanya tentang report, menu, atau langkah deploy..."
+      (keydown)="sendOnEnter($event)"></textarea>
+    <button type="button" class="btn btn-primary" (click)="send()" [disabled]="isSending() || !draft.trim()">
+      <span class="material-symbols-outlined" [class.spin]="isSending()">{{ isSending() ? 'progress_activity' : 'send' }}</span>
+      {{ isSending() ? 'Sending...' : 'Send' }}
+    </button>
+  </div>
+</section>

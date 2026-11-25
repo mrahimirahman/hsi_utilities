@@ -1,0 +1,121 @@
+<div class="shell" [class.drawer-open]="drawerOpen()">
+  <aside class="sidebar" id="app-sidebar" aria-label="Menu utama">
+    <div class="sidebar-top">
+      <div class="brand">
+        <span class="brand-mark"><span class="material-symbols-outlined">local_hospital</span></span>
+        <div class="brand-text">
+          <strong>HSI Utilities</strong>
+          <small>HIS&#64;KKM Utilities Portal</small>
+        </div>
+        <button type="button" class="drawer-close" (click)="closeDrawer()" aria-label="Tutup menu">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="unit-strip">
+        <span class="unit-dot"></span>
+        <span>Unit Teknologi Maklumat, HSI</span>
+      </div>
+
+      <nav class="menu">
+        <a *ngFor="let item of visibleMenuItems()"
+           [routerLink]="item.route"
+           [class.active]="isActive(item)"
+           [attr.aria-current]="isActive(item) ? 'page' : null">
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
+          <span class="menu-label">{{ item.label }}</span>
+          <span class="menu-tag" *ngIf="item.requiresAdmin">Admin</span>
+          <span class="material-symbols-outlined menu-chevron" *ngIf="!item.requiresAdmin">chevron_right</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="date-card">
+        <span class="date-card__label">
+          <span class="material-symbols-outlined icon-sm">calendar_today</span>
+          Kalendar Bertugas
+        </span>
+        <strong class="tnum">{{ currentDateLabel }}</strong>
+        <span>{{ currentHijriLabel }}</span>
+      </div>
+
+      <div class="user-row">
+        <span class="avatar">{{ initials() }}</span>
+        <div class="user-row__text">
+          <strong>{{ authService.currentUser()?.fullName }}</strong>
+          <span>{{ authService.currentUser()?.department }}</span>
+        </div>
+      </div>
+
+      <button type="button" class="logout" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        Log Keluar
+      </button>
+    </div>
+  </aside>
+
+  <div class="scrim" (click)="closeDrawer()" aria-hidden="true"></div>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button type="button" class="menu-toggle" (click)="toggleDrawer()"
+                aria-label="Buka menu" aria-controls="app-sidebar" [attr.aria-expanded]="drawerOpen()">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="topbar-logos">
+          <img src="assets/jata.png" alt="Jata Malaysia">
+          <img src="assets/logokkm.png" alt="Logo KKM">
+        </div>
+        <div class="topbar-trail">
+          <span class="topbar-org">Hospital Sultan Ismail</span>
+          <span class="topbar-section">
+            <span class="hide-sm">HIS&#64;KKM Utiliti</span>
+            <ng-container *ngIf="currentSection()">
+              <span class="sep hide-sm">/</span>
+              <strong>{{ currentSection() }}</strong>
+            </ng-container>
+          </span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <span class="role-pill" *ngIf="authService.currentUser()?.role as role">
+          <span class="material-symbols-outlined icon-sm">shield_person</span>
+          {{ role }}
+        </span>
+        <div class="topbar-user">
+          <span class="avatar avatar-light">{{ initials() }}</span>
+          <div class="topbar-user__text">
+            <strong>{{ authService.currentUser()?.fullName }}</strong>
+            <span>{{ authService.currentUser()?.username }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+
+      <footer class="app-footer no-print">
+        <span>
+          <span class="material-symbols-outlined icon-sm">security</span>
+          Unit Teknologi Maklumat, Hospital Sultan Ismail
+        </span>
+        <span>Zon Waktu: Asia/Kuala_Lumpur (MYT)</span>
+      </footer>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi pantas">
+    <a *ngFor="let item of visibleMenuItems()"
+       [routerLink]="item.route"
+       [class.active]="isActive(item)">
+      <span class="material-symbols-outlined">{{ item.icon }}</span>
+      <span>{{ item.shortLabel }}</span>
+    </a>
+  </nav>
+
+  <app-ai-assistant *ngIf="canUseAiAssistant()"></app-ai-assistant>
+</div>

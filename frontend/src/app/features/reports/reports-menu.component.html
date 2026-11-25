@@ -1,0 +1,133 @@
+<section class="page">
+  <header class="page-header">
+    <div class="page-header__text">
+      <div class="page-eyebrow">
+        <span class="badge badge-brand">HIS&#64;KKM Sultan Ismail</span>
+        <span>Sub-Sistem Pelaporan Klinikal</span>
+      </div>
+      <h1 class="page-title">HSI Reports</h1>
+      <p class="page-subtitle">Pilih modul laporan HSI yang hendak dibuka. Modul bertanda <strong>Ready</strong> sudah aktif, manakala yang lain disediakan sebagai placeholder untuk pembangunan seterusnya.</p>
+    </div>
+  </header>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <span class="label-caps">Koleksi Modul</span>
+          <div class="stat-value">{{ reportItems.length }} Modul</div>
+        </div>
+        <span class="icon-tile tint"><span class="material-symbols-outlined">dataset</span></span>
+      </div>
+      <span class="stat-meta">Laporan HSI dalam portal ini</span>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <span class="label-caps">Ketersediaan</span>
+          <div class="stat-value ready-value">{{ readyCount }} Sedia Digunakan</div>
+        </div>
+        <span class="icon-tile"><span class="material-symbols-outlined">task_alt</span></span>
+      </div>
+      <div class="progress-row">
+        <div class="progress"><div class="progress__bar" [style.width.%]="readyPercent"></div></div>
+        <span class="tnum muted">{{ readyPercent }}%</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <span class="label-caps">Dalam Pembangunan</span>
+          <div class="stat-value">{{ reportItems.length - readyCount }} Placeholder</div>
+        </div>
+        <span class="icon-tile tint"><span class="material-symbols-outlined">construction</span></span>
+      </div>
+      <span class="stat-meta">Menu disediakan, logik report belum dibina</span>
+    </div>
+  </div>
+
+  <div class="card filter-bar">
+    <div class="input-group search">
+      <span class="material-symbols-outlined">search</span>
+      <input class="input" type="search" placeholder="Cari modul laporan mengikut nama atau kata kunci..."
+             [ngModel]="query()" (ngModelChange)="query.set($event)" aria-label="Cari modul laporan">
+    </div>
+    <div class="filter-controls">
+      <label class="filter-select">
+        <span class="material-symbols-outlined">event_repeat</span>
+        <span class="filter-select__label">Kekerapan</span>
+        <select [ngModel]="frequencyFilter()" (ngModelChange)="frequencyFilter.set($event)">
+          <option value="ALL">Semua</option>
+          <option *ngFor="let frequency of frequencies" [value]="frequency">{{ frequency }}</option>
+        </select>
+      </label>
+      <label class="filter-select">
+        <span class="material-symbols-outlined">toggle_on</span>
+        <span class="filter-select__label">Status</span>
+        <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+          <option value="ALL">Semua</option>
+          <option value="Ready">Ready</option>
+          <option value="Pending">Placeholder</option>
+        </select>
+      </label>
+      <button type="button" class="btn btn-ghost" (click)="resetFilters()" [disabled]="!hasFilters()">
+        <span class="material-symbols-outlined">filter_alt_off</span>
+        Set Semula
+      </button>
+    </div>
+  </div>
+
+  <div class="list-heading">
+    <div class="list-heading__title">
+      <h2>Senarai Modul Sistem</h2>
+      <span class="badge badge-neutral">{{ visibleItems().length }} daripada {{ reportItems.length }} modul</span>
+    </div>
+    <div class="legend">
+      <span><span class="dot dot-ready"></span>Ready (Sedia)</span>
+      <span><span class="dot dot-pending"></span>Dalam Pembangunan</span>
+    </div>
+  </div>
+
+  <div class="report-grid" *ngIf="visibleItems().length; else noResults">
+    <article class="card report-card" *ngFor="let item of visibleItems()" [class.is-ready]="item.status === 'Ready'">
+      <div class="report-card__top">
+        <div class="report-card__meta">
+          <span class="report-number tnum">{{ item.number }}</span>
+          <span class="badge" [class.badge-info]="item.frequency === 'Harian'" [class.badge-neutral]="item.frequency !== 'Harian'">{{ item.frequency }}</span>
+        </div>
+        <span class="badge badge-dot" [class.badge-ready]="item.status === 'Ready'" [class.badge-placeholder]="item.status !== 'Ready'">
+          {{ item.status === 'Ready' ? 'Ready' : 'Placeholder' }}
+        </span>
+      </div>
+
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+
+      <div class="report-card__footer">
+        <span class="category">
+          <span class="material-symbols-outlined icon-sm">{{ item.icon }}</span>
+          {{ item.category }}
+        </span>
+        <a *ngIf="item.status === 'Ready'" class="btn btn-primary" [routerLink]="item.route">
+          Buka Laporan
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+        <a *ngIf="item.status !== 'Ready'" class="btn btn-tonal" [routerLink]="item.route">
+          <span class="material-symbols-outlined">schedule</span>
+          Dalam Pembangunan
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #noResults>
+    <div class="card empty-state">
+      <span class="material-symbols-outlined">search_off</span>
+      <strong>Tiada modul laporan dijumpai</strong>
+      <span>Sila laraskan semula kata kunci carian atau tetapan tapisan anda.</span>
+      <button type="button" class="btn btn-secondary btn-sm" (click)="resetFilters()">Set Semula</button>
+    </div>
+  </ng-template>
+</section>

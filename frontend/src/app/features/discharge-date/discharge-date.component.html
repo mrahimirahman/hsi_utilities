@@ -1,0 +1,267 @@
+<section class="page discharge-page">
+  <header class="page-header">
+    <div class="page-header__text">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <span>HSI</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span class="current">{{ deathMode ? 'Update Death Date' : 'Update Discharge Time' }}</span>
+      </nav>
+      <div class="title-row">
+        <span class="icon-tile" aria-hidden="true">
+          <span class="material-symbols-outlined">{{ deathMode ? 'event_busy' : 'schedule' }}</span>
+        </span>
+        <h1 class="page-title">{{ deathMode ? 'Update Death Date' : 'Update Discharge Time' }}</h1>
+      </div>
+      <p class="page-subtitle" *ngIf="!deathMode">Pembetulan tarikh discaj pesakit (Borang Aduan HIS&#64;KKM). Cari pesakit melalui MRN, pilih encounter, kemudian kemaskini tarikh discaj. Setiap perubahan direkod dalam audit trail.</p>
+      <p class="page-subtitle" *ngIf="deathMode">Pembetulan tarikh &amp; masa kematian pesakit (rekod dengan death_date). Cari pesakit melalui MRN, pilih encounter, kemudian kemaskini tarikh kematian dan tarikh discaj. Setiap perubahan direkod dalam audit trail.</p>
+    </div>
+  </header>
+
+  <!-- Messages: shown beside the step that produced them -->
+  <ng-template #messages>
+    <div class="alert alert-success" role="status" *ngIf="successMessage()">
+      <span class="material-symbols-outlined">check_circle</span>
+      <span>{{ successMessage() }}</span>
+    </div>
+    <div class="alert alert-error" role="alert" *ngIf="errorMessage()">
+      <span class="material-symbols-outlined">error</span>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  </ng-template>
+
+  <!-- Step 1: search -->
+  <section class="card">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">1</span> Cari Rekod Pesakit</h2>
+      <span class="card-subtitle">Cari pesakit melalui MRN.</span>
+    </div>
+    <div class="card-body step-body">
+      <div class="search-row">
+        <label class="field search-field">
+          <span class="field-label">MRN Pesakit</span>
+          <div class="mrn-input">
+            <span class="mrn-prefix">HSI</span>
+            <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+          </div>
+        </label>
+        <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+          <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+          {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+        </button>
+      </div>
+
+      <ng-container *ngIf="!selected()">
+        <ng-container *ngTemplateOutlet="messages"></ng-container>
+      </ng-container>
+    </div>
+  </section>
+
+  <!-- Step 2: encounter list -->
+  <section class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <div class="card-heading">
+        <h2 class="card-title"><span class="step-badge">2</span> {{ deathMode ? 'Rekod Admission (IN) - Ada Tarikh Kematian' : 'Rekod Admission (IN)' }}</h2>
+        <span class="card-subtitle">Pilih rekod yang hendak dibetulkan.</span>
+      </div>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod dijumpai</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>{{ deathMode ? 'Tiada rekod dengan tarikh kematian dijumpai untuk MRN ini.' : 'Tiada rekod admission dijumpai untuk MRN ini.' }}</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table encounter-table">
+        <thead>
+          <tr>
+            <th>MRN</th>
+            <th>Nama</th>
+            <th>IC Baru</th>
+            <th>Encounter ID</th>
+            <th>Tarikh Encounter</th>
+            <th>Wad Discaj</th>
+            <th *ngIf="deathMode">Death Date</th>
+            <th>Discharge (encounters)</th>
+            <th>Discharge (enc_discharges)</th>
+            <th>Pre Discharge Date</th>
+            <th>Pre Discharge Time</th>
+            <th class="center"><span class="sr-only">Tindakan</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.is-selected]="selected()?.encounterId === row.encounterId">
+            <td class="mono">{{ row.patientMrn }}</td>
+            <td class="name-cell">{{ row.personName }}</td>
+            <td class="mono">{{ row.personNewIc }}</td>
+            <td class="mono strong">{{ row.encounterId }}</td>
+            <td class="nowrap">{{ fmt(row.encounterDate) }}</td>
+            <td>{{ row.dischargeWardName || row.dischargeWard }} <small class="muted" *ngIf="row.dischargeWardName">({{ row.dischargeWard }})</small></td>
+            <td class="nowrap" *ngIf="deathMode">{{ fmt(row.deathDate) }}</td>
+            <td class="nowrap">{{ fmt(row.encounterDischargeDate) }}</td>
+            <td class="nowrap">{{ fmt(row.encDischargeDate) }}</td>
+            <td class="nowrap">{{ fmt(row.preDischargeDate) }}</td>
+            <td class="nowrap">{{ fmt(row.preDischargeTime) }}</td>
+            <td class="center">
+              <button class="btn btn-sm"
+                      [class.btn-primary]="selected()?.encounterId === row.encounterId"
+                      [class.btn-secondary]="selected()?.encounterId !== row.encounterId"
+                      type="button" (click)="select(row)" [disabled]="isSaving()">
+                <span class="material-symbols-outlined icon-sm">{{ selected()?.encounterId === row.encounterId ? 'check' : 'radio_button_unchecked' }}</span>
+                {{ selected()?.encounterId === row.encounterId ? 'Dipilih' : 'Pilih' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Step 3: edit form -->
+  <section class="card" *ngIf="selected() as row">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">3</span> {{ deathMode ? 'Kemaskini Tarikh Kematian' : 'Kemaskini Tarikh Discaj' }}</h2>
+      <span class="badge badge-info">
+        <span class="material-symbols-outlined icon-sm">link</span>
+        Encounter {{ row.encounterId }}
+      </span>
+    </div>
+
+    <div class="card-body step-body">
+      <dl class="summary-strip">
+        <div>
+          <dt class="label-caps">Pesakit</dt>
+          <dd>{{ row.personName }}</dd>
+        </div>
+        <div>
+          <dt class="label-caps">MRN</dt>
+          <dd class="mono">{{ row.patientMrn }}</dd>
+        </div>
+        <div>
+          <dt class="label-caps">Wad Discaj</dt>
+          <dd>{{ row.dischargeWardName || row.dischargeWard }}</dd>
+        </div>
+        <div>
+          <dt class="label-caps">Admission</dt>
+          <dd class="tnum">{{ fmt(row.encounterDate) }}</dd>
+        </div>
+      </dl>
+
+      <div class="death-block" *ngIf="deathMode">
+        <label class="field">
+          <span class="field-label">
+            <span class="with-icon"><span class="material-symbols-outlined icon-sm">event_busy</span> Death Date &amp; Time <span class="required">*</span></span>
+          </span>
+          <input class="input" type="datetime-local" [(ngModel)]="deathDate">
+          <span class="field-hint current-value">
+            <span class="material-symbols-outlined icon-sm">history</span>
+            Semasa: enc_discharges.death_date <span class="current-chip tnum">{{ fmt(row.deathDate) }}</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">Discharge Date &amp; Time <span class="required">*</span></span>
+          <input class="input" type="datetime-local" [(ngModel)]="dischargeDate">
+          <span class="field-hint current-value">
+            <span class="material-symbols-outlined icon-sm">history</span>
+            <span>Semasa: encounters <span class="current-chip tnum">{{ fmt(row.encounterDischargeDate) }}</span> / enc_discharges <span class="current-chip tnum">{{ fmt(row.encDischargeDate) }}</span></span>
+          </span>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Pre Discharge Date <span class="required">*</span></span>
+          <input class="input" type="date" [(ngModel)]="preDischargeDate">
+          <span class="field-hint current-value">
+            <span class="material-symbols-outlined icon-sm">history</span>
+            Semasa: <span class="current-chip tnum">{{ fmt(row.preDischargeDate) }}</span>
+          </span>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Pre Discharge Time <span class="required">*</span></span>
+          <input class="input" type="time" [(ngModel)]="preDischargeTime">
+          <span class="field-hint current-value">
+            <span class="material-symbols-outlined icon-sm">history</span>
+            Semasa: <span class="current-chip tnum">{{ fmt(row.preDischargeTime) }}</span>
+          </span>
+        </label>
+      </div>
+
+      <label class="field ticket-field">
+        <span class="field-label">No. Tiket <span class="required">*</span></span>
+        <input class="input mono" type="text" maxlength="50" required [(ngModel)]="ticketNo" placeholder="cth. no. Borang Aduan / tiket helpdesk">
+        <span class="field-hint">Wajib diisi bagi setiap kemaskini.</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Penerangan / Sebab <small>Maks. 500 aksara</small></span>
+        <textarea class="textarea" rows="3" maxlength="500" [(ngModel)]="reason" placeholder="cth. Salah tarikh discaj, tarikh betul 20/11/26 (Borang Aduan Wad Dahlia)"></textarea>
+      </label>
+
+      <ng-container *ngTemplateOutlet="messages"></ng-container>
+    </div>
+
+    <div class="card-footer">
+      <span class="with-icon">
+        <span class="material-symbols-outlined icon-sm">info</span>
+        Setiap perubahan direkod dalam audit trail.
+      </span>
+      <div class="footer-actions">
+        <button class="btn btn-secondary" type="button" (click)="cancel()" [disabled]="isSaving()">Batal</button>
+        <button class="btn btn-primary" type="button" (click)="save()" [disabled]="isSaving()">
+          <span class="material-symbols-outlined" [class.spin]="isSaving()">{{ isSaving() ? 'progress_activity' : 'save' }}</span>
+          {{ isSaving() ? 'Menyimpan...' : 'Simpan Perubahan' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 4: audit trail -->
+  <section class="card" *ngIf="selected()">
+    <div class="card-header">
+      <div class="card-heading">
+        <h2 class="card-title"><span class="step-badge">4</span> Audit Trail</h2>
+        <span class="card-subtitle">Sejarah perubahan untuk encounter ini (sebelum &rarr; selepas).</span>
+      </div>
+      <span class="badge badge-neutral" *ngIf="auditEntries().length > 0">{{ auditEntries().length }} rekod</span>
+    </div>
+
+    <div class="empty-state" *ngIf="auditEntries().length === 0">
+      <span class="material-symbols-outlined">history</span>
+      <span>Tiada perubahan direkodkan.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="auditEntries().length > 0">
+      <table class="data-table audit-table">
+        <thead>
+          <tr>
+            <th>Tarikh Kemaskini</th>
+            <th>Oleh</th>
+            <th>No. Tiket</th>
+            <th *ngIf="deathMode">Death Date</th>
+            <th>Discharge (encounters)</th>
+            <th>Discharge (enc_discharges)</th>
+            <th>Pre Discharge Date</th>
+            <th>Pre Discharge Time</th>
+            <th>Sebab</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of auditEntries()">
+            <td class="nowrap">{{ fmt(entry.editedAt) }}</td>
+            <td class="name-cell">{{ entry.editedName || entry.editedBy }}</td>
+            <td class="mono nowrap">{{ entry.ticketNo || '-' }}</td>
+            <td *ngIf="deathMode"><span class="change"><span class="before">{{ fmt(entry.deathDateBefore) }}</span><span class="arrow">&rarr;</span><span class="after">{{ fmt(entry.deathDateAfter) }}</span></span></td>
+            <td><span class="change"><span class="before">{{ fmt(entry.encounterDischargeDateBefore) }}</span><span class="arrow">&rarr;</span><span class="after">{{ fmt(entry.encounterDischargeDateAfter) }}</span></span></td>
+            <td><span class="change"><span class="before">{{ fmt(entry.encDischargeDateBefore) }}</span><span class="arrow">&rarr;</span><span class="after">{{ fmt(entry.encDischargeDateAfter) }}</span></span></td>
+            <td><span class="change"><span class="before">{{ fmt(entry.preDischargeDateBefore) }}</span><span class="arrow">&rarr;</span><span class="after">{{ fmt(entry.preDischargeDateAfter) }}</span></span></td>
+            <td><span class="change"><span class="before">{{ fmt(entry.preDischargeTimeBefore) }}</span><span class="arrow">&rarr;</span><span class="after">{{ fmt(entry.preDischargeTimeAfter) }}</span></span></td>
+            <td class="wrap">{{ fmt(entry.reason) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="ms"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>HSI Utilities - HIS@KKM</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;min-height:100%;margin:0;padding:0;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-on-surface": "#eaf1ff", "on-secondary-fixed": "#111c2d", "surface-dim": "#cbdbf5", "outline-variant": "#bdcac0", "on-tertiary-fixed": "#002114", "inverse-primary": "#71daab", "secondary-fixed-dim": "#bcc7de", "on-tertiary-container": "#f5fff7", "on-error-container": "#93000a", "tertiary": "#15684b", "surface-bright": "#f8f9ff", "on-secondary-container": "#586377", "tertiary-container": "#358263", "background": "#f8f9ff", "surface-tint": "#006c4b", "secondary-container": "#d5e0f8", "on-tertiary-fixed-variant": "#005138", "primary-fixed-dim": "#71daab", "tertiary-fixed": "#a5f3cd", "on-primary": "#ffffff", "on-secondary": "#ffffff", "inverse-surface": "#213145", "error-container": "#ffdad6", "primary-fixed": "#8ef7c6", "on-surface-variant": "#3e4942", "surface-container-lowest": "#ffffff", "surface-container-low": "#eff4ff", "on-primary-fixed": "#002114", "surface": "#f8f9ff", "secondary": "#545f73", "on-tertiary": "#ffffff", "on-primary-container": "#f5fff7", "secondary-fixed": "#d8e3fb", "primary": "#006949", "on-background": "#0b1c30", "surface-container-highest": "#d3e4fe", "surface-variant": "#d3e4fe", "on-secondary-fixed-variant": "#3c475a", "outline": "#6e7a72", "error": "#ba1a1a", "surface-container-high": "#dce9ff", "on-surface": "#0b1c30", "tertiary-fixed-dim": "#89d6b2", "on-primary-fixed-variant": "#005137", "on-error": "#ffffff", "primary-container": "#00855d", "surface-container": "#e5eeff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter": "1.5rem", "margin-mobile": "1rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-xl": "2rem", "space-lg": "1.5rem", "space-md": "1rem", "gutter-mobile": "0.75rem", "margin": "2rem" }, "fontFamily": { "body-md": ["Inter"], "label-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "body-lg": ["Inter"], "body-sm": ["Inter"], "headline-md": ["Inter"], "label-sm": ["Inter"], "headline-sm": ["Inter"], "label-lg": ["Inter"], "tabular-data": ["Inter"], "headline-xl": ["Inter"], "headline-xl-mobile": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-lg-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "tabular-data": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-xl-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen relative selection:bg-primary-fixed-dim selection:text-on-primary-fixed"><aside class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0" id="hsi-drawer"><div class="absolute inset-0 bg-inverse-surface/60 backdrop-blur-sm transition-opacity" id="drawer-backdrop" onclick="document.getElementById('hsi-drawer').classList.add('opacity-0','pointer-events-none')"></div><div class="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-surface-container-lowest shadow-[0_4px_24px_rgba(0,0,0,0.18)] flex flex-col justify-between overflow-hidden z-10 transition-transform duration-300 -translate-x-full" id="drawer-panel"><div class="flex flex-col flex-1 overflow-y-auto"><div class="bg-primary px-space-md pt-safe pb-space-md text-on-primary"><div class="flex items-center justify-between pt-space-sm mb-space-sm"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary font-headline-sm text-headline-sm font-bold shadow-[0_1px_2px_rgba(15,23,42,0.05)]"><span class="material-symbols-outlined text-[20px]">local_hospital</span></div><div class="flex flex-col"><span class="font-label-sm text-label-sm uppercase tracking-wider text-primary-fixed">Kementerian Kesihatan</span><span class="font-headline-sm text-headline-sm font-bold leading-tight">Hosp. Sultan Ismail</span></div></div><button aria-label="Tutup menu" class="w-11 h-11 flex items-center justify-center rounded-lg hover:bg-primary-container text-on-primary transition-colors" onclick="document.getElementById('hsi-drawer').classList.add('opacity-0','pointer-events-none')" type="button"><span class="material-symbols-outlined text-[22px]">close</span></button></div><div class="inline-flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span>HIS@KKM • Unit IT</span></div></div><div class="px-space-md py-space-sm"><span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant px-space-xs">Modul Utiliti</span></div><nav class="px-space-xs flex flex-col gap-1" data-active-classes="bg-surface-container-high text-primary font-semibold"><a class="flex items-center gap-space-md px-space-md h-12 rounded-lg text-on-surface hover:bg-surface-container transition-colors" data-path="laporan" href="#"><span class="material-symbols-outlined text-[20px] text-primary">analytics</span><span class="font-label-lg text-label-lg flex-1">HSI Reports</span></a><a class="flex items-center gap-space-md px-space-md h-12 rounded-lg text-on-surface hover:bg-surface-container transition-colors" data-path="discaj" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">update</span><span class="font-label-lg text-label-lg flex-1">Update Discharge Time</span></a><a class="flex items-center gap-space-md px-space-md h-12 rounded-lg text-on-surface hover:bg-surface-container transition-colors" data-path="kematian" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">event_busy</span><span class="font-label-lg text-label-lg flex-1">Update Death Date</span></a><a class="flex items-center gap-space-md px-space-md h-12 rounded-lg text-on-surface hover:bg-surface-container transition-colors" data-path="audit" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">security</span><span class="font-label-lg text-label-lg flex-1">Audit Log (Admin)</span></a></nav></div><div class="bg-surface-container-low p-space-md pb-safe flex flex-col gap-space-sm"><div class="flex flex-col gap-0.5 px-space-xs"><div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">calendar_today</span><span>Selasa, 24 Nov 2026</span></div><div class="font-tabular-data text-tabular-data text-outline">15 Jamadilakhir 1448 H</div></div><div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-lowest shadow-[0_1px_2px_rgba(15,23,42,0.05)]"><div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-md text-label-md font-semibold text-on-surface truncate">Ahmad Faiz bin Razak</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">PP Tel. Maklumat (F29)</span></div></div><a class="flex items-center justify-center gap-space-xs h-11 px-space-md rounded-lg bg-error-container text-on-error-container font-label-md text-label-md hover:bg-error hover:text-on-error transition-colors" data-path="login" href="#"><span class="material-symbols-outlined text-[18px]">logout</span><span>Log Keluar Sesi</span></a></div></div></aside><script>document.addEventListener('DOMContentLoaded',function(){var d=document.getElementById('hsi-drawer');var p=document.getElementById('drawer-panel');var obs=new MutationObserver(function(){if(!d.classList.contains('pointer-events-none')){p.classList.remove('-translate-x-full');}else{p.classList.add('-translate-x-full');}});obs.observe(d,{attributes:true,attributeFilter:['class']});});</script><div class="fixed top-0 inset-x-0 z-40 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="bg-error text-on-error px-space-md py-1 flex items-center justify-between text-left gap-space-xs"><div class="flex items-center gap-1.5 min-w-0 flex-1"><span class="material-symbols-outlined text-[16px] shrink-0">wifi_off</span><span class="font-label-sm text-label-sm truncate">Tiada sambungan internet. Data mungkin tidak terkini.</span></div><button class="h-8 px-space-sm rounded-lg bg-on-error text-error font-label-sm text-label-sm hover:bg-surface-bright shrink-0 transition-colors flex items-center gap-1" type="button"><span class="material-symbols-outlined text-[14px]">refresh</span><span>Cuba Semula</span></button></div><header class="h-14 px-space-md flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-xs"><button aria-label="Buka menu navigasi" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container transition-colors" onclick="document.getElementById('hsi-drawer').classList.remove('opacity-0','pointer-events-none')" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">HSI Utilities</span><span class="inline-flex items-center px-1.5 py-0.2 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[10px] leading-tight">HIS@KKM</span></div><span class="font-body-sm text-[11px] text-on-surface-variant leading-none">Unit Teknologi Maklumat</span></div></div><div class="flex items-center gap-space-xs"><div class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="hidden xs:inline">Intranet</span></div><button aria-label="Notifikasi" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header></div><main class="flex-1 flex flex-col relative w-full pt-[90px] pb-32 bg-surface min-h-screen"><div class="flex flex-col w-full px-space-md py-space-sm gap-space-md">
+<!-- Breadcrumb & Top Meta Badges -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between gap-2">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">assignment_late</span>
+<span>HSI-DAMA-M • Bulanan</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span>Ready (Sedia)</span>
+</div>
+</div>
+<div class="mt-1">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">Data Diagnosis DAMA Bulanan</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+        Laporan analisis pesakit discaj atas risiko sendiri (Discharged Against Medical Advice) &amp; kod ICD-10 HSI.
+      </p>
+</div>
+</div>
+<!-- Filter Card -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+<span>Parameter Tapisan Rekod</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">HIS@KKM Live</span>
+</div>
+<!-- Dropdowns Stack -->
+<div class="grid grid-cols-1 gap-2.5">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant flex items-center justify-between">
+<span>Bulan Laporan</span>
+<span class="font-tabular-data text-[10px] text-outline">Tahun 2026</span>
+</label>
+<div class="relative">
+<select class="w-full h-11 pl-9 pr-8 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md appearance-none focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_#006949]">
+<option selected="">November 2026 (Semasa)</option>
+<option>Oktober 2026</option>
+<option>September 2026</option>
+<option>Ogos 2026</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-3 text-[18px] text-outline pointer-events-none">calendar_month</span>
+<span class="material-symbols-outlined absolute right-3 top-3 text-[18px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Wad / Unit</label>
+<div class="relative">
+<select class="w-full h-11 pl-8 pr-6 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md appearance-none focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_#006949] text-xs">
+<option selected="">Semua Wad</option>
+<option>Wad Kenanga (W1)</option>
+<option>Wad Dahlia (W3)</option>
+<option>Wad Melati (W4)</option>
+<option>Wad Pediatrik</option>
+</select>
+<span class="material-symbols-outlined absolute left-2.5 top-3 text-[16px] text-outline pointer-events-none">meeting_room</span>
+<span class="material-symbols-outlined absolute right-2 top-3 text-[16px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Status Borang</label>
+<div class="relative">
+<select class="w-full h-11 pl-8 pr-6 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md appearance-none focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_#006949] text-xs">
+<option selected="">Semua Status</option>
+<option>Borang Lengkap</option>
+<option>Absconded / Lari Wad</option>
+<option>Dalam Siasatan</option>
+</select>
+<span class="material-symbols-outlined absolute left-2.5 top-3 text-[16px] text-outline pointer-events-none">verified</span>
+<span class="material-symbols-outlined absolute right-2 top-3 text-[16px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-2 pt-1">
+<button class="w-full h-11 px-space-md rounded-lg bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+<span>Jana Laporan DAMA</span>
+</button>
+<div class="grid grid-cols-2 gap-2">
+<button class="h-10 px-3 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm flex items-center justify-center gap-1.5 hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-tertiary">download</span>
+<span>Eksport PDF/Excel</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface-container text-on-surface-variant font-label-sm text-label-sm flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+<span>Set Semula</span>
+</button>
+</div>
+</div>
+</div>
+<!-- KPI Summary Strip (2x2 Grid) -->
+<div class="grid grid-cols-2 gap-2.5">
+<div class="rounded-xl bg-surface-container-lowest p-space-md flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Jumlah DAMA</span>
+<span class="material-symbols-outlined text-[18px] text-primary">personal_injury</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">48</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kes</span>
+</div>
+<div class="inline-flex items-center gap-1 text-[11px] text-tertiary font-label-sm">
+<span class="material-symbols-outlined text-[12px]">trending_up</span>
+<span>+4% vs Okt</span>
+</div>
+</div>
+<div class="rounded-xl bg-surface-container-lowest p-space-md flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kadar DAMA</span>
+<span class="material-symbols-outlined text-[18px] text-tertiary">monitoring</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">2.4%</span>
+</div>
+<div class="inline-flex items-center gap-1 text-[11px] text-primary font-label-sm">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+<span>KKM &lt;3.0% (Terkawal)</span>
+</div>
+</div>
+<div class="rounded-xl bg-surface-container-lowest p-space-md flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Wad Tertinggi</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">hotel</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Wad Kenanga</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">
+<span class="font-tabular-data text-primary font-semibold">16 kes</span> (33.3%)
+      </div>
+</div>
+<div class="rounded-xl bg-surface-container-lowest p-space-md flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Borang Lengkap</span>
+<span class="material-symbols-outlined text-[18px] text-primary">assignment_turned_in</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">93.8%</span>
+</div>
+<div class="font-label-sm text-label-sm text-outline">
+<span class="font-tabular-data text-on-surface-variant">45</span> drpd 48 kes
+      </div>
+</div>
+</div>
+<!-- Top 3 ICD-10 Diagnoses Mini-Card with Visual Richness -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">pie_chart</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Top 3 Kod ICD-10 DAMA</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Nov 2026</span>
+</div>
+<!-- Diagnoses Progress Bars -->
+<div class="flex flex-col gap-2.5">
+<!-- Item 1 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface font-semibold truncate pr-2">1. I10 • Essential Hypertension</span>
+<span class="font-tabular-data text-primary shrink-0">11 kes (23%)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 23%;"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface font-semibold truncate pr-2">2. E11.9 • Type 2 Diabetes Mellitus</span>
+<span class="font-tabular-data text-primary shrink-0">9 kes (19%)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 19%;"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface font-semibold truncate pr-2">3. J18.9 • Pneumonia, Unspecified</span>
+<span class="font-tabular-data text-primary shrink-0">7 kes (15%)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 15%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Tabbed Section Switcher (Pill Chips) -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
+<button class="h-9 px-3.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm flex items-center gap-1.5 shrink-0 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">format_list_bulleted</span>
+<span>Senarai Pesakit (48)</span>
+</button>
+<button class="h-9 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1.5 shrink-0 hover:bg-surface-container transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">bar_chart</span>
+<span>Pecahan ICD-10</span>
+</button>
+<button class="h-9 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1.5 shrink-0 hover:bg-surface-container transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">domain</span>
+<span>Statistik Wad</span>
+</button>
+</div>
+<!-- List of Patient DAMA Records -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between px-1">
+<span class="font-label-md text-label-md text-on-surface">Rekod DAMA Terkini Wad</span>
+<span class="font-tabular-data text-tabular-data text-outline">Paparan 3 drpd 48</span>
+</div>
+<!-- Patient Card 1 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-3">
+<!-- Card Badges -->
+<div class="flex items-center justify-between gap-1 flex-wrap">
+<div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span>Lengkap (Borang Ada)</span>
+</div>
+<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">bed</span>
+<span>Wad Kenanga (W1) - K04</span>
+</div>
+</div>
+<!-- Patient Identity -->
+<div class="flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">EN. RAZALI BIN HASSAN</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">56L</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-tabular-data text-tabular-data text-primary font-semibold">MRN: HSI389210</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-tabular-data text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+            24-11-2026, 14:20
+          </span>
+</div>
+</div>
+<!-- Clinical & DAMA Info -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">medical_information</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Kod Diagnosis Utama</span>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">I10 - Essential Hypertension</span>
+</div>
+</div>
+<div class="flex items-start gap-1.5 pt-1">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0 mt-0.5">comment</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Alasan Dinyatakan</span>
+<span class="font-body-sm text-body-sm text-on-surface">Masalah urusan peribadi / keluarga di rumah. Menolak cadangan rawatan lanjutan.</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 pt-1 text-[11px] text-outline font-label-sm">
+<span class="material-symbols-outlined text-[14px]">badge</span>
+<span>Pegawai Merawat: Dr. Norhafizah Kassim (UD52)</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full h-11 px-space-md rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container transition-colors active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">description</span>
+<span>Lihat Butiran &amp; Borang DAMA</span>
+</button>
+</div>
+<!-- Patient Card 2 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-3">
+<!-- Card Badges -->
+<div class="flex items-center justify-between gap-1 flex-wrap">
+<div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span>Lengkap (Borang Ada)</span>
+</div>
+<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">bed</span>
+<span>Wad Dahlia (W3) - K12</span>
+</div>
+</div>
+<!-- Patient Identity -->
+<div class="flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">PUAN MARIAM BINTI DAUD</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">62P</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-tabular-data text-tabular-data text-primary font-semibold">MRN: HSI376512</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-tabular-data text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+            22-11-2026, 19:45
+          </span>
+</div>
+</div>
+<!-- Clinical & DAMA Info -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">medical_information</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Kod Diagnosis Utama</span>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">E11.9 - Type 2 Diabetes Mellitus</span>
+</div>
+</div>
+<div class="flex items-start gap-1.5 pt-1">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0 mt-0.5">comment</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Alasan Dinyatakan</span>
+<span class="font-body-sm text-body-sm text-on-surface">Enggan teruskan suntikan insulin di wad; memilih ubat oral &amp; pemantauan KK.</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 pt-1 text-[11px] text-outline font-label-sm">
+<span class="material-symbols-outlined text-[14px]">badge</span>
+<span>Pegawai Merawat: Dr. Lim Wei Lun (UD48)</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full h-11 px-space-md rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container transition-colors active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">description</span>
+<span>Lihat Butiran &amp; Borang DAMA</span>
+</button>
+</div>
+<!-- Patient Card 3 (Absconded Warning Card) -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-3">
+<!-- Card Badges -->
+<div class="flex items-center justify-between gap-1 flex-wrap">
+<div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span>Amaran: Absconded / Lari Wad</span>
+</div>
+<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">bed</span>
+<span>Wad Kenanga (W1) - K09</span>
+</div>
+</div>
+<!-- Patient Identity -->
+<div class="flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">EN. SURESH A/L MOHAN</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">34L</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-tabular-data text-tabular-data text-error font-semibold">MRN: HSI391004</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-tabular-data text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+            20-11-2026, 03:15 (Subuh)
+          </span>
+</div>
+</div>
+<!-- Clinical & Absconded Details -->
+<div class="p-2.5 rounded-lg bg-error-container/30 flex flex-col gap-1.5">
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-error shrink-0 mt-0.5">medical_information</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[11px] text-error uppercase font-bold">Kod Diagnosis</span>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">S06.0 - Concussion / Kecederaan Kepala</span>
+</div>
+</div>
+<div class="flex items-start gap-1.5 pt-1">
+<span class="material-symbols-outlined text-[16px] text-error shrink-0 mt-0.5">report_problem</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[11px] text-error uppercase font-bold">Status Tindakan Klinikal &amp; Polis</span>
+<span class="font-body-sm text-body-sm text-on-surface">Pesakit meninggalkan wad tanpa menandatangani borang rasmi DAMA. Laporan polis dibuat mengikut SOP KKM (Polis Repot: PD/012892/26).</span>
+</div>
+</div>
+</div>
+<!-- Action Button Warning Style -->
+<button class="w-full h-11 px-space-md rounded-lg bg-error-container text-on-error-container font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-error hover:text-on-error transition-colors active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[18px]">local_police</span>
+<span>Status Siasatan Polis &amp; Fail DAMA</span>
+</button>
+</div>
+</div>
+<!-- Operational Footer Context -->
+<div class="rounded-xl bg-surface-container-low p-space-md flex flex-col gap-2 mt-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Unit Rekod Perubatan &amp; IT HSI</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Talian Sambungan Dalaman: Ext 2104 / 2108</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 text-[11px] text-outline font-tabular-data">
+<span>Integrasi HIS@KKM Gateway</span>
+<span class="font-semibold text-on-surface-variant">IP: 10.120.4.15</span>
+</div>
+</div>
+</div></main><div class="fixed bottom-20 right-4 z-40"><button class="h-12 px-space-md rounded-full bg-inverse-surface text-inverse-on-surface flex items-center gap-space-xs shadow-[0_4px_12px_rgba(15,23,42,0.25)] hover:bg-on-background transition-transform active:scale-95" type="button"><span class="material-symbols-outlined text-[20px] text-primary-fixed">smart_toy</span><span class="font-label-md text-label-md font-semibold tracking-wide">AI Assistant (Admin AI)</span></button></div><nav class="fixed bottom-0 inset-x-0 z-40 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.05)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center gap-0.5 w-16 h-14 text-on-surface-variant hover:text-on-surface transition-colors" data-path="laporan" href="#"><span class="material-symbols-outlined text-[22px]">analytics</span><span class="font-label-sm text-label-sm">Laporan</span></a><a class="flex flex-col items-center justify-center gap-0.5 w-16 h-14 text-on-surface-variant hover:text-on-surface transition-colors" data-path="discaj" href="#"><span class="material-symbols-outlined text-[22px]">update</span><span class="font-label-sm text-label-sm">Discaj</span></a><a class="flex flex-col items-center justify-center gap-0.5 w-16 h-14 text-on-surface-variant hover:text-on-surface transition-colors" data-path="kematian" href="#"><span class="material-symbols-outlined text-[22px]">event_busy</span><span class="font-label-sm text-label-sm">Kematian</span></a><a class="flex flex-col items-center justify-center gap-0.5 w-16 h-14 text-on-surface-variant hover:text-on-surface transition-colors" data-path="audit" href="#"><span class="material-symbols-outlined text-[22px]">security</span><span class="font-label-sm text-label-sm">Audit</span></a></div></nav></body></html>

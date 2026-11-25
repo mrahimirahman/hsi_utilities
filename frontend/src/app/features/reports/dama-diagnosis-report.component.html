@@ -1,0 +1,241 @@
+<section class="page">
+  <header class="page-header">
+    <div class="page-header__text">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <span>HSI</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span>HSI Reports</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span class="current">Data Diagnosis DAMA Bulanan</span>
+      </nav>
+      <div class="dama-title-row">
+        <span class="icon-tile"><span class="material-symbols-outlined">exit_to_app</span></span>
+        <h1 class="page-title">Data Diagnosis DAMA Bulanan</h1>
+      </div>
+      <p class="page-subtitle">
+        Pilih tempoh tarikh untuk semakan kes discaj jenis <strong>Discharge Against Medical Advise (DAMA)</strong>, kemudian export terus ke Excel.
+      </p>
+    </div>
+    <div class="page-actions no-print">
+      <button class="btn btn-secondary" type="button" (click)="downloadExcel()" [disabled]="isLoading() || isDownloading()">
+        <span class="material-symbols-outlined" [class.spin]="isDownloading()">{{ isDownloading() ? 'progress_activity' : 'table_view' }}</span>
+        {{ isDownloading() ? 'Downloading...' : 'Generate Excel' }}
+      </button>
+    </div>
+  </header>
+
+  <section class="card no-print">
+    <div class="card-header">
+      <h2 class="card-title">
+        <span class="material-symbols-outlined">tune</span>
+        Parameter Tapisan Rekod
+      </h2>
+    </div>
+    <div class="card-body dama-filters">
+      <label class="field">
+        <span class="field-label">From Date</span>
+        <span class="input-group">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <input class="input" type="date" [(ngModel)]="fromDate">
+        </span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">To Date</span>
+        <span class="input-group">
+          <span class="material-symbols-outlined">event</span>
+          <input class="input" type="date" [(ngModel)]="toDate">
+        </span>
+      </label>
+
+      <div class="dama-actions">
+        <button class="btn btn-ghost" type="button" (click)="reset()" [disabled]="isLoading() || isDownloading()">
+          <span class="material-symbols-outlined">restart_alt</span>
+          Reset
+        </button>
+        <button class="btn btn-primary" type="button" (click)="generate()" [disabled]="isLoading() || isDownloading()">
+          <span class="material-symbols-outlined" [class.spin]="isLoading()">{{ isLoading() ? 'progress_activity' : 'sync' }}</span>
+          {{ isLoading() ? 'Generating...' : 'Generate' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="alert alert-success" role="status" *ngIf="successMessage()">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span>{{ successMessage() }}</span>
+  </div>
+  <div class="alert alert-error" role="alert" *ngIf="errorMessage()">
+    <span class="material-symbols-outlined">error</span>
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <section class="stat-grid" *ngIf="reportData() as report">
+    <article class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <span class="label-caps">Total Rekod</span>
+          <div class="stat-value">{{ report.totalRecords }} <span class="stat-unit">Kes</span></div>
+        </div>
+        <span class="icon-tile"><span class="material-symbols-outlined">person_remove</span></span>
+      </div>
+      <span class="stat-meta">Kes discaj DAMA dalam tempoh dipilih</span>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-card__top">
+        <div class="dama-min0">
+          <span class="label-caps">Wad Tertinggi</span>
+          <div class="stat-value dama-ellipsis" [title]="topWard()?.label ?? ''">{{ topWard()?.label ?? '—' }}</div>
+        </div>
+        <span class="icon-tile"><span class="material-symbols-outlined">bed</span></span>
+      </div>
+      <span class="stat-meta tnum" *ngIf="topWard() as ward">{{ ward.count }} kes ({{ ward.percent }}%)</span>
+      <span class="stat-meta" *ngIf="!topWard()">Tiada data</span>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-card__top">
+        <div>
+          <span class="label-caps">Tempoh</span>
+          <div class="stat-value dama-period tnum">{{ report.fromDate }} <span class="muted">→</span> {{ report.toDate }}</div>
+        </div>
+        <span class="icon-tile"><span class="material-symbols-outlined">date_range</span></span>
+      </div>
+      <span class="stat-meta">From – To</span>
+    </article>
+  </section>
+
+  <section class="dama-insights" *ngIf="previewRows().length > 0">
+    <article class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">
+            <span class="material-symbols-outlined">bar_chart</span>
+            Diagnosis Paling Kerap
+          </h2>
+          <p class="card-subtitle">Dikira daripada {{ previewRows().length }} rekod yang dipaparkan.</p>
+        </div>
+      </div>
+      <ol class="card-body dama-bars">
+        <li *ngFor="let item of topDiagnoses()">
+          <div class="dama-bar-label">
+            <span class="dama-ellipsis" [title]="item.label">{{ item.label }}</span>
+            <span class="tnum muted">{{ item.count }} kes · {{ item.percent }}%</span>
+          </div>
+          <div class="dama-bar-track"><div class="dama-bar-fill" [style.width.%]="item.percent"></div></div>
+        </li>
+      </ol>
+    </article>
+
+    <article class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">
+            <span class="material-symbols-outlined">apartment</span>
+            Taburan Mengikut Wad
+          </h2>
+          <p class="card-subtitle">Wad discaj bagi kes DAMA.</p>
+        </div>
+      </div>
+      <ul class="card-body dama-wards">
+        <li *ngFor="let ward of wardBreakdown()">
+          <div class="dama-bar-label">
+            <span class="dama-ellipsis" [title]="ward.label">{{ ward.label }}</span>
+            <strong class="tnum">{{ ward.count }}</strong>
+          </div>
+          <div class="dama-bar-track"><div class="dama-bar-fill" [style.width.%]="ward.percent"></div></div>
+        </li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">
+          <span class="material-symbols-outlined">list_alt</span>
+          Preview Rekod
+          <span class="badge badge-brand tnum" *ngIf="reportData() as report">{{ report.totalRecords }} rekod</span>
+        </h2>
+        <p class="card-subtitle">Preview ini tunjuk kolum penting. Fail Excel akan mengandungi kolum penuh seperti query asal.</p>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="isLoading() && previewRows().length === 0">
+      <span class="material-symbols-outlined spin">progress_activity</span>
+      <span>Generating...</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading() && previewRows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">inbox</span>
+      <span>Tiada rekod dijumpai untuk tempoh dipilih.</span>
+    </div>
+
+    <ng-container *ngIf="previewRows().length > 0">
+      <div class="table-wrap dama-table">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="num">#</th>
+              <th>MRN</th>
+              <th>Register</th>
+              <th>Nama</th>
+              <th>Diagnosis</th>
+              <th>Jenis Discaj</th>
+              <th>Wad Discaj</th>
+              <th>Admission</th>
+              <th>Discharge</th>
+              <th>IC Baru</th>
+              <th class="num">Umur</th>
+              <th>Bandar</th>
+              <th>Negeri</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of previewRows(); let i = index">
+              <td class="num muted">{{ i + 1 }}</td>
+              <td><span class="mono dama-mrn">{{ row.patientMrn }}</span></td>
+              <td class="mono">{{ row.personRegister }}</td>
+              <td class="dama-name">{{ row.personName }}</td>
+              <td class="dama-diagnosis">{{ row.diagnosisClinical }}</td>
+              <td><span class="badge badge-danger">{{ row.dischargeTypeName }}</span></td>
+              <td>{{ row.dischargeWard }}</td>
+              <td class="nowrap">{{ row.admissionDate }}</td>
+              <td class="nowrap">{{ row.dischargeDate }}</td>
+              <td class="mono nowrap">{{ row.personNewIc }}</td>
+              <td class="num">{{ row.personAge }}</td>
+              <td>{{ row.personCurCity }}</td>
+              <td>{{ row.personCurState }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="dama-cards">
+        <li class="dama-card" *ngFor="let row of previewRows()">
+          <div class="dama-card__head">
+            <span class="badge badge-neutral">{{ row.dischargeWard || '—' }}</span>
+            <span class="badge badge-danger">{{ row.dischargeTypeName }}</span>
+          </div>
+          <div class="dama-card__name">{{ row.personName }}</div>
+          <div class="dama-card__meta">
+            <span class="mono dama-mrn">{{ row.patientMrn }}</span>
+            <span class="tnum" *ngIf="row.personAge">{{ row.personAge }}</span>
+          </div>
+          <div class="dama-card__diag">
+            <span class="label-caps">Diagnosis</span>
+            <span>{{ row.diagnosisClinical || '—' }}</span>
+          </div>
+          <dl class="dama-card__grid">
+            <div><dt class="label-caps">Admission</dt><dd class="tnum">{{ row.admissionDate }}</dd></div>
+            <div><dt class="label-caps">Discharge</dt><dd class="tnum">{{ row.dischargeDate }}</dd></div>
+            <div><dt class="label-caps">Register</dt><dd class="mono">{{ row.personRegister }}</dd></div>
+            <div><dt class="label-caps">IC Baru</dt><dd class="mono">{{ row.personNewIc }}</dd></div>
+            <div class="dama-card__wide"><dt class="label-caps">Bandar / Negeri</dt><dd>{{ row.personCurCity }}<span *ngIf="row.personCurCity && row.personCurState">, </span>{{ row.personCurState }}</dd></div>
+          </dl>
+        </li>
+      </ul>
+    </ng-container>
+  </section>
+</section>

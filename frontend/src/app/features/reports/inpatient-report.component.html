@@ -1,0 +1,187 @@
+<div class="page report-screen">
+  <header class="page-header no-print">
+    <div class="page-header__text">
+      <div class="page-eyebrow">
+        <span class="badge badge-brand">PD103 &middot; Harian</span>
+        <span>HSI Reports</span>
+      </div>
+      <h1 class="page-title">Inpatient Reports</h1>
+      <p class="page-subtitle">(PD103) Bancian Harian Wad &mdash; Pin. 2/2009</p>
+    </div>
+  </header>
+
+  <section class="card filter-card no-print">
+    <div class="card-body filter-body">
+      <div class="filter-grid">
+        <div class="field field-report">
+          <label class="field-label" for="pd103-report">Report</label>
+          <div class="input-group">
+            <span class="material-symbols-outlined">description</span>
+            <select id="pd103-report" class="select" [(ngModel)]="selectedReport">
+              <option>(PD103) Bancian Harian Wad:Pin. 2/2009</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="pd103-ward">Wad</label>
+          <div class="input-group">
+            <span class="material-symbols-outlined">bed</span>
+            <select id="pd103-ward" class="select" [(ngModel)]="selectedWardCode" (ngModelChange)="onWardChange()">
+              <option *ngFor="let ward of wards()" [value]="ward.code">{{ ward.name }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="pd103-date">
+            <span>Tarikh Mula <span class="required">*</span></span>
+          </label>
+          <input id="pd103-date" class="input" type="date" [(ngModel)]="selectedDate">
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <div class="action-group">
+          <button class="btn btn-primary" type="button" (click)="generate()" [disabled]="isLoading() || isSaving()">
+            <span class="material-symbols-outlined" [class.spin]="isLoading()">{{ isLoading() ? 'progress_activity' : 'play_arrow' }}</span>
+            {{ isLoading() ? 'Generating...' : 'Jana Laporan' }}
+          </button>
+          <button class="btn btn-tonal" type="button" (click)="reset()" [disabled]="isSaving()">
+            <span class="material-symbols-outlined">restart_alt</span>
+            Set Semula
+          </button>
+          <button class="btn btn-secondary" type="button" (click)="printReport()" [disabled]="reportRows().length === 0 || isEditMode()">
+            <span class="material-symbols-outlined">print</span>
+            Cetak (Landskap)
+          </button>
+        </div>
+
+        <div class="action-group action-group--edit">
+          <label class="field ticket-field" *ngIf="isEditMode()">
+            <span class="field-label">No. Tiket <span class="required">*</span></span>
+            <input id="pd103-ticket" class="input mono" type="text" maxlength="50" required [(ngModel)]="ticketNo" [disabled]="isSaving()" placeholder="Wajib sebelum Simpan">
+          </label>
+          <button class="btn btn-accent" type="button" (click)="startEdit()" *ngIf="canEditReport()" [disabled]="reportRows().length === 0 || isEditMode() || isSaving()">
+            <span class="material-symbols-outlined">edit_square</span>
+            Mod Kemaskini (Admin)
+          </button>
+          <button class="btn btn-danger-soft" type="button" (click)="cancelEdit()" *ngIf="isEditMode()" [disabled]="isSaving()">
+            <span class="material-symbols-outlined">close</span>
+            Batal
+          </button>
+          <button class="btn btn-primary" type="button" (click)="saveEdit()" *ngIf="isEditMode()" [disabled]="isSaving()">
+            <span class="material-symbols-outlined" [class.spin]="isSaving()">{{ isSaving() ? 'progress_activity' : 'save' }}</span>
+            {{ isSaving() ? 'Saving...' : 'Simpan' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="alert alert-success no-print" role="status" *ngIf="successMessage()">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span>{{ successMessage() }}</span>
+  </div>
+  <div class="alert alert-error no-print" role="alert" *ngIf="errorMessage()">
+    <span class="material-symbols-outlined">error</span>
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <section class="card report-card">
+    <div class="card-header no-print">
+      <div class="report-card__heading">
+        <span class="icon-tile"><span class="material-symbols-outlined">table_view</span></span>
+        <div>
+          <h2 class="card-title">Butir-Butir Banci</h2>
+          <p class="card-subtitle">
+            Wad: {{ generatedWardName || '-' }} &nbsp;|&nbsp; Tarikh: <span class="tnum">{{ generatedDate | date:'dd/MM/yyyy' }}</span>
+          </p>
+        </div>
+      </div>
+      <span class="badge badge-ready badge-dot" *ngIf="isEditMode()">Mod Kemaskini Aktif</span>
+      <span class="badge badge-neutral" *ngIf="!isEditMode() && reportRows().length > 0">{{ disciplines().length }} Disiplin</span>
+    </div>
+
+    <div class="report-scroll table-wrap">
+      <div class="report-page" [class.is-editing]="isEditMode()">
+        <div class="report-reference">
+          <div>PER-PD103</div>
+          <div>(Pin. 2/2009)</div>
+        </div>
+
+        <div class="page-title-block">
+          <div>SISTEM MAKLUMAT PENGURUSAN KESIHATAN</div>
+          <div>KEMENTERIAN KESIHATAN MALAYSIA</div>
+          <div>BANCIAN HARIAN WAD</div>
+        </div>
+
+        <table class="report-table" *ngIf="rowsForDisplay().length > 0">
+          <thead>
+            <tr class="meta-row">
+              <th colspan="3" class="meta-left">1. Tarikh: {{ generatedDate | date:'dd/MM/yyyy' }}</th>
+              <th colspan="3" class="meta-center">2. Jumlah Keseluruhan Dalam Wad</th>
+              <th [attr.colspan]="visibleDisciplines().length * 2" class="meta-right">3. Pecahan Mengikut Disiplin Dalam Wad</th>
+            </tr>
+            <tr>
+              <th rowspan="2" class="col-no">Bil</th>
+              <th rowspan="2" colspan="2" class="col-item-group">Butir-Butir Banci</th>
+              <th colspan="3" class="col-total-group">Name/No Wad:<br>{{ generatedWardName || 'UNIT ICU/CCU' }}</th>
+              <ng-container *ngFor="let discipline of visibleDisciplines(); let i = index; trackBy: trackByIndex">
+                <th colspan="2">Disiplin {{ i + 1 }}:<br>{{ discipline.name || '' }}</th>
+              </ng-container>
+            </tr>
+            <tr>
+              <th>Lelaki</th>
+              <th>Perempuan</th>
+              <th>Jumlah</th>
+              <ng-container *ngFor="let discipline of visibleDisciplines(); let i = index; trackBy: trackByIndex">
+                <th>Lelaki</th>
+                <th>Perempuan</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of rowsForDisplay(); let rowIndex = index">
+              <td>{{ row.no }}</td>
+              <td *ngIf="shouldRenderItemCell(row)" [attr.rowspan]="itemRowSpan(row)">{{ row.item }}</td>
+              <td>{{ row.detail || '' }}</td>
+              <td>{{ row.totalMale }}</td>
+              <td>{{ row.totalFemale }}</td>
+              <td class="cell-total">{{ row.total }}</td>
+              <ng-container *ngFor="let metric of metricsForRow(row); let i = index; trackBy: trackByIndex">
+                <td [class.cell-editable]="editableCell(row, visibleDisciplines()[i])" [class.cell-changed]="isCellChanged(rowIndex, i, 'male')">
+                  <input
+                    *ngIf="editableCell(row, visibleDisciplines()[i])"
+                    class="metric-input"
+                    type="number"
+                    min="0"
+                    [attr.aria-label]="(row.item || '') + ' ' + (row.detail || '') + ' - ' + (visibleDisciplines()[i].name || '') + ' Lelaki'"
+                    [ngModel]="metric.male"
+                    (ngModelChange)="updateMetric(rowIndex, i, 'male', $event)">
+                  <ng-container *ngIf="!editableCell(row, visibleDisciplines()[i])">{{ metricDisplayValue(metric, visibleDisciplines()[i], 'male') }}</ng-container>
+                </td>
+                <td [class.cell-editable]="editableCell(row, visibleDisciplines()[i])" [class.cell-changed]="isCellChanged(rowIndex, i, 'female')">
+                  <input
+                    *ngIf="editableCell(row, visibleDisciplines()[i])"
+                    class="metric-input"
+                    type="number"
+                    min="0"
+                    [attr.aria-label]="(row.item || '') + ' ' + (row.detail || '') + ' - ' + (visibleDisciplines()[i].name || '') + ' Perempuan'"
+                    [ngModel]="metric.female"
+                    (ngModelChange)="updateMetric(rowIndex, i, 'female', $event)">
+                  <ng-container *ngIf="!editableCell(row, visibleDisciplines()[i])">{{ metricDisplayValue(metric, visibleDisciplines()[i], 'female') }}</ng-container>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state no-print" *ngIf="!isLoading() && reportRows().length === 0 && !errorMessage()">
+          <span class="material-symbols-outlined">inbox</span>
+          <span>No report data available for the selected ward and date.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

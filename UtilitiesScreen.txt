@@ -1,0 +1,11 @@
+Listing Request from HSI berkenaan perubahan data:
+1. Data Lean 
+2. Data Admission (ETD) Bulanan 
+3. Data Diagnosis Pesakit Yang Discaj Jenis "Discharge Against Medical Advise" (DAMA) Bulnanan
+4. Data Bilangan Referral Dari Jabatan Kecemasan Ke Jabatan Psikiatri (Tahunan)
+5. Data Bilangan Referral Dari Jabatan Lain (Medical, Surgical, ortho, O&G, Peads) Ke Jabatan Psikiatri (Tahunan)
+6. Data semua userID yang masih aktif sehingga kini
+7. Data Pesakit Yang Dr tidak submit Discharge Summary Di dalam sistem selepas Discharge Summary dibatalkan dan menghantar yang baharu. (Permohonan Baharu)
+8. Data Kes Rujukan dari Jabatan Medical, Surgical, O&G, Paed dan Ortho ke Jabatan Psikiatri dan pecahan bagi 2 Kes (Kes Baharu dan Kes Ulangan) (Tahunan)
+9. Update PD103 Bancian Harian Wad
+10. Update officer_name & officer_no_id table enc_discharge

@@ -1,0 +1,45 @@
+<section class="stats-grid" *ngIf="dashboard() as data">
+  <article class="card stat">
+    <span>Total Requests</span>
+    <strong>{{ data.totalRequests }}</strong>
+  </article>
+  <article class="card stat">
+    <span>Open</span>
+    <strong>{{ data.openRequests }}</strong>
+  </article>
+  <article class="card stat">
+    <span>In Progress</span>
+    <strong>{{ data.inProgressRequests }}</strong>
+  </article>
+  <article class="card stat">
+    <span>Completed</span>
+    <strong>{{ data.completedRequests }}</strong>
+  </article>
+</section>
+
+<section class="card request-panel" *ngIf="dashboard() as data">
+  <div class="panel-header">
+    <div>
+      <h2>Recent Utilities Requests</h2>
+      <p>Live snapshot for facilities, biomedical, and engineering teams.</p>
+    </div>
+  </div>
+
+  <div class="request-table">
+    <div class="request-row request-head">
+      <span>Title</span>
+      <span>Location</span>
+      <span>Status</span>
+      <span>Priority</span>
+      <span>Assigned Team</span>
+    </div>
+    <div class="request-row" *ngFor="let item of data.recentRequests">
+      <span>{{ item.title }}</span>
+      <span>{{ item.location }}</span>
+      <span><b>{{ item.status }}</b></span>
+      <span>{{ item.priority }}</span>
+      <span>{{ item.assignedTeam }}</span>
+    </div>
+  </div>
+</section>
+

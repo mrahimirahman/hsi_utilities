@@ -1,0 +1,28 @@
+<section class="card requests-page">
+  <div class="page-header">
+    <div>
+      <h2>Utilities Request Queue</h2>
+      <p>Operational list for hospital screening, repairs, and follow-up tasks.</p>
+    </div>
+  </div>
+
+  <div class="request-card-list">
+    <article class="request-card" *ngFor="let request of requests()">
+      <div class="request-main">
+        <div class="request-topline">
+          <h3>{{ request.title }}</h3>
+          <span class="badge">{{ request.priority }}</span>
+        </div>
+        <p>{{ request.description }}</p>
+      </div>
+
+      <div class="request-meta">
+        <span><strong>Location:</strong> {{ request.location }}</span>
+        <span><strong>Status:</strong> {{ request.status }}</span>
+        <span><strong>Assigned:</strong> {{ request.assignedTeam }}</span>
+        <span><strong>Date:</strong> {{ request.requestDate | date:'medium' }}</span>
+      </div>
+    </article>
+  </div>
+</section>
+
