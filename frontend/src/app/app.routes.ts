@@ -13,6 +13,7 @@ import { DischargeDateComponent } from './features/discharge-date/discharge-date
 import { CompleteTransferComponent } from './features/his-fixes/complete-transfer/complete-transfer.component';
 import { BirthTimeComponent } from './features/his-fixes/birth-time/birth-time.component';
 import { DocumentStatusComponent } from './features/his-fixes/document-status/document-status.component';
+import { EncounterActiveComponent } from './features/his-fixes/encounter-active/encounter-active.component';
 import { UnlockDocumentComponent } from './features/his-fixes/unlock-document/unlock-document.component';
 import { TicketReportComponent } from './features/tickets/ticket-report.component';
 
@@ -102,7 +103,8 @@ export const appRoutes: Routes = [
       { path: 'fix/complete-transfer', component: CompleteTransferComponent },
       { path: 'fix/unlock-document', component: UnlockDocumentComponent },
       { path: 'fix/birth-time', component: BirthTimeComponent },
-      { path: 'fix/document-status', component: DocumentStatusComponent }
+      { path: 'fix/document-status', component: DocumentStatusComponent },
+      { path: 'fix/encounter-active', component: EncounterActiveComponent }
     ]
   },
   { path: '**', redirectTo: '' }
