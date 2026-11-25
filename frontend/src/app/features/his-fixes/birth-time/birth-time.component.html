@@ -48,7 +48,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of rows()" [class.is-selected]="selected()?.personId === row.personId">
+          <tr *ngFor="let row of rows()" [class.is-selected]="selected()?.patientId === row.patientId">
             <td class="mono">{{ row.patientMrn }}</td>
             <td>{{ row.personName }}</td>
             <td class="mono">{{ row.personId }}</td>
@@ -56,10 +56,10 @@
             <td class="mono strong">{{ row.personBirthtime || '(kosong)' }}</td>
             <td>
               <button class="btn btn-sm"
-                      [class.btn-primary]="selected()?.personId === row.personId"
-                      [class.btn-secondary]="selected()?.personId !== row.personId"
+                      [class.btn-primary]="selected()?.patientId === row.patientId"
+                      [class.btn-secondary]="selected()?.patientId !== row.patientId"
                       type="button" (click)="select(row)" [disabled]="isSaving()">
-                {{ selected()?.personId === row.personId ? 'Dipilih' : 'Pilih' }}
+                {{ selected()?.patientId === row.patientId ? 'Dipilih' : 'Pilih' }}
               </button>
             </td>
           </tr>

@@ -2,11 +2,20 @@ package com.hospital.maintenance.dto.hisfix;
 
 public class BirthTimeRequest {
 
+    private Long patientId;
     private Long personId;
     private String expectedBirthTime;
     private String newBirthTime;
     private String ticketNo;
     private String reason;
+
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
 
     public Long getPersonId() {
         return personId;

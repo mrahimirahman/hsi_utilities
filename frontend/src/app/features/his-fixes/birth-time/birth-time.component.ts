@@ -5,6 +5,7 @@ import { HisFixApiService, HisFixAuditEntry } from '../his-fix-api.service';
 import { HisFixShellComponent } from '../shared/his-fix-shell.component';
 
 interface BirthTimeRow {
+  patientId: number;
   personId: number;
   patientMrn: string;
   personName: string | null;
@@ -99,6 +100,7 @@ export class BirthTimeComponent {
     this.errorMessage.set('');
     this.successMessage.set('');
     this.api.apply<BirthTimeRow>(SLUG, {
+      patientId: row.patientId,
       personId: row.personId,
       expectedBirthTime: row.personBirthtime ?? '',
       newBirthTime: this.newBirthTime,
@@ -113,7 +115,7 @@ export class BirthTimeComponent {
         if (result.dryRun) {
           this.successMessage.set(`DRY RUN: person_birthtime ${row.personBirthtime || '(kosong)'} -> ${result.data.personBirthtime} (tidak disimpan).`);
         } else {
-          this.rows.set(this.rows().map((item) => (item.personId === row.personId ? result.data : item)));
+          this.rows.set(this.rows().map((item) => (item.patientId === row.patientId ? result.data : item)));
           this.selected.set(null);
           this.successMessage.set('Masa lahir berjaya dikemas kini.');
           this.loadAudit();

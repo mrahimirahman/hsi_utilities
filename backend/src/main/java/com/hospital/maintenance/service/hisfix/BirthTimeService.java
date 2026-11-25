@@ -25,7 +25,7 @@ public class BirthTimeService {
 
     public static final String MODULE = "BIRTH_TIME";
 
-    private static final String SELECT_ROW = "SELECT p.person_id, a.patient_mrn, p.person_name, "
+    private static final String SELECT_ROW = "SELECT a.patient_id, p.person_id, a.patient_mrn, p.person_name, "
             + "DATE_FORMAT(p.person_birthdate, '%Y-%m-%d') AS person_birthdate, p.person_birthtime "
             + "FROM patients a "
             + "INNER JOIN persons p ON p.person_id = a.person_id ";
@@ -45,7 +45,7 @@ public class BirthTimeService {
     }
 
     public HisFixResult<BirthTimeRow> apply(final BirthTimeRequest request, final SystemUser user) {
-        if (request == null || request.getPersonId() == null) {
+        if (request == null || request.getPersonId() == null || request.getPatientId() == null) {
             throw new IllegalArgumentException("Rekod pesakit tidak sah.");
         }
         final String ticketNo = support.requireTicketNo(request.getTicketNo());
@@ -53,11 +53,12 @@ public class BirthTimeService {
         final String newTime = support.requireTime(request.getNewBirthTime(), "Masa lahir");
         final String expectedTime = normalise(request.getExpectedBirthTime());
         final Long personId = request.getPersonId();
+        final Long patientId = request.getPatientId();
 
         return support.write(new TransactionCallback<BirthTimeRow>() {
             @Override
             public BirthTimeRow doInTransaction(TransactionStatus status) {
-                BirthTimeRow before = readForUpdate(personId);
+                BirthTimeRow before = readForUpdate(personId, patientId);
                 if (before == null) {
                     throw new IllegalArgumentException("Rekod pesakit tidak dijumpai.");
                 }
@@ -78,7 +79,7 @@ public class BirthTimeService {
                 if (updated == 0) {
                     throw new IllegalArgumentException("Rekod telah berubah, sila cari semula.");
                 }
-                BirthTimeRow after = read(personId);
+                BirthTimeRow after = read(personId, patientId);
                 if (after == null || !newTime.equals(normalise(after.getPersonBirthtime()))) {
                     throw new IllegalArgumentException("Tiada perubahan.");
                 }
@@ -112,16 +113,17 @@ public class BirthTimeService {
         return map;
     }
 
-    private BirthTimeRow readForUpdate(Long personId) {
+    private BirthTimeRow readForUpdate(Long personId, Long patientId) {
         // Lock only the persons row (single-table, by primary key); no joins in the locking query.
         List<Long> locked = jdbc.queryForList("SELECT person_id FROM persons WHERE person_id = :id FOR UPDATE",
                 new MapSqlParameterSource("id", personId), Long.class);
-        return locked.isEmpty() ? null : read(personId);
+        return locked.isEmpty() ? null : read(personId, patientId);
     }
 
-    private BirthTimeRow read(Long personId) {
-        List<BirthTimeRow> rows = jdbc.query(SELECT_ROW + "WHERE p.person_id = :id ORDER BY a.patient_id LIMIT 1",
-                new MapSqlParameterSource("id", personId), rowMapper());
+    // Selecting by patient_id as well proves the patient belongs to the person (INNER JOIN on person_id).
+    private BirthTimeRow read(Long personId, Long patientId) {
+        List<BirthTimeRow> rows = jdbc.query(SELECT_ROW + "WHERE p.person_id = :id AND a.patient_id = :pid",
+                new MapSqlParameterSource("id", personId).addValue("pid", patientId), rowMapper());
         return rows.isEmpty() ? null : rows.get(0);
     }
 
@@ -130,6 +132,7 @@ public class BirthTimeService {
             @Override
             public BirthTimeRow mapRow(ResultSet rs, int rowNum) throws SQLException {
                 BirthTimeRow row = new BirthTimeRow();
+                row.setPatientId(rs.getLong("patient_id"));
                 row.setPersonId(rs.getLong("person_id"));
                 row.setPatientMrn(rs.getString("patient_mrn"));
                 row.setPersonName(rs.getString("person_name"));
