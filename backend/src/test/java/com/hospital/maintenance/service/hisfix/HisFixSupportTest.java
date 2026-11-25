@@ -6,7 +6,15 @@ import com.hospital.maintenance.service.AuthService;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpSession;
 
+import com.hospital.maintenance.dto.hisfix.HisFixResult;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,5 +128,70 @@ public class HisFixSupportTest {
     @Test
     public void requireAdminAdminOk() {
         assertEquals("ADMIN", HisFixSupport.requireAdmin(sessionWithRole("ADMIN")).getRole());
+    }
+
+    private static class RecordingTxManager extends AbstractPlatformTransactionManager {
+        final List<String> calls;
+
+        RecordingTxManager(List<String> calls) {
+            this.calls = calls;
+        }
+
+        @Override
+        protected Object doGetTransaction() {
+            return new Object();
+        }
+
+        @Override
+        protected void doBegin(Object transaction, org.springframework.transaction.TransactionDefinition definition) {
+            calls.add("begin");
+        }
+
+        @Override
+        protected void doCommit(DefaultTransactionStatus status) {
+            calls.add("commit");
+        }
+
+        @Override
+        protected void doRollback(DefaultTransactionStatus status) {
+            calls.add("rollback");
+        }
+    }
+
+    private HisFixSupport supportRecording(final List<String> calls, boolean dryRun) {
+        return new HisFixSupport(null, new RecordingTxManager(calls), new ObjectMapper(), dryRun) {
+            @Override
+            protected void ensureAuditTable() {
+                calls.add("ddl");
+            }
+        };
+    }
+
+    private TransactionCallback<String> work(final List<String> calls) {
+        return new TransactionCallback<String>() {
+            @Override
+            public String doInTransaction(TransactionStatus status) {
+                calls.add("work");
+                return "done";
+            }
+        };
+    }
+
+    @Test
+    public void writeDryRunRollsBackAndFlagsResult() {
+        List<String> calls = new ArrayList<String>();
+        HisFixResult<String> result = supportRecording(calls, true).write(work(calls));
+        assertEquals(Arrays.asList("ddl", "begin", "work", "rollback"), calls);
+        assertEquals(true, result.isDryRun());
+        assertEquals("done", result.getData());
+    }
+
+    @Test
+    public void writeRealRunCommits() {
+        List<String> calls = new ArrayList<String>();
+        HisFixResult<String> result = supportRecording(calls, false).write(work(calls));
+        assertEquals(Arrays.asList("ddl", "begin", "work", "commit"), calls);
+        assertEquals(false, result.isDryRun());
+        assertEquals("done", result.getData());
     }
 }

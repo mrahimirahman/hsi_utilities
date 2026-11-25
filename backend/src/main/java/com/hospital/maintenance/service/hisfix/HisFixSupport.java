@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -84,7 +85,7 @@ public class HisFixSupport {
         if (isBlank(raw)) {
             throw new IllegalArgumentException("Sila masukkan MRN pesakit.");
         }
-        String value = raw.trim().toUpperCase().replace(" ", "");
+        String value = raw.trim().toUpperCase(Locale.ROOT).replace(" ", "");
         String digits = value.startsWith(MRN_PREFIX) ? value.substring(MRN_PREFIX.length()) : value;
         if (digits.isEmpty()) {
             throw new IllegalArgumentException("Sila masukkan MRN pesakit.");
@@ -215,7 +216,8 @@ public class HisFixSupport {
         return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
     }
 
-    private void ensureAuditTable() {
+    // protected so tests can run write() without a database
+    protected void ensureAuditTable() {
         if (auditTableInitialized) {
             return;
         }

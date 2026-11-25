@@ -20,7 +20,8 @@ public abstract class HisFixControllerSupport {
             SystemUser user = HisFixSupport.requireAdmin(session);
             return ResponseEntity.ok(action.run(user));
         } catch (HisFixAccessException ex) {
-            return new ResponseEntity<Object>(HttpStatus.valueOf(ex.getStatus()));
+            return new ResponseEntity<Object>(Collections.singletonMap("message", ex.getMessage()),
+                    HttpStatus.valueOf(ex.getStatus()));
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<Object>(Collections.singletonMap("message", ex.getMessage()), HttpStatus.BAD_REQUEST);
         }
