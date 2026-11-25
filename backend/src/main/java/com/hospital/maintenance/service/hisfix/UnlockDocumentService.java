@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +145,7 @@ public class UnlockDocumentService {
     }
 
     private Map<String, Object> snapshot(DocumentLockRow row) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
         map.put("access_flag", row.getAccessFlag());
         map.put("datetime_close", row.getDatetimeClose());
         return map;

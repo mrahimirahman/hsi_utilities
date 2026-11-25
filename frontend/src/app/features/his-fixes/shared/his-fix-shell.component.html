@@ -11,7 +11,7 @@
           <span class="material-symbols-outlined">{{ icon }}</span>
         </span>
         <h1 class="page-title">{{ title }}</h1>
-        <span class="dry-run-badge" *ngIf="dryRun">DRY RUN &mdash; tiada perubahan disimpan</span>
+        <span class="dry-run-badge" *ngIf="dryRun || serverDryRun()">DRY RUN &mdash; tiada perubahan disimpan</span>
       </div>
       <p class="page-subtitle">{{ description }}</p>
     </div>
@@ -84,7 +84,7 @@
     <div class="card-header">
       <div class="card-heading">
         <h2 class="card-title"><span class="step-badge">4</span> Audit Trail</h2>
-        <span class="card-subtitle">Sejarah pembetulan untuk pesakit ini (sebelum &rarr; selepas).</span>
+        <span class="card-subtitle">{{ auditSubtitle }} (sebelum &rarr; selepas).</span>
       </div>
       <span class="badge badge-neutral">{{ auditEntries.length }} rekod</span>
     </div>

@@ -16,9 +16,12 @@ import org.springframework.transaction.support.TransactionCallback;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -49,7 +52,6 @@ public class ScheduleVisibilityService {
     public List<ScheduleRow> searchByMrn(String mrn) {
         List<String> candidates = support.mrnCandidates(mrn);
         List<Long> personIds = new ArrayList<Long>();
-        String searchedMrn = null;
         List<Map<String, Object>> patients = jdbc.queryForList("SELECT patient_mrn, person_id FROM patients "
                 + "WHERE patient_mrn IN (:mrns)", new MapSqlParameterSource("mrns", candidates));
         for (Map<String, Object> patient : patients) {
@@ -60,33 +62,41 @@ public class ScheduleVisibilityService {
                     personIds.add(id);
                 }
             }
-            if (searchedMrn == null && patient.get("patient_mrn") != null) {
-                searchedMrn = String.valueOf(patient.get("patient_mrn"));
-            }
         }
         if (personIds.isEmpty()) {
             return new ArrayList<ScheduleRow>();
         }
-        if (searchedMrn == null) {
-            searchedMrn = candidates.get(0);
-        }
+        String searchedMrn = storedMrn(candidates, patients);
 
         List<Map<String, Object>> reservations = jdbc.queryForList("SELECT schedule_code, reserve_date "
                 + "FROM app_reservations WHERE person_id IN (:pids) "
                 + "AND reserve_date >= CURDATE() - INTERVAL 30 DAY AND schedule_code IS NOT NULL "
                 + "ORDER BY reserve_date, reserve_id", new MapSqlParameterSource("pids", personIds));
-        Map<String, List<String>> datesBySchedule = new LinkedHashMap<String, List<String>>();
+        // Upcoming dates (today onwards) first, ascending; then past dates, most recent first.
+        String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        Map<String, List<String>> upcomingBySchedule = new LinkedHashMap<String, List<String>>();
+        Map<String, List<String>> pastBySchedule = new LinkedHashMap<String, List<String>>();
         for (Map<String, Object> reservation : reservations) {
             String code = String.valueOf(reservation.get("schedule_code"));
             String date = String.valueOf(reservation.get("reserve_date"));
-            List<String> dates = datesBySchedule.get(code);
-            if (dates == null) {
-                dates = new ArrayList<String>();
-                datesBySchedule.put(code, dates);
+            if (!upcomingBySchedule.containsKey(code)) {
+                upcomingBySchedule.put(code, new ArrayList<String>());
+                pastBySchedule.put(code, new ArrayList<String>());
             }
-            if (dates.size() < MAX_DATES && !dates.contains(date)) {
+            List<String> dates = date.compareTo(today) >= 0 ? upcomingBySchedule.get(code) : pastBySchedule.get(code);
+            if (!dates.contains(date)) {
                 dates.add(date);
             }
+        }
+        Map<String, List<String>> datesBySchedule = new LinkedHashMap<String, List<String>>();
+        for (Map.Entry<String, List<String>> entry : upcomingBySchedule.entrySet()) {
+            List<String> dates = new ArrayList<String>(entry.getValue());
+            List<String> past = pastBySchedule.get(entry.getKey());
+            for (int i = past.size() - 1; i >= 0; i--) {
+                dates.add(past.get(i));
+            }
+            datesBySchedule.put(entry.getKey(), dates.size() > MAX_DATES
+                    ? new ArrayList<String>(dates.subList(0, MAX_DATES)) : dates);
         }
         if (datesBySchedule.isEmpty()) {
             return new ArrayList<ScheduleRow>();
@@ -100,6 +110,19 @@ public class ScheduleVisibilityService {
             row.setReservationDates(join(datesBySchedule.get(row.getScheduleCode())));
         }
         return rows;
+    }
+
+    // The stored patient_mrn that matches the searched candidates, in mrnCandidates order (deterministic).
+    private String storedMrn(List<String> candidates, List<Map<String, Object>> patients) {
+        for (String candidate : candidates) {
+            for (Map<String, Object> patient : patients) {
+                Object stored = patient.get("patient_mrn");
+                if (stored != null && candidate.equalsIgnoreCase(String.valueOf(stored).trim())) {
+                    return String.valueOf(stored);
+                }
+            }
+        }
+        return candidates.get(0);
     }
 
     public List<ScheduleRow> searchByName(String text) {
@@ -302,7 +325,7 @@ public class ScheduleVisibilityService {
 
     // NULL counts as 0 (visible), consistently with COALESCE(schedule_is_hidden, 0) in the SQL.
     private int hiddenOf(Object value) {
-        return value instanceof Number && ((Number) value).intValue() != 0 ? 1 : 0;
+        return HisFixSupport.flag(value) != 0 ? 1 : 0;
     }
 
     private RowMapper<ScheduleRow> rowMapper() {
@@ -335,7 +358,8 @@ public class ScheduleVisibilityService {
         if (isBlank(raw)) {
             return null;
         }
-        String value = raw.trim();
+        // Same normalisation as HisFixSupport.mrnCandidates (trim, upper case, no spaces).
+        String value = raw.trim().toUpperCase(Locale.ROOT).replace(" ", "");
         if (value.length() > MAX_MRN_LENGTH) {
             throw new IllegalArgumentException("MRN tidak sah.");
         }

@@ -59,6 +59,38 @@ public class HisFixSupport {
         return dryRun;
     }
 
+    /**
+     * Reads a 0/1 flag column from a Map / getObject value. Connector/J 5.1 (tinyInt1isBit=true) returns
+     * TINYINT(1) and BIT(1) as java.lang.Boolean, wider ints as Number. NULL counts as 0.
+     */
+    public static int flag(Object value) {
+        if (value == null) {
+            return 0;
+        }
+        if (value instanceof Boolean) {
+            return ((Boolean) value).booleanValue() ? 1 : 0;
+        }
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        }
+        if (value instanceof byte[]) {
+            byte[] bytes = (byte[]) value;
+            return bytes.length > 0 && bytes[bytes.length - 1] != 0 ? 1 : 0;
+        }
+        String text = String.valueOf(value).trim();
+        if ("1".equals(text) || "true".equalsIgnoreCase(text)) {
+            return 1;
+        }
+        if (text.isEmpty() || "0".equals(text) || "false".equalsIgnoreCase(text)) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Nilai bendera tidak sah: " + text);
+        }
+    }
+
     public static SystemUser requireAdmin(HttpSession session) {
         SystemUser user = (SystemUser) session.getAttribute(AuthService.SESSION_USER_KEY);
         if (user == null) {

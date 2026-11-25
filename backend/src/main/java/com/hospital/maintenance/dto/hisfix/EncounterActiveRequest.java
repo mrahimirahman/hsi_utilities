@@ -3,7 +3,7 @@ package com.hospital.maintenance.dto.hisfix;
 public class EncounterActiveRequest {
 
     private String mrn;
-    private String encounterId;
+    private Long encounterId;
     private Integer expectedActive;
     private Integer newActive;
     private String ticketNo;
@@ -17,11 +17,11 @@ public class EncounterActiveRequest {
         this.mrn = mrn;
     }
 
-    public String getEncounterId() {
+    public Long getEncounterId() {
         return encounterId;
     }
 
-    public void setEncounterId(String encounterId) {
+    public void setEncounterId(Long encounterId) {
         this.encounterId = encounterId;
     }
 

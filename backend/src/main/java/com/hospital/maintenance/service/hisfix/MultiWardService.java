@@ -149,7 +149,9 @@ public class MultiWardService {
                     Map<String, Object> before = new LinkedHashMap<String, Object>();
                     Map<String, Object> after = new LinkedHashMap<String, Object>();
                     for (String column : MultiWardChangeValidator.columns(table)) {
-                        if (change.getValues().containsKey(column)) {
+                        // Keys whose new value equals the expected value are not written or audited.
+                        if (change.getValues().containsKey(column)
+                                && !change.getValues().get(column).equals(change.getExpected().get(column))) {
                             set.append(set.length() == 0 ? "" : ", ").append(column).append(" = :new_").append(column);
                             params.addValue("new_" + column, change.getValues().get(column));
                             before.put(column, current.get(column));
@@ -159,6 +161,9 @@ public class MultiWardService {
                             guard.append(" AND COALESCE(").append(column).append(", 0) = :expected_").append(column);
                             params.addValue("expected_" + column, change.getExpected().get(column));
                         }
+                    }
+                    if (set.length() == 0) {
+                        throw new IllegalArgumentException("Tiada perubahan.");
                     }
                     int updated = jdbc.update("UPDATE " + table + " SET " + set + " WHERE " + pk + " = :id"
                             + " AND encounter_id = :enc" + guard, params);
@@ -231,7 +236,7 @@ public class MultiWardService {
         for (Map<String, Object> row : rows) {
             Map<String, Object> flags = new LinkedHashMap<String, Object>();
             for (String column : MultiWardChangeValidator.columns(table)) {
-                flags.put(column, Integer.valueOf(((Number) row.get(column)).intValue()));
+                flags.put(column, Integer.valueOf(HisFixSupport.flag(row.get(column))));
             }
             result.put(toLong(row.get(pk)), flags);
         }

@@ -26,7 +26,7 @@ public class BirthTimeService {
     public static final String MODULE = "BIRTH_TIME";
 
     private static final String SELECT_ROW = "SELECT a.patient_id, p.person_id, a.patient_mrn, p.person_name, "
-            + "DATE_FORMAT(p.person_birthdate, '%Y-%m-%d') AS person_birthdate, p.person_birthtime "
+            + "DATE_FORMAT(p.person_birthdate, '%Y-%m-%d') AS person_birthdate, TRIM(COALESCE(p.person_birthtime,'')) AS person_birthtime "
             + "FROM patients a "
             + "INNER JOIN persons p ON p.person_id = a.person_id ";
 
@@ -73,7 +73,7 @@ public class BirthTimeService {
                 support.requireUnchanged(expected, actual);
 
                 int updated = jdbc.update("UPDATE persons SET person_birthtime = :t "
-                                + "WHERE person_id = :id AND COALESCE(person_birthtime,'') = :expected",
+                                + "WHERE person_id = :id AND TRIM(COALESCE(person_birthtime,'')) = :expected",
                         new MapSqlParameterSource("t", newTime).addValue("id", personId)
                                 .addValue("expected", expectedTime));
                 if (updated == 0) {

@@ -5,7 +5,7 @@ import { HisFixApiService, HisFixAuditEntry } from '../his-fix-api.service';
 import { HisFixShellComponent } from '../shared/his-fix-shell.component';
 
 interface EncounterActiveRow {
-  encounterId: string;
+  encounterId: number;
   patientMrn: string;
   personName: string | null;
   domainCode: string | null;
@@ -26,7 +26,7 @@ const SLUG = 'encounter-active';
 })
 export class EncounterActiveComponent {
   readonly rows = signal<EncounterActiveRow[]>([]);
-  readonly selectedId = signal<string | null>(null);
+  readonly selectedId = signal<number | null>(null);
   readonly newActive = signal<number | null>(null);
   readonly auditEntries = signal<HisFixAuditEntry[]>([]);
   readonly errorMessage = signal('');

@@ -212,4 +212,30 @@ public class HisFixSupportTest {
         assertEquals(false, result.isDryRun());
         assertEquals("done", result.getData());
     }
+
+    @Test
+    public void flagReadsBooleanFromTinyInt1() {
+        assertEquals(1, HisFixSupport.flag(Boolean.TRUE));
+        assertEquals(0, HisFixSupport.flag(Boolean.FALSE));
+    }
+
+    @Test
+    public void flagReadsIntegerAndLong() {
+        assertEquals(1, HisFixSupport.flag(Integer.valueOf(1)));
+        assertEquals(0, HisFixSupport.flag(Integer.valueOf(0)));
+        assertEquals(1, HisFixSupport.flag(Long.valueOf(1L)));
+        assertEquals(0, HisFixSupport.flag(Long.valueOf(0L)));
+    }
+
+    @Test
+    public void flagNullIsZero() {
+        assertEquals(0, HisFixSupport.flag(null));
+    }
+
+    @Test
+    public void flagReadsString() {
+        assertEquals(1, HisFixSupport.flag("1"));
+        assertEquals(0, HisFixSupport.flag("0"));
+        assertEquals(1, HisFixSupport.flag(" 1 "));
+    }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { API_BASE_URL } from '../../core/api.config';
 
 export interface HisFixAuditEntry {
@@ -19,6 +19,10 @@ export interface HisFixAuditEntry {
   editedAt: string;
 }
 
+export interface HisFixMode {
+  dryRun: boolean;
+}
+
 export interface HisFixResult<T> {
   data: T;
   dryRun: boolean;
@@ -28,7 +32,17 @@ export interface HisFixResult<T> {
 export class HisFixApiService {
   private readonly base = `${API_BASE_URL}/his-fix/`;
 
+  private mode$: Observable<HisFixMode> | null = null;
+
   constructor(private readonly http: HttpClient) {}
+
+  // Fetched once per app session and cached (the server setting only changes on restart).
+  mode(): Observable<HisFixMode> {
+    if (!this.mode$) {
+      this.mode$ = this.http.get<HisFixMode>(`${this.base}mode`).pipe(shareReplay(1));
+    }
+    return this.mode$;
+  }
 
   search<T>(slug: string, params: Record<string, string>): Observable<T> {
     return this.http.get<T>(`${this.base}${slug}/search`, { params: new HttpParams({ fromObject: params }) });

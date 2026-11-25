@@ -2,7 +2,7 @@ package com.hospital.maintenance.dto.hisfix;
 
 public class EncounterActiveRow {
 
-    private String encounterId;
+    private Long encounterId;
     private String patientMrn;
     private String personName;
     private String domainCode;
@@ -12,11 +12,11 @@ public class EncounterActiveRow {
     private String locationCode;
     private String locationName;
 
-    public String getEncounterId() {
+    public Long getEncounterId() {
         return encounterId;
     }
 
-    public void setEncounterId(String encounterId) {
+    public void setEncounterId(Long encounterId) {
         this.encounterId = encounterId;
     }
 

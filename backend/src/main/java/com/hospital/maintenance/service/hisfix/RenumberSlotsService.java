@@ -123,8 +123,9 @@ public class RenumberSlotsService {
                     throw new IllegalArgumentException("Tiada perubahan.");
                 }
                 List<SlotRow> locked = jdbc.query("SELECT reserve_id, reserve_index, reserve_cancelled "
-                                + "FROM app_reservations WHERE reserve_id IN (:ids) FOR UPDATE",
-                        new MapSqlParameterSource("ids", ids), new RowMapper<SlotRow>() {
+                                + "FROM app_reservations WHERE reserve_id IN (:ids) "
+                                + "AND resource_code = :r AND reserve_date = :d AND schedule_code = :s FOR UPDATE",
+                        params(resource, day, schedule).addValue("ids", ids), new RowMapper<SlotRow>() {
                             @Override
                             public SlotRow mapRow(ResultSet rs, int rowNum) throws SQLException {
                                 SlotRow row = new SlotRow();
@@ -135,6 +136,10 @@ public class RenumberSlotsService {
                                 return row;
                             }
                         });
+                // A row moved to another resource/date/schedule between the two reads is not returned here.
+                if (locked.size() != ids.size()) {
+                    throw new IllegalArgumentException(CHANGED);
+                }
                 List<SlotChange> plan = SlotRenumberPlanner.plan(locked);
                 if (plan.isEmpty()) {
                     throw new IllegalArgumentException("Tiada perubahan.");

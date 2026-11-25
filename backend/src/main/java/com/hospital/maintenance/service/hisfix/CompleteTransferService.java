@@ -15,7 +15,7 @@ import org.springframework.transaction.support.TransactionCallback;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,9 +78,9 @@ public class CompleteTransferService {
                 if (before.getTransferConfirmed() != null && before.getTransferConfirmed().intValue() == 1) {
                     throw new IllegalArgumentException("Tiada perubahan.");
                 }
-                Map<String, Object> expected = new HashMap<String, Object>();
+                Map<String, Object> expected = new LinkedHashMap<String, Object>();
                 expected.put("transferConfirmed", expectedConfirmed);
-                Map<String, Object> actual = new HashMap<String, Object>();
+                Map<String, Object> actual = new LinkedHashMap<String, Object>();
                 actual.put("transferConfirmed", before.getTransferConfirmed());
                 support.requireUnchanged(expected, actual);
 
@@ -117,7 +117,7 @@ public class CompleteTransferService {
     }
 
     private Map<String, Object> snapshot(TransferRow row) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
         map.put("transferConfirmed", row.getTransferConfirmed());
         return map;
     }

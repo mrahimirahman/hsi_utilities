@@ -54,8 +54,8 @@ public class EncounterActiveService {
     }
 
     public HisFixResult<EncounterActiveRow> apply(final EncounterActiveRequest request, final SystemUser user) {
-        if (request == null || request.getEncounterId() == null || request.getEncounterId().trim().isEmpty()) {
-            throw new IllegalArgumentException("Rekod encounter tidak sah.");
+        if (request == null || request.getEncounterId() == null) {
+            throw new IllegalArgumentException("Sila pilih encounter.");
         }
         final String ticketNo = support.requireTicketNo(request.getTicketNo());
         final String reason = support.requireReason(request.getReason());
@@ -69,7 +69,7 @@ public class EncounterActiveService {
             throw new IllegalArgumentException("Nilai baharu mesti 0 atau 1.");
         }
         final int newActive = request.getNewActive().intValue();
-        final String encounterId = request.getEncounterId().trim();
+        final Long encounterId = request.getEncounterId();
 
         return support.write(new TransactionCallback<EncounterActiveRow>() {
             @Override
@@ -113,7 +113,7 @@ public class EncounterActiveService {
                 record.setModule(MODULE);
                 record.setTicketNo(ticketNo);
                 record.setPatientMrn(before.getPatientMrn());
-                record.setEncounterId(encounterId);
+                record.setEncounterId(String.valueOf(encounterId));
                 record.setTargetTable("encounters");
                 record.setTargetKey("encounter_id=" + encounterId);
                 record.setBeforeJson(support.toJson(snapshot(before)));
@@ -135,7 +135,7 @@ public class EncounterActiveService {
         return map;
     }
 
-    private EncounterActiveRow readScoped(List<String> mrns, String encounterId) {
+    private EncounterActiveRow readScoped(List<String> mrns, Long encounterId) {
         List<EncounterActiveRow> rows = jdbc.query(
                 SELECT_ROW + "WHERE a.patient_mrn IN (:mrns) AND e.encounter_id = :id",
                 new MapSqlParameterSource("mrns", mrns).addValue("id", encounterId), rowMapper());
@@ -147,7 +147,7 @@ public class EncounterActiveService {
             @Override
             public EncounterActiveRow mapRow(ResultSet rs, int rowNum) throws SQLException {
                 EncounterActiveRow row = new EncounterActiveRow();
-                row.setEncounterId(rs.getString("encounter_id"));
+                row.setEncounterId(Long.valueOf(rs.getLong("encounter_id")));
                 row.setPatientMrn(rs.getString("patient_mrn"));
                 row.setPersonName(rs.getString("person_name"));
                 row.setDomainCode(rs.getString("domain_code"));
