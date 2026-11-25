@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HisFixAuditEntry } from '../his-fix-api.service';
@@ -26,6 +26,9 @@ export class HisFixShellComponent {
   // Text shown in the window.confirm step, listing the change about to be made.
   @Input() confirmText = 'Teruskan perubahan ini?';
 
+  // Shell-local validation message (not an @Input, so the parent's bound value can't leave it stale).
+  readonly localError = signal('');
+
   @Input() ticketNo = '';
   @Output() ticketNoChange = new EventEmitter<string>();
   @Input() reason = '';
@@ -36,13 +39,19 @@ export class HisFixShellComponent {
   onApply(): void {
     const ticket = this.ticketNo.trim();
     if (!ticket) {
-      this.errorMessage = 'Sila masukkan No. Tiket.';
+      this.localError.set('Sila masukkan No. Tiket.');
       return;
     }
+    this.localError.set('');
     if (!window.confirm(`${this.confirmText}\n\nNo. Tiket: ${ticket}`)) {
       return;
     }
     this.apply.emit();
+  }
+
+  onTicketChange(value: string): void {
+    this.localError.set('');
+    this.ticketNoChange.emit(value);
   }
 
   fmt(value: string | null): string {

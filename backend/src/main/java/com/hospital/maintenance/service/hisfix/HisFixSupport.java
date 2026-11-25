@@ -36,6 +36,7 @@ public class HisFixSupport {
 
     private static final String MRN_PREFIX = "HSI";
     private static final int MAX_TICKET_NO_LENGTH = 50;
+    private static final int MAX_REASON_LENGTH = 500;
     private static final Pattern TIME_PATTERN = Pattern.compile("^([01]\\d|2[0-3]):[0-5]\\d$");
 
     private final NamedParameterJdbcTemplate jdbc;
@@ -78,6 +79,18 @@ public class HisFixSupport {
             throw new IllegalArgumentException("No. Tiket tidak boleh melebihi " + MAX_TICKET_NO_LENGTH + " aksara.");
         }
         return ticketNo;
+    }
+
+    /** Optional free-text reason: blank becomes null, otherwise trimmed and capped at 500 chars. */
+    public String requireReason(String raw) {
+        String reason = raw == null ? "" : raw.trim();
+        if (reason.isEmpty()) {
+            return null;
+        }
+        if (reason.length() > MAX_REASON_LENGTH) {
+            throw new IllegalArgumentException("Sebab tidak boleh melebihi " + MAX_REASON_LENGTH + " aksara.");
+        }
+        return reason;
     }
 
     // Users key in the number after "HSI"; accept either form since stored MRNs may carry the prefix.

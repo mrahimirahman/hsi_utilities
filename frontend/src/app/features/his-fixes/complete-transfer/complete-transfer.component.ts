@@ -76,6 +76,7 @@ export class CompleteTransferComponent {
 
   select(row: TransferRow): void {
     this.selected.set(row);
+    this.dryRun.set(false);
     this.errorMessage.set('');
     this.successMessage.set('');
     this.ticketNo = '';

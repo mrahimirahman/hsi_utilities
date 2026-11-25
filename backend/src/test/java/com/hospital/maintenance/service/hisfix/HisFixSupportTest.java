@@ -45,6 +45,24 @@ public class HisFixSupportTest {
     }
 
     @Test
+    public void requireReasonBlankIsNull() {
+        assertEquals(null, support.requireReason(null));
+        assertEquals(null, support.requireReason("   "));
+    }
+
+    @Test
+    public void requireReasonTrimsAndAccepts500() {
+        assertEquals("abc", support.requireReason("  abc "));
+        assertEquals(500, support.requireReason(chars(500)).length());
+    }
+
+    @Test
+    public void requireReasonRejects501() {
+        assertIae(new Runnable() { public void run() { support.requireReason(chars(501)); } },
+                "Sebab tidak boleh melebihi 500 aksara.");
+    }
+
+    @Test
     public void requireTicketNoTrims() {
         assertEquals("T-1", support.requireTicketNo("  T-1 "));
     }

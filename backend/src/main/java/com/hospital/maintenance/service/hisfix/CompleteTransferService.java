@@ -24,7 +24,6 @@ import java.util.Map;
 public class CompleteTransferService {
 
     public static final String MODULE = "COMPLETE_TRANSFER";
-    private static final int MAX_REASON_LENGTH = 500;
 
     private static final String SELECT_ROW = "SELECT t.transfer_id, t.encounter_id, a.patient_mrn, b.person_name, "
             + "t.ward_source, ws.location_name AS ward_source_name, "
@@ -59,16 +58,20 @@ public class CompleteTransferService {
             throw new IllegalArgumentException("Rekod pemindahan tidak sah.");
         }
         final String ticketNo = support.requireTicketNo(request.getTicketNo());
-        final String reason = request.getReason() == null ? null : request.getReason().trim();
-        if (reason != null && reason.length() > MAX_REASON_LENGTH) {
-            throw new IllegalArgumentException("Sebab tidak boleh melebihi " + MAX_REASON_LENGTH + " aksara.");
+        final String reason = support.requireReason(request.getReason());
+        if (request.getExpectedTransferConfirmed() == null) {
+            throw new IllegalArgumentException("Nilai asal diperlukan, sila cari semula.");
         }
+        final Integer expectedConfirmed = request.getExpectedTransferConfirmed();
         final Long transferId = request.getTransferId();
 
         return support.write(new TransactionCallback<TransferRow>() {
             @Override
             public TransferRow doInTransaction(TransactionStatus status) {
-                TransferRow before = read(transferId);
+                // Pattern for every fix: lock the row by primary key (FOR UPDATE), compare the client's
+                // expected "before" values, then guard the UPDATE with those values too, so a concurrent
+                // change can never be overwritten blindly.
+                TransferRow before = readForUpdate(transferId);
                 if (before == null) {
                     throw new IllegalArgumentException("Rekod pemindahan tidak dijumpai.");
                 }
@@ -76,15 +79,19 @@ public class CompleteTransferService {
                     throw new IllegalArgumentException("Tiada perubahan.");
                 }
                 Map<String, Object> expected = new HashMap<String, Object>();
-                expected.put("transferConfirmed", request.getExpectedTransferConfirmed());
+                expected.put("transferConfirmed", expectedConfirmed);
                 Map<String, Object> actual = new HashMap<String, Object>();
                 actual.put("transferConfirmed", before.getTransferConfirmed());
                 support.requireUnchanged(expected, actual);
 
-                int updated = jdbc.update("UPDATE enc_transfers SET transfer_confirmed = 1 WHERE transfer_id = :id",
-                        new MapSqlParameterSource("id", transferId));
+                int updated = jdbc.update("UPDATE enc_transfers SET transfer_confirmed = 1 "
+                                + "WHERE transfer_id = :id AND transfer_confirmed = :expected",
+                        new MapSqlParameterSource("id", transferId).addValue("expected", expectedConfirmed));
+                if (updated == 0) {
+                    throw new IllegalArgumentException("Rekod telah berubah, sila cari semula.");
+                }
                 TransferRow after = read(transferId);
-                if (updated == 0 || after == null || after.getTransferConfirmed() == null
+                if (after == null || after.getTransferConfirmed() == null
                         || after.getTransferConfirmed().intValue() != 1) {
                     throw new IllegalArgumentException("Tiada perubahan.");
                 }
@@ -113,6 +120,14 @@ public class CompleteTransferService {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("transferConfirmed", row.getTransferConfirmed());
         return map;
+    }
+
+    private TransferRow readForUpdate(Long transferId) {
+        // Lock only the enc_transfers row (by primary key) for the rest of the transaction; locking
+        // the joined display tables would be needlessly broad (MySQL 5.7 has no FOR UPDATE OF).
+        List<Long> locked = jdbc.queryForList("SELECT transfer_id FROM enc_transfers WHERE transfer_id = :id FOR UPDATE",
+                new MapSqlParameterSource("id", transferId), Long.class);
+        return locked.isEmpty() ? null : read(transferId);
     }
 
     private TransferRow read(Long transferId) {

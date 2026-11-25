@@ -42,7 +42,7 @@
       <label class="field ticket-field">
         <span class="field-label">No. Tiket <span class="required">*</span></span>
         <input class="input mono" type="text" maxlength="50" required [ngModel]="ticketNo"
-               (ngModelChange)="ticketNoChange.emit($event)" placeholder="cth. no. Borang Aduan / tiket helpdesk">
+               (ngModelChange)="onTicketChange($event)" placeholder="cth. no. Borang Aduan / tiket helpdesk">
         <span class="field-hint">Wajib diisi bagi setiap pembetulan.</span>
       </label>
 
@@ -56,9 +56,9 @@
         <span class="material-symbols-outlined">check_circle</span>
         <span>{{ successMessage }}</span>
       </div>
-      <div class="alert alert-error" role="alert" *ngIf="errorMessage">
+      <div class="alert alert-error" role="alert" *ngIf="localError() || errorMessage">
         <span class="material-symbols-outlined">error</span>
-        <span>{{ errorMessage }}</span>
+        <span>{{ localError() || errorMessage }}</span>
       </div>
     </div>
     <div class="card-footer">

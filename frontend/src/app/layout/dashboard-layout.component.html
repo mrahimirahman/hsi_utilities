@@ -111,12 +111,14 @@
   </div>
 
   <nav class="bottom-nav" aria-label="Navigasi pantas">
-    <a *ngFor="let item of visibleMenuItems()"
-       [routerLink]="item.route"
-       [class.active]="isActive(item)">
-      <span class="material-symbols-outlined">{{ item.icon }}</span>
-      <span>{{ item.shortLabel }}</span>
-    </a>
+    <ng-container *ngFor="let item of visibleMenuItems()">
+      <a *ngIf="!item.group"
+         [routerLink]="item.route"
+         [class.active]="isActive(item)">
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
+        <span>{{ item.shortLabel }}</span>
+      </a>
+    </ng-container>
   </nav>
 
   <app-ai-assistant *ngIf="canUseAiAssistant()"></app-ai-assistant>
