@@ -1,0 +1,76 @@
+<app-his-fix-shell
+  title="Document Status (Mark as Error)"
+  icon="rule"
+  description="Nota klinikal perlu ditanda 'Mark As Error' (atau dikembalikan ke 'Submitted'). Cari MRN, pilih dokumen, kemudian tukar status_code antara 01 dan 107 (90 hari terkini sahaja)."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="selected() !== null"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field search-field">
+      <span class="field-label">MRN Pesakit</span>
+      <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Dokumen</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod dijumpai</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada dokumen (Submitted / Mark As Error) dijumpai untuk MRN ini (90 hari terkini).</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Nota</th>
+            <th>Tarikh</th>
+            <th>Dicipta Oleh</th>
+            <th>Status</th>
+            <th>Encounter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.is-selected]="selectedId() === row.docDetailId">
+            <td>
+              <input type="radio" name="docDetail" [checked]="selectedId() === row.docDetailId" (change)="select(row)" [disabled]="isSaving()" [attr.aria-label]="'Pilih dokumen ' + row.docDetailId">
+            </td>
+            <td>{{ row.reportName || '-' }} <small class="muted">(doc {{ row.docDetailId }})</small></td>
+            <td class="nowrap">{{ row.createdDate || '-' }}</td>
+            <td class="mono">{{ row.createdBy || '-' }}</td>
+            <td>{{ row.statusDetail || '-' }} <small class="muted mono">({{ row.statusCode }})</small></td>
+            <td class="mono">{{ row.encounterId }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <dl shellForm class="summary-strip" *ngIf="selected() as row">
+    <div>
+      <dt class="label-caps">Perubahan</dt>
+      <dd class="mono">document_detail (doc {{ row.docDetailId }}): status_code {{ row.statusCode }} &rarr; {{ targetStatus(row) }}</dd>
+    </div>
+    <div>
+      <dt class="label-caps">Tindakan</dt>
+      <dd>{{ actionLabel(row) }}</dd>
+    </div>
+  </dl>
+</app-his-fix-shell>

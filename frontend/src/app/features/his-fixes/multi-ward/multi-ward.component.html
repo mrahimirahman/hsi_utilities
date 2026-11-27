@@ -1,0 +1,188 @@
+<app-his-fix-shell
+  title="Patient in Many Wards"
+  icon="call_split"
+  description="Pesakit dipaparkan di beberapa wad serentak kerana flag admission_active / admission_confirmed atau transfer_confirmed tertinggal selepas pemindahan. Cari MRN, tandakan &quot;Betulkan&quot; hanya pada baris yang salah dan pilih nilai 0/1 yang betul; baris lain tidak disentuh."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="canApply()"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field search-field">
+      <span class="field-label">MRN Pesakit</span>
+      <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <div shellResults *ngIf="hasSearched()">
+    <section class="card" *ngIf="!isSearching() && results().length === 0 && !errorMessage()">
+      <div class="empty-state">
+        <span class="material-symbols-outlined">search_off</span>
+        <span>Tiada encounter dalam-pesakit dijumpai untuk MRN ini.</span>
+      </div>
+    </section>
+
+    <ng-container *ngIf="active() as result">
+      <section class="card">
+        <div class="card-header">
+          <div class="card-heading">
+            <h2 class="card-title"><span class="step-badge">2</span> Encounter {{ result.encounterId }}</h2>
+            <span class="card-subtitle">MRN {{ result.patientMrn }} &middot; daftar {{ result.encounterTimestamp || '-' }}</span>
+          </div>
+        </div>
+        <div class="card-body step-body">
+          <div class="alert alert-warning" role="note">
+            <span class="material-symbols-outlined">warning</span>
+            <span>
+              Penginapan sebenar yang terdahulu (wad lama yang pesakit memang pernah duduk) dan pemindahan yang sudah
+              disahkan biasanya <strong>dibiarkan</strong>. Betulkan hanya baris yang menyebabkan pesakit muncul di wad yang
+              salah. Tiada butang "kosongkan semua wad lain" &mdash; setiap baris mesti dipilih sendiri.
+            </span>
+          </div>
+
+          <div class="search-row">
+            <label class="field" *ngIf="results().length > 1">
+              <span class="field-label">Pesakit (MRN)</span>
+              <select class="input" [ngModel]="activeIndex()" (ngModelChange)="selectPatient($event)" [disabled]="isSaving() || isSearching()">
+                <option *ngFor="let item of results(); let i = index" [ngValue]="i">{{ item.patientMrn }} &mdash; encounter {{ item.encounterId }}</option>
+              </select>
+            </label>
+            <label class="field" *ngIf="result.recentEncounters.length > 0">
+              <span class="field-label">Encounter dalam-pesakit (terkini dahulu)</span>
+              <select class="input" [ngModel]="result.encounterId" (ngModelChange)="switchEncounter($event)" [disabled]="isSaving() || isSearching()">
+                <option *ngFor="let enc of result.recentEncounters" [ngValue]="enc.encounterId">
+                  {{ enc.encounterId }} &middot; {{ enc.encounterTimestamp || '-' }} &middot; discaj {{ enc.dischargeDate || '-' }} &middot; active {{ enc.encounterActive }}
+                </option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">Admissions (enc_admissions)</h2>
+          <span class="badge badge-neutral">{{ result.admissions.length }} rekod</span>
+        </div>
+        <div class="empty-state" *ngIf="result.admissions.length === 0">
+          <span class="material-symbols-outlined">search_off</span>
+          <span>Tiada admission bagi encounter ini.</span>
+        </div>
+        <div class="table-wrap" *ngIf="result.admissions.length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Betulkan</th>
+                <th>Admission</th>
+                <th>Wad</th>
+                <th>Katil</th>
+                <th>Tiba</th>
+                <th>Keluar</th>
+                <th>Active</th>
+                <th>Confirmed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of result.admissions" [class.is-selected]="isTicked(admissionKey(row))">
+                <td>
+                  <input type="checkbox" [checked]="isTicked(admissionKey(row))" (change)="toggleAdmission(row, $any($event.target).checked)" [disabled]="isSaving()" [attr.aria-label]="'Betulkan admission ' + row.admissionId">
+                </td>
+                <td class="mono">{{ row.admissionId }}</td>
+                <td>{{ row.wardName || '-' }} <small class="muted mono">({{ row.wardCode || '-' }})</small></td>
+                <td class="mono">{{ row.bedCode || '-' }}</td>
+                <td class="nowrap">{{ row.admissionArrival || '-' }}</td>
+                <td class="nowrap">{{ row.admissionDepart || '-' }}</td>
+                <ng-container *ngIf="edit(admissionKey(row)) as e; else admissionFlags">
+                  <td>
+                    <select class="input" [ngModel]="e.values['admission_active']" (ngModelChange)="setValue(admissionKey(row), 'admission_active', $event)" [disabled]="isSaving()" [attr.aria-label]="'admission_active ' + row.admissionId">
+                      <option [ngValue]="0">0</option>
+                      <option [ngValue]="1">1</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="input" [ngModel]="e.values['admission_confirmed']" (ngModelChange)="setValue(admissionKey(row), 'admission_confirmed', $event)" [disabled]="isSaving()" [attr.aria-label]="'admission_confirmed ' + row.admissionId">
+                      <option [ngValue]="0">0</option>
+                      <option [ngValue]="1">1</option>
+                    </select>
+                  </td>
+                </ng-container>
+                <ng-template #admissionFlags>
+                  <td class="mono strong">{{ row.admissionActive }}</td>
+                  <td class="mono">{{ row.admissionConfirmed }}</td>
+                </ng-template>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">Transfers (enc_transfers)</h2>
+          <span class="badge badge-neutral">{{ result.transfers.length }} rekod</span>
+        </div>
+        <div class="empty-state" *ngIf="result.transfers.length === 0">
+          <span class="material-symbols-outlined">search_off</span>
+          <span>Tiada pemindahan bagi encounter ini.</span>
+        </div>
+        <div class="table-wrap" *ngIf="result.transfers.length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Betulkan</th>
+                <th>Transfer</th>
+                <th>Dari &rarr; Ke</th>
+                <th>Masa</th>
+                <th>Confirmed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of result.transfers" [class.is-selected]="isTicked(transferKey(row))">
+                <td>
+                  <input type="checkbox" [checked]="isTicked(transferKey(row))" (change)="toggleTransfer(row, $any($event.target).checked)" [disabled]="isSaving()" [attr.aria-label]="'Betulkan transfer ' + row.transferId">
+                </td>
+                <td class="mono">{{ row.transferId }}</td>
+                <td>
+                  {{ row.wardSourceName || row.wardSource || '-' }} &rarr; {{ row.wardDestinationName || row.wardDestination || '-' }}
+                  <small class="muted mono">(admission {{ row.admissionSource || '-' }} &rarr; {{ row.admissionDestination || '-' }})</small>
+                </td>
+                <td class="nowrap">{{ row.transferTimestamp || '-' }}</td>
+                <td *ngIf="edit(transferKey(row)) as e; else transferFlag">
+                  <select class="input" [ngModel]="e.values['transfer_confirmed']" (ngModelChange)="setValue(transferKey(row), 'transfer_confirmed', $event)" [disabled]="isSaving()" [attr.aria-label]="'transfer_confirmed ' + row.transferId">
+                    <option [ngValue]="0">0</option>
+                    <option [ngValue]="1">1</option>
+                  </select>
+                </td>
+                <ng-template #transferFlag>
+                  <td class="mono strong">{{ row.transferConfirmed }}</td>
+                </ng-template>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </ng-container>
+  </div>
+
+  <div shellForm>
+    <dl class="summary-strip">
+      <div>
+        <dt class="label-caps">Perubahan ({{ changes().length }} baris)</dt>
+        <dd *ngFor="let change of changes()" class="mono">
+          {{ change.label }}:
+          <span *ngFor="let entry of change.values | keyvalue; let last = last">{{ entry.key }} {{ change.expected[entry.key] }} &rarr; {{ entry.value }}{{ last ? '' : ', ' }}</span>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</app-his-fix-shell>

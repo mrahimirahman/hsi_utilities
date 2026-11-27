@@ -1,0 +1,80 @@
+<app-his-fix-shell
+  title="Unlock Document"
+  icon="lock_open"
+  description="Dokumen klinikal tersangkut sebagai 'sedang dibuka' (access_flag = 1) dan tidak boleh disunting. Cari MRN, tandakan dokumen, kemudian tetapkan access_flag = 0 (90 hari terkini sahaja)."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="selectedIds().length > 0"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field search-field">
+      <span class="field-label">MRN Pesakit</span>
+      <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Dokumen Terkunci</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod dijumpai</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada dokumen terkunci dijumpai untuk MRN ini (90 hari terkini).</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" [checked]="allSelected()" (change)="toggleAll()" [disabled]="isSaving()" aria-label="Pilih semua">
+            </th>
+            <th>MRN</th>
+            <th>Nama</th>
+            <th>Encounter</th>
+            <th>Access ID</th>
+            <th>Nota</th>
+            <th>Dicipta</th>
+            <th>Dibuka Oleh</th>
+            <th>Masa Buka</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.is-selected]="isSelected(row)">
+            <td>
+              <input type="checkbox" [checked]="isSelected(row)" (change)="toggle(row)" [disabled]="isSaving()" [attr.aria-label]="'Pilih akses ' + row.docDetailAccessId">
+            </td>
+            <td class="mono">{{ row.patientMrn }}</td>
+            <td>{{ row.personName }}</td>
+            <td class="mono">{{ row.encounterId }}</td>
+            <td class="mono strong">{{ row.docDetailAccessId }}</td>
+            <td>{{ row.reportName || '-' }} <small class="muted">(doc {{ row.docDetailId }})</small></td>
+            <td class="nowrap">{{ row.createdDate || '-' }}</td>
+            <td class="mono">{{ row.uidUserid || '-' }}</td>
+            <td class="nowrap">{{ row.datetimeOpen || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <dl shellForm class="summary-strip" *ngIf="selectedIds().length > 0">
+    <div>
+      <dt class="label-caps">Perubahan</dt>
+      <dd class="mono">document_detail_access ({{ selectedIds().length }} rekod): access_flag 1 &rarr; 0</dd>
+    </div>
+  </dl>
+</app-his-fix-shell>

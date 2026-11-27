@@ -1,0 +1,83 @@
+<app-his-fix-shell
+  title="Update Birth Time"
+  icon="child_care"
+  description="Masa lahir pesakit salah atau kosong dalam rekod persons. Cari MRN, pilih pesakit, kemudian masukkan masa lahir yang betul (HH:mm)."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="canApply()"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field search-field">
+      <span class="field-label">MRN Pesakit</span>
+      <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Pesakit</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod dijumpai</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada pesakit dijumpai untuk MRN ini.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>MRN</th>
+            <th>Nama</th>
+            <th>Person ID</th>
+            <th>Tarikh Lahir</th>
+            <th>Masa Lahir Semasa</th>
+            <th><span class="sr-only">Tindakan</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.is-selected]="selected()?.patientId === row.patientId">
+            <td class="mono">{{ row.patientMrn }}</td>
+            <td>{{ row.personName }}</td>
+            <td class="mono">{{ row.personId }}</td>
+            <td class="nowrap">{{ row.personBirthdate || '-' }}</td>
+            <td class="mono strong">{{ row.personBirthtime || '(kosong)' }}</td>
+            <td>
+              <button class="btn btn-sm"
+                      [class.btn-primary]="selected()?.patientId === row.patientId"
+                      [class.btn-secondary]="selected()?.patientId !== row.patientId"
+                      type="button" (click)="select(row)" [disabled]="isSaving()">
+                {{ selected()?.patientId === row.patientId ? 'Dipilih' : 'Pilih' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div shellForm *ngIf="selected() as row">
+    <dl class="summary-strip">
+      <div>
+        <dt class="label-caps">Tarikh Lahir / Masa Semasa</dt>
+        <dd class="mono">{{ row.personBirthdate || '-' }} {{ row.personBirthtime || '(kosong)' }}</dd>
+      </div>
+    </dl>
+    <label class="field">
+      <span class="field-label">Masa Lahir Baharu</span>
+      <input class="input" type="time" [(ngModel)]="newBirthTime">
+    </label>
+  </div>
+</app-his-fix-shell>

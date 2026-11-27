@@ -13,6 +13,7 @@ interface MenuItem {
   icon: string;
   requiresAdmin?: boolean;
   exact?: boolean;
+  group?: string;
 }
 
 @Component({
@@ -28,7 +29,16 @@ export class DashboardLayoutComponent {
     { label: 'Update Discharge Time', shortLabel: 'Discaj', route: '/discharge-date', icon: 'schedule' },
     { label: 'Update Death Date', shortLabel: 'Kematian', route: '/death-date', icon: 'event_busy' },
     { label: 'Ticket Report', shortLabel: 'Tiket', route: '/ticket-report', icon: 'confirmation_number', requiresAdmin: true },
-    { label: 'Audit Log', shortLabel: 'Audit', route: '/reports/audit', icon: 'verified_user', requiresAdmin: true }
+    { label: 'Audit Log', shortLabel: 'Audit', route: '/reports/audit', icon: 'verified_user', requiresAdmin: true },
+    { label: 'Complete Transfer (Out Waiting)', shortLabel: 'Transfer', route: '/fix/complete-transfer', icon: 'move_down', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Unlock Document', shortLabel: 'Unlock', route: '/fix/unlock-document', icon: 'lock_open', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Update Birth Time', shortLabel: 'Masa Lahir', route: '/fix/birth-time', icon: 'child_care', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Document Status (Mark as Error)', shortLabel: 'Status Dok', route: '/fix/document-status', icon: 'rule', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Encounter Active Flag', shortLabel: 'Encounter', route: '/fix/encounter-active', icon: 'toggle_on', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Update Bed Class', shortLabel: 'Kelas', route: '/fix/bed-class', icon: 'bed', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Susun Semula Slot Temujanji', shortLabel: 'Slot', route: '/fix/renumber-slots', icon: 'format_list_numbered', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Show/Hide Schedule', shortLabel: 'Jadual', route: '/fix/schedule-visibility', icon: 'visibility', requiresAdmin: true, group: 'Pembetulan HIS' },
+    { label: 'Patient in Many Wards', shortLabel: 'Wad', route: '/fix/multi-ward', icon: 'call_split', requiresAdmin: true, group: 'Pembetulan HIS' }
   ];
 
   readonly currentDateLabel = this.formatCurrentDate();
@@ -56,6 +66,12 @@ export class DashboardLayoutComponent {
   visibleMenuItems(): MenuItem[] {
     const role = this.authService.currentUser()?.role ?? '';
     return this.menuItems.filter((item) => !item.requiresAdmin || role === 'ADMIN');
+  }
+
+  // Heading to render above this item: only when its group differs from the previous visible item's.
+  groupHeading(items: MenuItem[], index: number): string | null {
+    const group = items[index].group;
+    return group && group !== items[index - 1]?.group ? group : null;
   }
 
   isActive(item: MenuItem): boolean {

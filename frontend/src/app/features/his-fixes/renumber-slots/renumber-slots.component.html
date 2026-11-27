@@ -1,0 +1,96 @@
+<app-his-fix-shell
+  title="Susun Semula Slot Temujanji"
+  icon="format_list_numbered"
+  auditSubtitle="Sejarah pembetulan untuk sumber ini"
+  description="Nombor slot temujanji (reserve_index) bercelaru: ada jurang atau nombor berganda. Pilih jadual, sumber dan tarikh, semak pratonton, kemudian susun semula slot aktif kepada 1..N (slot dibatalkan tidak diubah)."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="canApply()"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field">
+      <span class="field-label">Jadual</span>
+      <select class="input" [ngModel]="scheduleCode" (ngModelChange)="onScheduleChange($event)" [disabled]="isSearching() || isSaving()">
+        <option value="">-- Pilih jadual --</option>
+        <option *ngFor="let option of schedules()" [value]="option.code">{{ option.name || option.code }} ({{ option.code }}){{ option.hidden ? ' - tersembunyi' : '' }}</option>
+      </select>
+    </label>
+    <label class="field">
+      <span class="field-label">Sumber</span>
+      <select class="input" [(ngModel)]="resourceCode" (ngModelChange)="onSelectionChange()" [disabled]="!scheduleCode || isSearching() || isSaving()">
+        <option value="">-- Pilih sumber --</option>
+        <option *ngFor="let option of resources()" [value]="option.code">{{ option.name || option.code }} ({{ option.code }}){{ option.hidden ? ' - tersembunyi' : '' }}</option>
+      </select>
+    </label>
+    <label class="field">
+      <span class="field-label">Tarikh</span>
+      <input class="input" type="date" [(ngModel)]="date" (ngModelChange)="onSelectionChange()">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Slot Temujanji</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod, {{ changes().length }} akan diubah</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada temujanji dijumpai untuk pilihan ini.</span>
+    </div>
+
+    <div class="empty-state" *ngIf="rows().length > 0 && changes().length === 0">
+      <span class="material-symbols-outlined">check_circle</span>
+      <span>Nombor slot sudah berturutan; tiada perubahan diperlukan.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Indeks</th>
+            <th>MRN</th>
+            <th>Nama</th>
+            <th>Status</th>
+            <th>Pratonton</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()">
+            <td class="mono">{{ row.reserveId }}</td>
+            <td class="mono">{{ row.reserveIndex ?? '-' }}</td>
+            <td class="mono">{{ row.patientMrn || '-' }}</td>
+            <td>{{ row.personName || '-' }}</td>
+            <td>
+              <span class="badge badge-neutral" *ngIf="row.cancelled">Dibatalkan</span>
+            </td>
+            <td class="mono strong">
+              <ng-container *ngIf="changeFor(row) as change">{{ change.fromIndex ?? '-' }} &rarr; {{ change.toIndex }}</ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div shellForm>
+    <dl class="summary-strip">
+      <div>
+        <dt class="label-caps">Perubahan</dt>
+        <dd class="mono">{{ changes().length }} slot aktif akan dinomborkan semula</dd>
+      </div>
+    </dl>
+  </div>
+</app-his-fix-shell>

@@ -14,6 +14,7 @@ public class TicketDashboardResponse {
     private int activeUsers;
     private List<LabelCount> daily;
     private List<LabelCount> topUsers;
+    private List<LabelCount> fixModules;
 
     public String getFromDate() {
         return fromDate;
@@ -93,5 +94,13 @@ public class TicketDashboardResponse {
 
     public void setTopUsers(List<LabelCount> topUsers) {
         this.topUsers = topUsers;
+    }
+
+    public List<LabelCount> getFixModules() {
+        return fixModules;
+    }
+
+    public void setFixModules(List<LabelCount> fixModules) {
+        this.fixModules = fixModules;
     }
 }

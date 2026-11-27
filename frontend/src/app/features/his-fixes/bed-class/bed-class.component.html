@@ -1,0 +1,86 @@
+<app-his-fix-shell
+  title="Update Bed Class"
+  icon="bed"
+  description="Kelas katil (class_code) pada admission salah. Cari MRN, pilih admission pada encounter dalam-pesakit terkini dan pilih kelas yang betul daripada senarai kelas aktif."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="canApply()"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field search-field">
+      <span class="field-label">MRN Pesakit</span>
+      <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Admission</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod dijumpai</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada admission dijumpai untuk MRN ini.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>MRN</th>
+            <th>Admission</th>
+            <th>Wad</th>
+            <th>Katil</th>
+            <th>Kelas</th>
+            <th>Active</th>
+            <th>Confirmed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.is-selected]="selectedId() === row.admissionId">
+            <td>
+              <input type="radio" name="admission" [checked]="selectedId() === row.admissionId" (change)="select(row)" [disabled]="isSaving()" [attr.aria-label]="'Pilih admission ' + row.admissionId">
+            </td>
+            <td class="mono">{{ row.patientMrn }}</td>
+            <td class="mono">{{ row.admissionId }}</td>
+            <td>{{ row.wardName || '-' }} <small class="muted mono">({{ row.wardCode || '-' }})</small></td>
+            <td class="mono">{{ row.bedCode || '-' }}</td>
+            <td class="strong">{{ row.classCode || '-' }} <small class="muted">{{ row.classDesc || '' }}</small></td>
+            <td class="mono">{{ row.admissionActive }}</td>
+            <td class="mono">{{ row.admissionConfirmed }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div shellForm *ngIf="selected() as row">
+    <dl class="summary-strip">
+      <div>
+        <dt class="label-caps">Admission / Kelas Semasa</dt>
+        <dd class="mono">{{ row.admissionId }}: {{ row.classCode || '-' }} {{ row.classDesc || '' }}</dd>
+      </div>
+    </dl>
+    <p class="muted" *ngIf="!row.classCode">Kelas asal kosong; rekod ini tidak boleh dibetulkan di sini.</p>
+    <label class="field">
+      <span class="field-label">Kelas baharu</span>
+      <select class="input" [ngModel]="newClass()" (ngModelChange)="setNewClass($event)" [disabled]="isSaving()">
+        <option value="">-- Pilih kelas --</option>
+        <option *ngFor="let option of classes()" [value]="option.classCode">{{ option.classCode }} — {{ option.classDesc || '' }}</option>
+      </select>
+    </label>
+  </div>
+</app-his-fix-shell>

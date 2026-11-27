@@ -1,0 +1,141 @@
+/* ViewEncapsulation.None: rules are scoped by .his-fix-page so projected page content is styled too.
+   Shared styling comes from styles.css. */
+
+.his-fix-page .title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.his-fix-page .title-row .page-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.his-fix-page .dry-run-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border: 1px solid #e0b100;
+  border-radius: var(--radius-sm);
+  background: #fff4c2;
+  color: #6b5200;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.his-fix-page .card-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.his-fix-page .step-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.his-fix-page .with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.his-fix-page .field-label .required {
+  margin-right: auto;
+}
+
+.his-fix-page .ticket-field {
+  max-width: 420px;
+}
+
+.his-fix-page .footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+
+.his-fix-page .data-table .nowrap {
+  white-space: nowrap;
+}
+
+.his-fix-page .data-table .name-cell {
+  min-width: 140px;
+}
+
+.his-fix-page .change {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.his-fix-page .change .before,
+.his-fix-page .change .arrow {
+  color: var(--text-muted);
+}
+
+.his-fix-page .change .after {
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--success-bg);
+  color: var(--success-ink);
+  font-weight: 600;
+}
+
+.his-fix-page .audit-table .wrap {
+  min-width: 200px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.his-fix-page .search-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.his-fix-page .search-field {
+  flex: 0 1 360px;
+}
+
+.his-fix-page .strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.his-fix-page .data-table tbody tr.is-selected td {
+  background: var(--primary-soft);
+}
+
+.his-fix-page .summary-strip {
+  margin: 0;
+  padding: 12px var(--space-md);
+  background: var(--surface-tint);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.his-fix-page .summary-strip dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .his-fix-page .footer-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .his-fix-page .footer-actions .btn {
+    width: 100%;
+  }
+}

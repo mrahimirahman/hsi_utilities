@@ -10,6 +10,15 @@ import { ReportsMenuComponent } from './features/reports/reports-menu.component'
 import { ReportPlaceholderComponent } from './features/reports/report-placeholder.component';
 import { DamaDiagnosisReportComponent } from './features/reports/dama-diagnosis-report.component';
 import { DischargeDateComponent } from './features/discharge-date/discharge-date.component';
+import { CompleteTransferComponent } from './features/his-fixes/complete-transfer/complete-transfer.component';
+import { BirthTimeComponent } from './features/his-fixes/birth-time/birth-time.component';
+import { DocumentStatusComponent } from './features/his-fixes/document-status/document-status.component';
+import { EncounterActiveComponent } from './features/his-fixes/encounter-active/encounter-active.component';
+import { BedClassComponent } from './features/his-fixes/bed-class/bed-class.component';
+import { ScheduleVisibilityComponent } from './features/his-fixes/schedule-visibility/schedule-visibility.component';
+import { MultiWardComponent } from './features/his-fixes/multi-ward/multi-ward.component';
+import { RenumberSlotsComponent } from './features/his-fixes/renumber-slots/renumber-slots.component';
+import { UnlockDocumentComponent } from './features/his-fixes/unlock-document/unlock-document.component';
 import { TicketReportComponent } from './features/tickets/ticket-report.component';
 
 export const appRoutes: Routes = [
@@ -94,7 +103,16 @@ export const appRoutes: Routes = [
       { path: 'reports/audit', component: ReportAuditLogComponent },
       { path: 'discharge-date', component: DischargeDateComponent },
       { path: 'death-date', component: DischargeDateComponent, data: { mode: 'DEATH' } },
-      { path: 'ticket-report', component: TicketReportComponent }
+      { path: 'ticket-report', component: TicketReportComponent },
+      { path: 'fix/complete-transfer', component: CompleteTransferComponent },
+      { path: 'fix/unlock-document', component: UnlockDocumentComponent },
+      { path: 'fix/birth-time', component: BirthTimeComponent },
+      { path: 'fix/document-status', component: DocumentStatusComponent },
+      { path: 'fix/encounter-active', component: EncounterActiveComponent },
+      { path: 'fix/bed-class', component: BedClassComponent },
+      { path: 'fix/renumber-slots', component: RenumberSlotsComponent },
+      { path: 'fix/schedule-visibility', component: ScheduleVisibilityComponent },
+      { path: 'fix/multi-ward', component: MultiWardComponent }
     ]
   },
   { path: '**', redirectTo: '' }

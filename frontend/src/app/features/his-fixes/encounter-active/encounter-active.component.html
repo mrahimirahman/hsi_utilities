@@ -1,0 +1,87 @@
+<app-his-fix-shell
+  title="Encounter Active Flag"
+  icon="toggle_on"
+  description="Tidak boleh arrive pesakit di wad — mesej 'Please Discharge Patient in ED First'. Cari MRN, pilih encounter (20 terkini) dan pilih sendiri nilai encounter_active (0 atau 1); admin menentukan encounter dan nilai yang betul."
+  [busy]="isSaving()"
+  [errorMessage]="errorMessage()"
+  [successMessage]="successMessage()"
+  [dryRun]="dryRun()"
+  [auditEntries]="auditEntries()"
+  [canApply]="canApply()"
+  [confirmText]="confirmText()"
+  [(ticketNo)]="ticketNo"
+  [(reason)]="reason"
+  (apply)="apply()">
+
+  <div shellSearch class="search-row">
+    <label class="field search-field">
+      <span class="field-label">MRN Pesakit</span>
+      <input class="input" type="text" [(ngModel)]="mrn" (keyup.enter)="search()" placeholder="cth. 321155">
+    </label>
+    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isSearching() || isSaving()">
+      <span class="material-symbols-outlined" [class.spin]="isSearching()">{{ isSearching() ? 'progress_activity' : 'search' }}</span>
+      {{ isSearching() ? 'Mencari...' : 'Cari Rekod' }}
+    </button>
+  </div>
+
+  <section shellResults class="card" *ngIf="hasSearched()">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-badge">2</span> Encounter</h2>
+      <span class="badge badge-neutral" *ngIf="rows().length > 0">{{ rows().length }} rekod dijumpai</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!isSearching() && rows().length === 0 && !errorMessage()">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>Tiada encounter dijumpai untuk MRN ini.</span>
+    </div>
+
+    <div class="table-wrap" *ngIf="rows().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Encounter</th>
+            <th>Domain</th>
+            <th>Tarikh Encounter</th>
+            <th>Active</th>
+            <th>Tarikh Discharge</th>
+            <th>Lokasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()" [class.is-selected]="selectedId() === row.encounterId">
+            <td>
+              <input type="radio" name="encounter" [checked]="selectedId() === row.encounterId" (change)="select(row)" [disabled]="isSaving()" [attr.aria-label]="'Pilih encounter ' + row.encounterId">
+            </td>
+            <td class="mono">{{ row.encounterId }}</td>
+            <td class="mono">{{ row.domainCode || '-' }}</td>
+            <td class="nowrap">{{ row.encounterTimestamp || '-' }}</td>
+            <td class="mono strong">{{ row.encounterActive }}</td>
+            <td class="nowrap">{{ row.dischargeDate || '-' }}</td>
+            <td>{{ row.locationName || '-' }} <small class="muted mono">({{ row.locationCode || '-' }})</small></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div shellForm *ngIf="selected() as row">
+    <dl class="summary-strip">
+      <div>
+        <dt class="label-caps">Encounter / Nilai Semasa</dt>
+        <dd class="mono">{{ row.encounterId }}: encounter_active {{ row.encounterActive }}</dd>
+      </div>
+    </dl>
+    <fieldset class="field">
+      <legend class="field-label">Nilai encounter_active baharu (pilih satu)</legend>
+      <label>
+        <input type="radio" name="newActive" [checked]="newActive() === 0" (change)="setNewActive(0)" [disabled]="isSaving()">
+        0 (tidak aktif)
+      </label>
+      <label>
+        <input type="radio" name="newActive" [checked]="newActive() === 1" (change)="setNewActive(1)" [disabled]="isSaving()">
+        1 (aktif)
+      </label>
+    </fieldset>
+  </div>
+</app-his-fix-shell>
